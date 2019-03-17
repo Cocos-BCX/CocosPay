@@ -1,0 +1,13 @@
+export const ENCRYPTION_ALGORITHM = 'aes-256-ctr'
+export const ONE_TRX = 1000000
+export const TRON_CONSTANTS_MAINNET = {
+  ADD_PRE_FIX_BYTE: 0x41,
+  ADD_PRE_FIX_STRING: '41'
+}
+export const TRON_CONSTANTS_TESTNET = {
+  ADD_PRE_FIX_BYTE: 0xa0,
+  ADD_PRE_FIX_STRING: 'a0'
+}
+
+export const HISTORY_REQUEST_LIMIT = 999999
+export const HISTORY_SHOW_LIMIT = 999999

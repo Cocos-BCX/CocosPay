@@ -1,0 +1,220 @@
+@charset "utf-8";
+@import "variable";
+
+/**
+* 自定义样式 覆盖Element UI的样式
+ */
+.full-btn {
+  width: 100%;
+}
+
+.three-btn {
+  width: 30%;
+}
+
+.el-message {
+  width: 80%;
+  min-width: auto;
+}
+
+// 抽屉样式
+.drawer {
+  top: 60px !important;
+
+  .drawer-wrap {
+    background-color: #fff;
+  }
+}
+
+.el-dialog {
+  width: 85%;
+  border-radius: 10px;
+}
+
+.el-dialog__body {
+  font-size: 16px;
+}
+
+.el-dialog__header .el-dialog__close {
+  color: $color-second;
+}
+
+.language-select {
+  width: 100px;
+
+  .el-input__inner {
+    border-bottom: none;
+  }
+
+  input {
+    text-align: center;
+  }
+}
+
+.el-input__inner {
+  border: none;
+  //border-bottom: 1px solid #e6e6e6;
+  border-radius: 0;
+}
+
+.el-textarea__inner {
+  border: none;
+  border-bottom: 1px solid #e6e6e6;
+  border-radius: 0;
+}
+
+.el-input-group__append {
+  color: #333;
+  background-color: transparent;
+  border-radius: 0;
+  border: none;
+}
+
+.el-button--primary {
+  // background: linear-gradient(135deg, $warning-color, $primary-color);
+  // border: none;
+  // &:active, &:focus, &:hover{
+  //   background: linear-gradient(135deg, $warning-color, $primary-color);
+  // }
+  background: linear-gradient(95deg, rgba(112, 70, 254, 1) 0%, rgba(70, 121, 254, 1) 100%);
+}
+
+.no-border {
+  .el-input__inner {
+    border: none;
+  }
+}
+
+.el-input {
+  font-size: 16px;
+
+  input {
+    background-color: $bg-shallow;
+  }
+}
+
+.no-bg {
+  input {
+    background-color: transparent;
+  }
+}
+
+.el-select {
+  font-size: 16px;
+}
+
+// 渐变按钮
+.gradual-button {
+  position: relative;
+  color: $primary-color;
+  border: none;
+  padding: 13px 20px;
+
+  &:active,
+  &:hover,
+  &:focus {
+    border-color: transparent;
+    background-color: #fff;
+  }
+
+  &:after {
+    position: absolute;
+    top: -1px;
+    bottom: -1px;
+    left: -1px;
+    right: -1px;
+    background: linear-gradient(to top, $warning-color, $primary-color);
+    content: ' ';
+    z-index: -1;
+    border-radius: 4px;
+  }
+}
+
+.el-dialog__header {
+  border-bottom: 1px dashed #e6e6e6;
+}
+
+.simplert__icon {
+  width: 90px !important;
+  height: 80px !important;
+
+  img {
+    width: 90px !important;
+    height: 80px !important;
+  }
+}
+
+.simplert__content {
+  width: 85% !important;
+}
+
+.simplert__content--radius {
+  border-radius: 0.6em !important;
+}
+
+.small-from {
+  .el-form-item__label {
+    font-size: 12px;
+  }
+}
+
+.el-message-box {
+  width: 80%;
+}
+
+.no-header-message {
+  .el-message-box__header {
+    padding-top: 15px !important;
+  }
+
+  .el-message-box__message {
+    text-align: justify;
+    color: $color-first;
+  }
+}
+
+.cancel-btn {
+  width: 45%;
+  height: 40px;
+  color: $primary-color;
+  border: 1px solid $primary-color;
+  font-size: 16px;
+
+  &:hover {
+    border: 1px solid $primary-color;
+  }
+}
+
+.confirm-btn {
+  width: 45%;
+  height: 40px;
+  background-color: $primary-color;
+  font-size: 16px;
+}
+
+.signature-tabs {
+  .el-tabs__header {
+    margin: 0 0 5px;
+  }
+
+  .el-tabs__nav-wrap::after {
+    background-color: transparent;
+  }
+
+  .el-tabs__active-bar {
+    background-color: transparent;
+  }
+
+  .el-tabs__content {
+    background-color: $bg-shallow;
+  }
+}
+
+.dialog-footer {
+  position: relative;
+  z-index: 9;
+}
+
+.el-tabs__item.is-active {
+  color: #333;
+}

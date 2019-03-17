@@ -1,0 +1,15 @@
+{
+    "TransferContract": "wallet/createtransaction",
+    "VoteWitnessContract": "wallet/votewitnessaccount",
+    "AccountCreateContract": "wallet/createaccount",
+    "WitnessCreateContract": "wallet/createwitness",
+    "TransferAssetContract": "wallet/transferasset",
+    "ParticipateAssetIssueContract": "wallet/participateassetissue",
+    "AssetIssueContract": "wallet/createassetissue",
+    "FreezeBalanceContract": "wallet/freezebalance",
+    "UnfreezeBalanceContract": "wallet/unfreezebalance",
+    "WithdrawBalanceContract": "wallet/withdrawbalance",
+    "UpdateAssetContract": "wallet/updateasset",
+    "CreateSmartContract": "wallet/deploycontract",
+    "TriggerSmartContract": "wallet/triggersmartcontract"
+}

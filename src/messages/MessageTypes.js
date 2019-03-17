@@ -1,0 +1,7 @@
+export const ERROR = 'error'
+export const SIGNATURE = 'signature'
+export const SET_NODE = 'setNode'
+export const SET_ADDRESS = 'setAddress'
+export const INIT_TRONWEB = 'initTronWeb'
+export const INJECTED = 'TRONPAY_INJECTED'
+export const CONTENT = 'TRONPAY_CONTENT'
