@@ -97,7 +97,7 @@
     "vue-template-compiler": "^2.5.17",
     "wcer": "^1.0.2",
     "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.3",
+    "webpack-dev-server": "^3.1.11",
     "webpack-merge": "^4.1.0",
     "ws": "^3.2.0",
     "zip-webpack-plugin": "^2.0.0"
