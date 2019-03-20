@@ -7,6 +7,7 @@ import * as InternalMessageTypes from '../messages/InternalMessageTypes'
 let openWindow = null
 export default class NotificationService {
   static async open(notification) {
+    // static open(notification) {
     if (openWindow) {
       openWindow.close()
       openWindow = null
@@ -18,6 +19,7 @@ export default class NotificationService {
     let middleY = window.screen.availHeight / 2 - (height / 2)
 
     const getPopup = async () => {
+      // const getPopup =  () => {
       try {
         const url = apis.runtime.getURL('/pages/prompt.html')
         // Notifications get bound differently depending on browser
@@ -29,10 +31,14 @@ export default class NotificationService {
             width,
             type: 'popup'
           })
+          // const created = this.createWindows(height, width, url)
           window.notification = notification
           return created
         } else {
-          const win = window.open(url, 'TronPayPrompt', `width=${width},height=${height},resizable=0,top=${middleY},left=${middleX},titlebar=0`)
+          if (win) {
+            return null
+          }
+          const win = window.open(url, 'COCOSPayPrompt', `width=${width},height=${height},resizable=0,top=${middleY},left=${middleX},titlebar=0`)
           win.data = notification
           openWindow = win
           return win
@@ -42,9 +48,9 @@ export default class NotificationService {
         return null
       }
     }
-
-    await InternalMessage.widthPayload(InternalMessageTypes.SET_PROMPT, JSON.stringify(notification)).send()
-
+    // console.log(InternalMessage.widthPayload(InternalMessageTypes.SET_PROMPT, JSON.stringify(notification)))
+    // await InternalMessage.widthPayload(InternalMessageTypes.SET_PROMPT, JSON.stringify(notification)).send()
+    await new Promise((resolve) => setTimeout(resolve, 600))
     let popup = await getPopup()
 
     // Handles the user closing the popup without taking any action

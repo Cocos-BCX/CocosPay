@@ -98,7 +98,8 @@ module.exports = {
     redeemTrx: '解冻COCOS',
     importAccount: '导入账号',
     removeAccount: '退出账号',
-    signature: '签名请求'
+    signature: '签名请求',
+    locked: '未登录或已锁定',
   },
   // alert
   alert: {
@@ -178,7 +179,8 @@ module.exports = {
     never: '永不'
   },
   networkName: {
-    MainNet: '主网络',
+    // MainNet: '主网络',
+    // MainNet: '测试网络',
     TestNet: '测试网络',
     PrivateNet: '自定义网络'
   },

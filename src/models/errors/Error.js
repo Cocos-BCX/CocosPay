@@ -11,7 +11,7 @@ export default class Error {
   static locked() {
     return new Error(
       ErrorTypes.LOCKED,
-      "The user's COCOSPay is locked. They have been notified and should unlock before continuing."
+      "The user's CocosPay is locked. They have been notified and should unlock before continuing."
     )
   }
   static maliciousEvent() {
@@ -22,7 +22,8 @@ export default class Error {
     )
   }
   static promptClosedWithoutAction() {
-    return new Error(ErrorTypes.PROMPT_CLOSED,
+    return new Error(
+      ErrorTypes.PROMPT_CLOSED,
       'The user closed the prompt without any action.',
       ErrorCodes.TIMED_OUT
     )

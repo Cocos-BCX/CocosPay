@@ -22,14 +22,14 @@ export default new Vuex.Store({
     curLng: utils.getLanguage() || 'en',
     currentNetwork: {
       id: 1,
-      name: 'MainNet',
+      name: 'TestNet',
       transcanUrl: 'https://api.tronscan.org',
       fullNodeUrl: 'https://api.trongrid.io',
       solidityUrl: 'https://api.trongrid.io',
       eventGridUrl: 'https://api.trongrid.io',
       AccountDetailUrl: 'https://tronscan.org/#/address',
       HistoryDetailUrl: 'https://tronscan.org/#/transaction',
-      type: 'MainNet'
+      type: 'TestNet'
     },
     networks: defaultNetworks.networks,
     currentAccount: {
@@ -70,10 +70,10 @@ export default new Vuex.Store({
     },
     setCurrentNetwork(state, network) {
       state.currentNetwork = network
-      // InternalMessage.widthPayload(InternalMessageTypes.SETCURRENTNETWORK, {
-      //     network: network
-      //   })
-      //   .send()
+      InternalMessage.widthPayload(InternalMessageTypes.SETCURRENTNETWORK, {
+        network: network
+      })
+        .send()
     },
     setCocosCount(state, cocos) {
       state.cocosCount = cocos
@@ -98,8 +98,8 @@ export default new Vuex.Store({
       // fix changepassword bug
       state.currentAccount = Object.assign({}, account)
       InternalMessage.widthPayload(InternalMessageTypes.SETCURRENTACCOUNT, {
-          address: account.address
-        })
+        address: account.address
+      })
         .send()
     },
     setCurrentCreateAccount(state, account) {

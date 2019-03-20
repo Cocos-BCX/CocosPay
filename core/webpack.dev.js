@@ -3,10 +3,7 @@ const webpack = require('webpack')
 const merge = require('webpack-merge')
 const baseWebpack = require('./webpack.base')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
-const {
-  styleLoaders,
-  htmlPage
-} = require('./tools')
+const { styleLoaders, htmlPage } = require('./tools')
 const ChromeReloadPlugin = require('wcer')
 module.exports = merge(baseWebpack, {
   // cheap-module-eval-source-map быстрее для разработки
@@ -20,7 +17,7 @@ module.exports = merge(baseWebpack, {
   plugins: [
     htmlPage('home', 'app', ['tab']),
     htmlPage('popup', 'popup', ['popup']),
-    htmlPage('COCOSPay', 'prompt', ['prompt']),
+    htmlPage('CocosPay', 'prompt', ['prompt']),
     htmlPage('background', 'background', ['background']),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({

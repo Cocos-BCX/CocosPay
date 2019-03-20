@@ -58,202 +58,204 @@
   </header>
 </template>
 <script>
-import { mapState } from "vuex";
-import vClickOutside from "v-click-outside";
-export default {
-  data() {
-    return {
-      showNetworkDropdown: false
-    };
-  },
-  computed: {
-    ...mapState(["route", "currentNetwork", "networks"])
-  },
-  created() {},
-  directives: {
-    clickOutside: vClickOutside.directive
-  },
-  methods: {
-    onClickOutside() {
-      this.showNetworkDropdown = false;
+  import { mapState } from "vuex";
+  import vClickOutside from "v-click-outside";
+  export default {
+    data() {
+      return {
+        showNetworkDropdown: false
+      };
     },
-    changeNetwork(network) {
-      this.$store.commit("setCurrentNetwork", network);
-      this.refreshData();
+    computed: {
+      ...mapState(["route", "currentNetwork", "networks"])
     },
-    goSettings() {
-      this.$router.push({ name: "settings" });
+    created() {
+      console.log(this.networks);
     },
-    refreshData() {
-      this.$emit("refresh");
+    directives: {
+      clickOutside: vClickOutside.directive
+    },
+    methods: {
+      onClickOutside() {
+        this.showNetworkDropdown = false;
+      },
+      changeNetwork(network) {
+        this.$store.commit("setCurrentNetwork", network);
+        this.refreshData();
+      },
+      goSettings() {
+        this.$router.push({ name: "settings" });
+      },
+      refreshData() {
+        this.$emit("refresh");
+      }
     }
-  }
-};
+  };
 </script>
 <style lang="scss" scoped>
-@import "../theme/v1/variable";
-.header {
-  width: 100%;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-  border-bottom: 1px solid #e6e6e6;
-  background-color: $bg-shallow;
-}
-.setting-icon {
-  width: 62px;
-  display: flex;
-  justify-content: space-between;
-  img {
-    cursor: pointer;
+  @import "../theme/v1/variable";
+  .header {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    border-bottom: 1px solid #e6e6e6;
+    background-color: $bg-shallow;
   }
-}
-.header-logo {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 62px;
-}
+  .setting-icon {
+    width: 62px;
+    display: flex;
+    justify-content: space-between;
+    img {
+      cursor: pointer;
+    }
+  }
+  .header-logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 62px;
+  }
 
-.header-logo img,
-.header-logo span {
-  display: block;
-}
-
-.network {
-  position: relative;
-  border: 1px solid #e6e6e6;
-  border-radius: 20px;
-  span {
+  .header-logo img,
+  .header-logo span {
     display: block;
   }
-}
 
-a.network-toggle {
-  max-width: 170px;
-  width: 170px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 12px;
-  text-transform: uppercase;
-  padding: 6px 15px;
-  border-radius: 20px;
-  cursor: pointer;
-}
+  .network {
+    position: relative;
+    border: 1px solid #e6e6e6;
+    border-radius: 20px;
+    span {
+      display: block;
+    }
+  }
 
-.network-icon {
-  width: 12px;
-  height: 12px;
-  background: $success-color;
-  border-radius: 100%;
-}
+  a.network-toggle {
+    max-width: 170px;
+    width: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 6px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
 
-.icon {
-  display: inline-block;
-  stroke-width: 0;
-  stroke: currentColor;
-  fill: currentColor;
-  width: 1em;
-  height: 1em;
-}
+  .network-icon {
+    width: 12px;
+    height: 12px;
+    background: $success-color;
+    border-radius: 100%;
+  }
 
-.network-arrow {
-  padding-top: 2px;
-}
+  .icon {
+    display: inline-block;
+    stroke-width: 0;
+    stroke: currentColor;
+    fill: currentColor;
+    width: 1em;
+    height: 1em;
+  }
 
-.network-name {
-  flex: 1;
-  font-weight: 600;
-  color: $color-first;
-  padding: 0.1rem 0.3rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .network-arrow {
+    padding-top: 2px;
+  }
 
-.network-dropdown {
-  background: rgba(0, 0, 0, 0.8);
-  position: absolute;
-  top: 40px;
-  right: 0;
-  border-radius: 8px;
-  width: 170px;
-  z-index: 99;
-  padding: 10px;
-}
+  .network-name {
+    flex: 1;
+    font-weight: 600;
+    color: $color-first;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.network-dropdown a {
-  display: flex;
-  padding: 0.375rem 0.75rem;
-  font-size: 0.75rem;
-  line-height: 1.25;
-  color: #fff;
-}
+  .network-dropdown {
+    background: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: 40px;
+    right: 0;
+    border-radius: 8px;
+    width: 170px;
+    z-index: 99;
+    padding: 10px;
+  }
 
-.network-dropdown a:hover,
-.network-dropdown a:focus {
-  color: $danger-color;
-}
+  .network-dropdown a {
+    display: flex;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.25;
+    color: #fff;
+  }
 
-.network-dropdown a span {
-  display: block;
-}
+  .network-dropdown a:hover,
+  .network-dropdown a:focus {
+    color: $danger-color;
+  }
 
-.network-dropdown-icon {
-  padding: 3px 8px 0 0;
-  font-size: 0.625rem;
-}
+  .network-dropdown a span {
+    display: block;
+  }
 
-.dropdown-menu {
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  background: #fff;
-  position: absolute;
-  top: 40px;
-  right: 10px;
-  padding: 0.5rem 0;
-  border-radius: 3px;
-  min-width: 125px;
-}
+  .network-dropdown-icon {
+    padding: 3px 8px 0 0;
+    font-size: 0.625rem;
+  }
 
-.dropdown-menu a {
-  display: block;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  color: $color-first;
-}
+  .dropdown-menu {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    background: #fff;
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    padding: 0.5rem 0;
+    border-radius: 3px;
+    min-width: 125px;
+  }
 
-.dropdown-menu a:hover,
-.dropdown-menu a:focus {
-  color: $danger-color;
-}
+  .dropdown-menu a {
+    display: block;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: $color-first;
+  }
 
-.header-tabs {
-  display: flex;
-  width: 100%;
-}
+  .dropdown-menu a:hover,
+  .dropdown-menu a:focus {
+    color: $danger-color;
+  }
 
-.header-tabs a {
-  display: block;
-  flex: 1;
-  padding: 0.625rem;
-  color: $color-first;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  text-align: center;
-}
+  .header-tabs {
+    display: flex;
+    width: 100%;
+  }
 
-.header-tabs a.active {
-  color: $danger-color;
-  border-bottom: 2px solid $danger-color;
-}
+  .header-tabs a {
+    display: block;
+    flex: 1;
+    padding: 0.625rem;
+    color: $color-first;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    text-align: center;
+  }
 
-.header-tabs a:hover,
-.header-tabs a:focus {
-  color: $danger-color;
-}
+  .header-tabs a.active {
+    color: $danger-color;
+    border-bottom: 2px solid $danger-color;
+  }
+
+  .header-tabs a:hover,
+  .header-tabs a:focus {
+    color: $danger-color;
+  }
 </style>
 

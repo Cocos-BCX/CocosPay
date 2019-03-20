@@ -1,23 +1,25 @@
-import { LocalStream } from 'extension-streams'
+import {
+  LocalStream
+} from 'extension-streams'
 
 export default class InternalMessage {
-  constructor (type = '', payload = '') {
+  constructor(type = '', payload = '') {
     this.type = type
     this.payload = payload
   }
-  static placeholder () {
+  static placeholder() {
     return new InternalMessage()
   }
-  static fromJson (json) {
+  static fromJson(json) {
     return Object.assign(this.placeholder(), json)
   }
-  static widthPayload (type, payload) {
+  static widthPayload(type, payload) {
     return new InternalMessage(type, payload)
   }
-  static signal (type) {
+  static signal(type) {
     return new InternalMessage(type)
   }
-  send () {
+  send() {
     return LocalStream.send(this)
   }
 }

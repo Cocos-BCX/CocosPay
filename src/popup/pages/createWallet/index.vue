@@ -13,7 +13,7 @@
     <section class="logo">
       <img class="block-center" src="/images/index-logo.png" alt>
     </section>
-    <h2 class="text-center index-title">COCOSPay</h2>
+    <h2 class="text-center index-title">CocosPay</h2>
     <el-form ref="form" :model="formData" :rules="formRules" class="mt20">
       <el-form-item prop="password">
         <el-input
@@ -43,81 +43,81 @@
   </section>
 </template>
 <script>
-import { mapState, mapMutations } from "vuex";
-export default {
-  data() {
-    const validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error(this.$i18n.t("verify.passwordNull")));
-      } else if (value.length < 8) {
-        callback(new Error(this.$i18n.t("verify.passwordLength")));
-      } else {
-        if (this.formData.repassword !== "") {
-          this.$refs.form.validateField("repassword");
+  import { mapState, mapMutations } from "vuex";
+  export default {
+    data() {
+      const validatePass = (rule, value, callback) => {
+        if (value === "") {
+          callback(new Error(this.$i18n.t("verify.passwordNull")));
+        } else if (value.length < 8) {
+          callback(new Error(this.$i18n.t("verify.passwordLength")));
+        } else {
+          if (this.formData.repassword !== "") {
+            this.$refs.form.validateField("repassword");
+          }
+          callback();
         }
-        callback();
-      }
-    };
-    const validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error(this.$i18n.t("verify.passwordSure")));
-      } else if (value !== this.formData.password) {
-        callback(new Error(this.$i18n.t("verify.passwordMatch")));
-      } else {
-        callback();
-      }
-    };
-    return {
-      wallet: null,
-      lang: "zh",
-      formData: {
-        password: "",
-        repassword: ""
-      },
-      formRules: {
-        password: [{ validator: validatePass, trigger: "blur" }],
-        repassword: [{ validator: validatePass2, trigger: "blur" }]
-      },
-      langs: [{ name: "中文", value: "zh" }, { name: "English", value: "en" }]
-    };
-  },
-  computed: {
-    ...mapState(["curLng"])
-  },
-  created() {
-    this.lang = this.curLng;
-  },
-  methods: {
-    ...mapMutations(["setCurLng"]),
-    createWallet(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.$router.push({
-            name: "agreement",
-            params: { password: this.formData.password }
-          });
+      };
+      const validatePass2 = (rule, value, callback) => {
+        if (value === "") {
+          callback(new Error(this.$i18n.t("verify.passwordSure")));
+        } else if (value !== this.formData.password) {
+          callback(new Error(this.$i18n.t("verify.passwordMatch")));
+        } else {
+          callback();
         }
-      });
+      };
+      return {
+        wallet: null,
+        lang: "zh",
+        formData: {
+          password: "",
+          repassword: ""
+        },
+        formRules: {
+          password: [{ validator: validatePass, trigger: "blur" }],
+          repassword: [{ validator: validatePass2, trigger: "blur" }]
+        },
+        langs: [{ name: "中文", value: "zh" }, { name: "English", value: "en" }]
+      };
     },
-    changeLanguage() {
-      this.setCurLng(this.lang);
-      this.$i18n.locale = this.lang;
+    computed: {
+      ...mapState(["curLng"])
+    },
+    created() {
+      this.lang = this.curLng;
+    },
+    methods: {
+      ...mapMutations(["setCurLng"]),
+      createWallet(formName) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            this.$router.push({
+              name: "agreement",
+              params: { password: this.formData.password }
+            });
+          }
+        });
+      },
+      changeLanguage() {
+        this.setCurLng(this.lang);
+        this.$i18n.locale = this.lang;
+      }
     }
-  }
-};
+  };
 </script>
 <style lang="scss" scoped>
-.logo {
-  margin-top: 40px;
-}
-.select-lang {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  height: 50px;
-}
-.index-title {
-  font-size: 30px;
-  margin: 25px auto 40px;
-}
+  .logo {
+    margin-top: 40px;
+  }
+  .select-lang {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 50px;
+  }
+  .index-title {
+    font-size: 30px;
+    margin: 25px auto 40px;
+  }
 </style>
