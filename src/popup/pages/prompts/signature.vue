@@ -99,7 +99,7 @@
           <section class="partition"></section>
         </div>
       </div>-->
-      <el-checkbox class="join-option">{{$t('message.joinWhiteList')}}</el-checkbox>
+      <el-checkbox class="join-option" v-model="joinWhiteList">{{$t('message.joinWhiteList')}}</el-checkbox>
       <section class="prompt-actions">
         <el-button class="cancel-btn text-center" @click="denied">{{$t('button.reject')}}</el-button>
         <el-button
@@ -169,16 +169,17 @@
         });
         // const transaction = this.prompt.data.signedTransaction;
         // if (this.joinWhiteList && this.data.type === "TriggerSmartContract") {
-        //   // 加入白名单
-        //   let white = {
-        //     id: IdGenerator.numeric(24),
-        //     address: this.data.parameter.value.contract_address,
-        //     domain: this.prompt.domain,
-        //     createTime: this.$moment().format("x")
-        //   };
-        //   debugger;
-        //   this.addWhiteList(white);
-        // }
+        if (this.joinWhiteList) {
+          // 加入白名单
+          let white = {
+            id: IdGenerator.numeric(24),
+            address: this.prompt.data.toAccount,
+            domain: this.prompt.domain,
+            createTime: this.$moment().format("x")
+          };
+          debugger;
+          this.addWhiteList(white);
+        }
         // this.prompt.responder({ accepted: true, transaction });
         NotificationService.close();
       },
