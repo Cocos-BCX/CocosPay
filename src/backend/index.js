@@ -20,6 +20,7 @@ let seed = ''
 let timeoutLocker = null
 // timer interval time
 let intervalTime = 0
+let Repeat = new Set()
 
 let prompt = null
 let login = true
@@ -68,9 +69,10 @@ export function NewBCX() {
 export default class Background {
   constructor() {
     // this.NewBCX()
-    // this.Params()
+    this.Params()
     this.watchInternalMessaging()
   }
+
   // watch internal message (LocalStream)
   watchInternalMessaging() {
     LocalStream.watch((request, response) => {
@@ -99,7 +101,11 @@ export default class Background {
       //       Background.initCOCOSWeb(sendResponse)
       //       break
       case InternalMessageTypes.SIGNATURE:
+        if (Repeat.has(message.resolver)){
+          break
+        }
         Background.signature(sendResponse, message.payload)
+        Repeat.add(message.resolver)
         break
       case InternalMessageTypes.SET_PROMPT:
         Background.setPrompt(sendResponse, message.payload)
@@ -171,6 +177,31 @@ export default class Background {
   static signature(sendResponse, payload) {
     this.lockGuard(sendResponse, async () => {
       try {
+        const store = this._getLocalData()
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain && ele.address === payload.toAccount
+        })
+        if (whiteList) {
+          await new NewBCX().transferAsset({
+            fromAccount: payload.fromAccount,
+            toAccount: payload.toAccount,
+            amount: payload.amount,
+            memo: payload.memo,
+            assetId: payload.coin,
+            isPropos: false,
+            onlyGetFee: false
+          }).then((res) => {
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+          })
+
+          sendResponse(payload);
+          return true
+        }
+
         NotificationService.open(
           new Prompt(
             PromptTypes.SIGNATURE,

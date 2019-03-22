@@ -112,7 +112,6 @@ class Inject {
     if (!msg) return
     // Always including the domain for every request.
     msg.domain = utils.strippedHost()
-    // console.log(msg)
     let nonSyncMessage = Message.fromJson(msg)
     if (!stream.synced && (!msg.hasOwnProperty('type') || msg.type !== 'sync')) {
       stream.send(nonSyncMessage.error(Error.maliciousEvent()), MessageTypes.INJECTED)
@@ -144,7 +143,7 @@ class Inject {
     stream.synced = true
   }
   signature(message) {
-    InternalMessage.widthPayload(InternalMessageTypes.SIGNATURE, message.payload)
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.SIGNATURE, message.payload, message.resolver)
       .send().then(res => {
       this.respond(message, res)
     })

@@ -3,9 +3,10 @@ import {
 } from 'extension-streams'
 
 export default class InternalMessage {
-  constructor(type = '', payload = '') {
+  constructor(type = '', payload = '', resolver = '') {
     this.type = type
     this.payload = payload
+    this.resolver = resolver
   }
   static placeholder() {
     return new InternalMessage()
@@ -15,6 +16,9 @@ export default class InternalMessage {
   }
   static widthPayload(type, payload) {
     return new InternalMessage(type, payload)
+  }
+  static widthPayloadAndResolver(type, payload, resolver) {
+    return new InternalMessage(type, payload, resolver)
   }
   static signal(type) {
     return new InternalMessage(type)
