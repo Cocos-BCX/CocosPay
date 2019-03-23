@@ -1,11 +1,7 @@
 import InternalMessage from '../../../messages/InternalMessage'
 import * as InternalMessageTypes from '../../../messages/InternalMessageTypes'
 import utils from '../../../lib/utils'
-// import {
-//   NewBCX
-// } from '../../utils/tools'
-let Background = chrome.extension.getBackgroundPage().background.default;
-let NewBCX = new Background().NewBCX();
+
 export default {
   namespaced: true,
   state: {
