@@ -1,8 +1,5 @@
-// import {
-//   NewTronWeb,
-//   NewBCX
-// } from '../../utils/tools'
 import utils from '../../../lib/utils'
+import bcx from '../../utils/bcx'
 import Alert from '../../components/kalert/function'
 import {
   HISTORY_REQUEST_LIMIT,
@@ -11,8 +8,8 @@ import {
 import I18n from '../../languages'
 import CommonJs from '../../config/common'
 import async from '../../../lib/mapTransaction/index';
-let Background = chrome.extension.getBackgroundPage().background.default;
-let NewBCX = new Background().NewBCX();
+
+let NewBCX = bcx.getBCXWithState();
 export default {
   namespaced: true,
   state: {

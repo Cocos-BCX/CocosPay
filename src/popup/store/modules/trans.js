@@ -1,10 +1,9 @@
 import I18n from '../../languages'
+import bcx from '../../utils/bcx'
 import CommonJs from '../../config/common'
 import Alert from '../../components/kalert/function'
-// let NewBCX = chrome.extension.getBackgroundPage().background.NewBCX;
 
-let Background = chrome.extension.getBackgroundPage().background.default;
-let NewBCX = new Background().NewBCX();
+let NewBCX = bcx.getBCXWithState();
 export default {
   namespaced: true,
 
