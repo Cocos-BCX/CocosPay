@@ -7,7 +7,6 @@ import * as InternalMessageTypes from '../messages/InternalMessageTypes'
 let openWindow = null
 export default class NotificationService {
   static async open(notification) {
-    // static open(notification) {
     if (openWindow) {
       openWindow.close()
       openWindow = null
@@ -19,7 +18,6 @@ export default class NotificationService {
     let middleY = window.screen.availHeight / 2 - (height / 2)
 
     const getPopup = async () => {
-      // const getPopup =  () => {
       try {
         const url = apis.runtime.getURL('/pages/prompt.html')
         // Notifications get bound differently depending on browser
@@ -48,7 +46,7 @@ export default class NotificationService {
         return null
       }
     }
-    // console.log(InternalMessage.widthPayload(InternalMessageTypes.SET_PROMPT, JSON.stringify(notification)))
+    console.log(InternalMessage.widthPayload(InternalMessageTypes.SET_PROMPT, JSON.stringify(notification)))
     // await InternalMessage.widthPayload(InternalMessageTypes.SET_PROMPT, JSON.stringify(notification)).send()
     await new Promise((resolve) => setTimeout(resolve, 600))
     let popup = await getPopup()

@@ -68,7 +68,6 @@ export function NewBCX() {
 }
 export default class Background {
   constructor() {
-    // this.NewBCX()
     this.Params()
     this.watchInternalMessaging()
   }
@@ -478,7 +477,7 @@ export default class Background {
   //   // callback(msg);
   // });
 
-  NewBCX() {
+  static getBCX() {
     let bcxNodes = []
     bcxNodes.push({
       url: 'ws://47.93.62.96:8050',
