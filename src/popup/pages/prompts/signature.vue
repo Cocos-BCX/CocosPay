@@ -180,7 +180,7 @@
           debugger;
           this.addWhiteList(white);
         }
-        // this.prompt.responder({ accepted: true, transaction });
+        this.prompt.responder({ accepted: true });
         NotificationService.close();
       },
       addressFromHex(address) {
