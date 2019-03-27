@@ -94,7 +94,6 @@ function tranferCount(message) {
 }
 
 function callContractFunction(message) {
-  console.log("111111111111111111111111")
   console.log(message)
   _send(MessageTypes.CALL_CONTRACT, message)
 }
@@ -200,9 +199,6 @@ export default class Content {
   initCOCOSWeb(message) {
     // console.log('CocosPay init initCOCOSWeb')
     const payload = message.payload
-    console.log("66666666666666666")
-    console.log(payload)
-    console.log("66666666666666666")
     if (payload.address || payload.cocosAccount) {
       // this.loginBCXAccount(payload.cocosAccount.accounts, payload.cocosAccount.passwords)
 

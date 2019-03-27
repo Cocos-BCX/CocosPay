@@ -58,8 +58,6 @@ export default class Background {
         Background.InitConstentCOCOSWEB(sendResponse, message)
         break
       case InternalMessageTypes.CALL_CONTRACT:
-        console.log("3333333333333333333333333")
-        console.log(message)
         Background.callContract(sendResponse, message)
         break
     }
@@ -69,7 +67,6 @@ export default class Background {
     this.lockGuard(sendResponse, async () => {
       try {
         this.getBCX().callContractFunction(message.payload).then(res => {
-          console.log("55555555555555555555555555")
           console.log(res)
           console.log(this._getLocalData())
           sendResponse(res)})
