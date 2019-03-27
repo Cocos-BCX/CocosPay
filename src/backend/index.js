@@ -54,7 +54,41 @@ export default class Background {
       case InternalMessageTypes.SETCURRENTNETWORK:
         Background.setCurrentNetwork(sendResponse, message)
         break
+      case InternalMessageTypes.INIT_COCOSWEB:
+        Background.InitConstentCOCOSWEB(sendResponse, message)
+        break
+      case InternalMessageTypes.CALL_CONTRACT:
+        console.log("3333333333333333333333333")
+        console.log(message)
+        Background.callContract(sendResponse, message)
+        break
     }
+  }
+
+  static callContract(sendResponse, message) {
+    this.lockGuard(sendResponse, async () => {
+      try {
+        this.getBCX().callContractFunction(message.payload).then(res => {
+          console.log("55555555555555555555555555")
+          console.log(res)
+          console.log(this._getLocalData())
+          sendResponse(res)})
+      } catch (e) {
+        sendResponse(Error.maliciousEvent())
+      }
+    })
+  }
+
+  static InitConstentCOCOSWEB(sendResponse, message){
+    this.lockGuard(sendResponse, async () => {
+      try {
+        let cocosAccount = this._getLocalData().cocosAccount
+        let address = this._getLocalData().currentAccount.address
+        sendResponse(InternalMessage.widthPayload(InternalMessageTypes.INIT_COCOSWEB, {cocosAccount, address}))
+      } catch (e) {
+        sendResponse(Error.maliciousEvent())
+      }
+    })
   }
 
   static signature(sendResponse, payload) {
@@ -95,14 +129,14 @@ export default class Background {
                 // If I click learningPointButton, the line will excute, and log 'ERROR:  {message: "Could not establish connection. Receiving end does not exist."}'
                 console.log('ERROR: ', chrome.runtime.lastError)
                 return false
-                } else if (!approval || !approval.hasOwnProperty('accepted')) {
-                  sendResponse(
-                    Error.signatureError(
-                      'signature_rejected',
-                      'User rejected the signature request'
-                    )
+              } else if (!approval || !approval.hasOwnProperty('accepted')) {
+                sendResponse(
+                  Error.signatureError(
+                    'signature_rejected',
+                    'User rejected the signature request'
                   )
-                  return false
+                )
+                return false
               }
               if (approval) {
                 sendResponse(payload)
@@ -158,6 +192,11 @@ export default class Background {
   static getBCX() {
     let bcxNodes = []
     bcxNodes.push({
+      url: 'ws://47.93.62.96:8020',
+      name: 'COCOS - China - Beijing',
+      ip: '47.93.62.96'
+    })
+    bcxNodes.push({
       url: 'ws://47.93.62.96:8050',
       name: 'COCOS节点1',
       ip: '47.93.62.96'
@@ -195,6 +234,7 @@ export default class Background {
       auto_reconnect: true,
       worker: false
     })
+    window.NewBCX = NewBCX
     return NewBCX
   }
 }

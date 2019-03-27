@@ -105,7 +105,7 @@
               if (res.code === 1) {
                 this.setAccount({
                   account: this.cocosAccount.accounts,
-                  password: ""
+                  password: this.formData.password
                 });
                 this.setIsAccount(true);
                 this.setLogin(true);

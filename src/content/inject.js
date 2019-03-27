@@ -100,8 +100,6 @@ class Inject {
         }
         break
       case TabMessageTypes.ADDRESS_CHANGED:
-      case TabMessageTypes.NETWORK_CHANGED:
-        stream.send(Message.widthPayload(message.type, message.payload), MessageTypes.INJECTED)
         break
       default:
         break
@@ -124,6 +122,9 @@ class Inject {
       case MessageTypes.SIGNATURE:
         this.signature(nonSyncMessage)
         break
+      case MessageTypes.CALL_CONTRACT:
+        this.callContract(nonSyncMessage)
+        break
       default:
         stream.send(nonSyncMessage.error(Error.maliciousEvent()), MessageTypes.INJECTED)
     }
@@ -142,6 +143,12 @@ class Inject {
     }, MessageTypes.INJECTED)
     stream.synced = true
   }
+  callContract(message) {
+    InternalMessage.widthPayload(InternalMessageTypes.CALL_CONTRACT, message.payload)
+      .send().then(res => {
+      this.respond(message, res)
+    })
+  }
   signature(message) {
     InternalMessage.widthPayloadAndResolver(InternalMessageTypes.SIGNATURE, message.payload, message.resolver)
       .send().then(res => {
@@ -158,6 +165,11 @@ class Inject {
   }
   async initCOCOSWeb() {
     let bcxNodes = []
+    bcxNodes.push({
+      url: 'ws://47.93.62.96:8020',
+      name: 'COCOS - China - Beijing',
+      ip: '47.93.62.96'
+    })
     bcxNodes.push({
       url: 'ws://47.93.62.96:8050',
       name: 'COCOS节点1',
@@ -198,23 +210,23 @@ class Inject {
         auto_reconnect: true,
         worker: false
       })
-      window.NewBCX = NewBCX
+      //TODO need to optimization
+      // window.NewBCX = NewBCX
       return NewBCX
     }
     NewBCX()
     try {
       const address = await this.getAddress()
-      // console.log(address)
-      // const currentNetwork = await this.getNetwork()
-      // const node = {
-      //   fullNode: currentNetwork.fullNodeUrl,
-      //   solidityNode: currentNetwork.solidityUrl,
-      //   eventServer: currentNetwork.eventGridUrl
-      // }
       stream.send(Message.widthPayload(MessageTypes.INIT_COCOSWEB, {
         address,
         node
       }), MessageTypes.INJECTED)
+
+      // let message = { address, node }
+      // InternalMessage.widthPayload(InternalMessageTypes.INIT_COCOSWEB, message).send().then(res => {
+      //   console.log(res)
+      //   stream.send(res, MessageTypes.INJECTED)
+      // })
       isReady = true
     } catch (e) {}
   }
