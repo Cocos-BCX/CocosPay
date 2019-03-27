@@ -1,21 +1,21 @@
-# CocosPay
-CocosPay
+
+## CocosPay:
 CocosPay is a Browser Extension for Tron NetWork.
 
-## Preparations:  
-Install Node.js version 8.9.3 or later.
+## Preparation:
+Node.js version 8.9.3 or higher.
 
-## Build:  
-Install local dependencies with npm install.  
+## Build:
+Install local dependencies by using npm install.  
 Build with development npm run dev.  
 Build for Publishing npm run build.  
-Uncompressed builds will found in ./build  
+Uncompressed build will be found in `./build`
 
 ## Start:
-It's useful for dapp or web.  
-Install and log in the CocosPay,   
-CocosPay will inject a BcxWeb object into current document.  
-Note that you can use like this:  
+It's useful for dapp or web.
+Install and log in the CocosPay,
+CocosPay will inject a BcxWeb object into current document.
+Note that you can use like this:
 
         if (window.BcxWeb && window.BcxWeb.BCX) { 
           bcx = window.BcxWeb.BCX
