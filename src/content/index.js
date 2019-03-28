@@ -7,10 +7,7 @@ import * as MessageTypes from '../messages/MessageTypes'
 import utils from '../lib/utils'
 import Message from '../messages/Message'
 import * as TabMessageTypes from '../messages/TabsMessageTypes'
-import BCX from 'bcxjs-api'
-import Alert from "../popup/components/kalert/function";
-import CommonJs from "../popup/config/common";
-import I18n from "../popup/languages";
+import newBcx from '../popup/utils/newBcx'
 
 /***
  * This is just a helper to manage resolving fake-async
@@ -24,7 +21,6 @@ class DanglingResolver {
   }
 }
 
-// let NewBCX = bcx.getBCXWithState()
 let stream = new WeakMap()
 let resolvers = []
 
@@ -32,7 +28,6 @@ const eventQueue = []
 class BcxWeb {
   constructor() {
     this.address = ""
-    this.cocosAccount = false
     this.BCX = false
   }
 
@@ -52,14 +47,9 @@ class BcxWeb {
     this.address = address
   }
 
-  static setCocosAccount(cocosAccount) {
-    this.cocosAccount = cocosAccount
-  }
-
   static tranferCount(message) {
     message.payload.domain = utils.strippedHost()
     _send(message.type, message.payload)
-    // stream.send(message, MessageTypes.SIGNATURE)
   }
 }
 
@@ -90,7 +80,6 @@ const _send = (_type, _payload) => {
 function tranferCount(message) {
   message.payload.domain = utils.strippedHost()
   _send(message.type, message.payload)
-  // stream.send(message, MessageTypes.SIGNATURE)
 }
 
 function callContractFunction(message) {
@@ -98,54 +87,7 @@ function callContractFunction(message) {
   _send(MessageTypes.CALL_CONTRACT, message)
 }
 
-function NewBCX() {
-  let bcxNodes = []
-  bcxNodes.push({
-    url: 'ws://47.93.62.96:8020',
-    name: 'COCOS - China - Beijing',
-    ip: '47.93.62.96'
-  })
-  bcxNodes.push({
-    url: 'ws://47.93.62.96:8050',
-    name: 'COCOS节点1',
-    ip: '47.93.62.96'
-  })
-  bcxNodes.push({
-    url: 'ws://39.96.33.61:8080',
-    name: 'COCOS节点2',
-    ip: '39.96.33.61'
-  })
-  bcxNodes.push({
-    url: 'ws://39.96.29.40:8050',
-    name: 'COCOS节点3',
-    ip: '39.96.29.40'
-  })
-  bcxNodes.push({
-    url: 'ws://39.106.126.54:8050',
-    name: 'COCOS节点4',
-    ip: '39.106.126.54'
-  })
-
-  let nodeIndex = 0
-  let node = bcxNodes[nodeIndex]
-
-  let NewBCX = new BCX({
-    default_ws_node: node.url,
-    ws_node_list: [{
-      url: node.url,
-      name: node.name
-    }],
-    networks: [{
-      core_asset: 'COCOS',
-      chain_id: '53b98adf376459cc29e5672075ed0c0b1672ea7dce42b0b1fe5e021c02bda640'
-    }],
-    faucet_url: 'http://' + node.ip + ':3000',
-    auto_reconnect: true,
-    worker: false
-  })
-  return NewBCX
-}
-let bcxWeb = NewBCX()
+let bcxWeb = newBcx.GetNewBCX()
 export default class Content {
   constructor() {
     // Injecting an encrypted stream into the web application
@@ -185,39 +127,15 @@ export default class Content {
     }
   }
 
-  // async loginBCXAccount(accounts, passwords){
-  //   await bcxWeb.passwordLogin({
-  //     account: accounts,
-  //     password: passwords
-  //   }).then((res) => {
-  //     if (res.code !== 1) {
-  //       console.log(res)
-  //     }
-  //   })
-  // }
-
   initCOCOSWeb(message) {
     // console.log('CocosPay init initCOCOSWeb')
     const payload = message.payload
-    if (payload.address || payload.cocosAccount) {
-      // this.loginBCXAccount(payload.cocosAccount.accounts, payload.cocosAccount.passwords)
-
-      // bcxWeb.passwordLogin({
-      //   account: payload.cocosAccount.accounts,
-      //   password: payload.cocosAccount.passwords
-      // }).then((res) => {
-      //   if (res.code !== 1) {
-      //     console.log(res)
-      //   }
-      // })
-      // console.log("8888888888888888888")
+    if (payload.address) {
       BcxWeb.setBCX(bcxWeb)
-      // BcxWeb.setCocosAccount(payload.cocosAccount)
       BcxWeb.setAddress(payload.address)
       BcxWeb.setTransferAsset(tranferCount)
       BcxWeb.setCallContractFunction(callContractFunction)
       window.BcxWeb = BcxWeb
-      // window.BCX = bcxWeb
     }
     eventQueue.forEach(({ resolve, reject, args, func }, index) => {
       func(...args)
