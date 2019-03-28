@@ -4,11 +4,13 @@ let bcxNodes = []
 export default class NewBCX {
 
   static _ininBcxNodes() {
-    bcxNodes.push({
-      url: 'ws://47.93.62.96:8020',
-      name: 'COCOS - China - Beijing',
-      ip: '47.93.62.96'
-    })
+    if ('developmentNewTest' === process.env.NODE_ENV) {
+      bcxNodes.push({
+        url: 'ws://47.93.62.96:8020',
+        name: 'COCOS - China - Beijing',
+        ip: '47.93.62.96'
+      })
+    }
     bcxNodes.push({
       url: 'ws://47.93.62.96:8050',
       name: 'COCOS节点1',
@@ -42,8 +44,7 @@ export default class NewBCX {
     if (bcxNodes.length < 1) {
       this._ininBcxNodes()
     }
-    let nodeIndex = 0
-    let node = bcxNodes[nodeIndex]
+    let node = this.GetDefaultNodes()
 
     let NewBCX = new BCX({
       default_ws_node: node.url,
