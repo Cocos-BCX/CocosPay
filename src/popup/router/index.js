@@ -31,16 +31,12 @@ const routes = [{
     path: '/unlock',
     name: 'unlock',
     component: Unlock,
-    // meta: {
-    //   requiresKeystore: true
-    // }
   },
   {
     path: '/home',
     name: 'home',
     component: Home,
     meta: {
-      // requiresAuth: true
       isLogin: true
     }
   },
@@ -68,9 +64,6 @@ const routes = [{
     path: '/initAccount',
     name: 'initAccount',
     component: InitAccount,
-    // meta: {
-    //   requiresAuth: true
-    // }
   },
   {
     path: '/importAccount',
@@ -86,81 +79,51 @@ const routes = [{
     path: '/recharge',
     name: 'recharge',
     component: Recharge,
-    // meta: {
-    //   requiresAuth: true
-    // }
   },
   {
     path: '/transfer',
     name: 'transfer',
     component: Transfer,
-    // meta: {
-    //   requiresAuth: true
-    // }
   },
   {
     path: '/resource',
     name: 'resource',
     component: Resource,
-    // meta: {
-    //   requiresAuth: true
-    // }
   },
   {
     path: '/settings',
     name: 'settings',
     component: Settings,
-    // meta: {
-    //   requiresAuth: true
-    // }
   },
   {
     path: '/network',
     name: 'network',
     component: Network,
-    // meta: {
-    //   requiresAuth: true
-    // }
   },
   {
     path: '/language',
     name: 'language',
     component: Language,
-    // meta: {
-    //   requiresAuth: true
-    // }
   },
   {
     path: '/lockSetting',
     name: 'lockSetting',
     component: LockSetting,
-    // meta: {
-    //   requiresAuth: true
-    // }
   },
   {
     path: '/modifyPassword',
     name: 'modifyPassword',
     component: ModifyPassword,
-    // meta: {
-    //   requiresAuth: true
-    // }
   },
   {
     path: '/about',
     name: 'about',
     component: About,
-    // meta: {
-    //   requiresAuth: true
-    // }
   },
   {
     path: '/whiteList',
     name: 'whiteList',
     component: WhiteList,
-    // meta: {
-    //   requiresAuth: true
-    // }
   }
 ]
 

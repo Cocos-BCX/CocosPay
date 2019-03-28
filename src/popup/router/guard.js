@@ -18,48 +18,8 @@ router.beforeEach((to, from, next) => {
         })
       }
     }
-
-    // store.dispatch('wallet/isUnlocked').then(unlocked => {
-    //   if (unlocked) {
-    //     if (!store.state.currentAccount.address && to.name !== 'initAccount') {
-    //       next({
-    //         name: 'initAccount'
-    //       })
-    //     } else {
-    //       next()
-    //     }
-    //   } else {
-    //     next({
-    //       name: 'initAccount'
-    //     })
-    //   }
-    // })
     next()
   }
-  // if (to.matched.some(record => record.meta.requiresAuth)) {
-  //   store.dispatch('wallet/isUnlocked').then(unlocked => {
-  //     if (unlocked) {
-  //       if (!store.state.currentAccount.address && to.name !== 'initAccount') {
-  //         next({
-  //           name: 'initAccount'
-  //         })
-  //       } else {
-  //         next()
-  //       }
-  //     } else {
-  //       next({
-  //         name: 'initAccount'
-  //       })
-  //     }
-  //   })
-  // } else if (to.matched.some(record => record.meta.requiresKeystore)) {
-  //   if (!store.state.wallet.pwdhash && !store.state.wallet.password) {
-  //     next({
-  //       name: 'createWallet'
-  //     })
-  //   } else {
-  //     next()
-  //   }
   else {
     next()
   }
