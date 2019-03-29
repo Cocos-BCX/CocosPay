@@ -26,7 +26,7 @@ module.exports = merge(baseWebpack, {
     htmlPage('content', 'content', ['manifest', 'vendor', 'content']),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
+      'process.env.NODE_ENV': '"developmentNewTest"'
     }),
     new OptimizeCSSPlugin({
       cssProcessorOptions: {

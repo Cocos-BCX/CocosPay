@@ -46,6 +46,12 @@ export default class NewBCX {
     }
     let node = this.GetDefaultNodes()
 
+    let faucetUrl = ''
+    if ('developmentNewTest' === process.env.NODE_ENV) {
+      faucetUrl = 'http://47.93.62.96:4000'
+    } else {
+      faucetUrl = 'http://' + node.ip + ':3000'
+    }
     let NewBCX = new BCX({
       default_ws_node: node.url,
       ws_node_list: [{
@@ -56,7 +62,7 @@ export default class NewBCX {
         core_asset: 'COCOS',
         chain_id: '53b98adf376459cc29e5672075ed0c0b1672ea7dce42b0b1fe5e021c02bda640'
       }],
-      faucet_url: 'http://' + node.ip + ':3000',
+      faucet_url: faucetUrl,
       auto_reconnect: true,
       worker: false
     })
