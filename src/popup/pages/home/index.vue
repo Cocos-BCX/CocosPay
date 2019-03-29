@@ -86,7 +86,7 @@
                   {{$t('button.editAccountName')}}
                 </li>-->
                 <li>
-                  <a :href="`${accountDetail}/${cocosAccount.accounts}`" target="_blank">
+                  <a :href="`${accountDetail}/${cocosAccount.accounts}/${accountDetailTail}`" target="_blank">
                     <img class="icon-img" src="/images/look-icon.png">
                     {{$t('button.lookAccount')}}
                   </a>
@@ -299,6 +299,16 @@
           callback();
         }
       };
+      let accountDetail = ''
+      let accountDetailTail = ''
+      if ('developmentNewTest' === process.env.NODE_ENV) {
+        accountDetail = "http://easywallet.pro/terminal/#/account"
+        accountDetailTail = "lastOperation"
+
+      } else {
+        accountDetail = "https://explorer.cocosbcx.io/address"
+      }
+
       return {
         tokenScroller: null,
         transactionsScroller: null,
@@ -308,7 +318,8 @@
         hiding: true,
         keyShow: false,
         removePasswordShow: false,
-        accountDetail: "https://explorer.cocosbcx.io/address",
+        accountDetail: accountDetail,
+        accountDetailTail: accountDetailTail,
         newAccountNameForm: {
           newAccountName: ""
         },
