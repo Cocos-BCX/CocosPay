@@ -3,10 +3,10 @@
 CocosPay is a Browser Extension for Cocos-BCX
 
 ## Preparation:
-Node.js version 8.9.3 or higher.
+Node.js version 8.9.3 or higher
 
 ## Build:
-Install local dependencies by using npm install.  
+Install local dependencies by using npm install
 Build with development npm run dev.  
 Build for Publishing npm run build.  
 Uncompressed build will be found in `./build`
