@@ -1,6 +1,6 @@
 
 ## CocosPay:
-CocosPay is a Browser Extension for Cocos-BCX
+CocosPay is a Browser Extension for Cocos-BCX .
 
 ## Preparation:
 Node.js version 8.9.3 or higher.
