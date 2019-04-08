@@ -20,5 +20,6 @@ Note that you can use like this:
         if (window.BcxWeb && window.BcxWeb.BCX) { 
           bcx = window.BcxWeb.BCX
         }
+## Example        
 How to use for dapp?  
 Here is a dapp sample. [cocos-dice](https://github.com/Cocos-BCX/cocos-dice)  
