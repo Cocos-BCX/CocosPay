@@ -98,6 +98,7 @@ export default class Content {
     // Syncing the streams between the extension and the web application
     stream.sync(MessageTypes.CONTENT, stream.key)
     _subscribe()
+    stream.onSync(async () => { document.dispatchEvent(new CustomEvent("cocosLoaded"))})
   }
   contentListener(msg) {
     if (!msg) return
