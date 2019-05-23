@@ -20,7 +20,7 @@
       <section class="show-vote">
         <section class="title">{{$t('label.vote')}}</section>
         <section class="vote">
-          <span class="name">TronPower</span>
+          <span class="name">CocosPower</span>
           <span class="value">{{cocosPower}} TP</span>
         </section>
         <section class="pledged">{{$t('label.donePledge')}}：{{cocosPower}}</section>
@@ -93,7 +93,6 @@
 import Navigation from "../../components/navigation";
 import AppHeader from "../../components/app-header";
 import utils from "../../../lib/utils";
-import { NewTronWeb } from "../../utils/tools";
 import { mapState, mapActions } from "vuex";
 import Simplert from "vue2-simplert";
 import InternalMessage from "../../../messages/InternalMessage";
@@ -167,12 +166,6 @@ export default {
       this.$store.commit("loading", true);
       this.pledgeVisible = false;
       try {
-        let transaction = await NewTronWeb().transactionBuilder.freezeBalance(
-          utils.getTokenRawAmount(this.pledgeForm.amount),
-          3,
-          this.pledgeForm.type,
-          this.currentAccount.address
-        );
         // send to background
         const { result } = await InternalMessage.widthPayload(
           InternalMessageTypes.SIGNSENDTRANSACTION,
@@ -202,14 +195,6 @@ export default {
       this.$store.commit("loading", true);
       this.redeemVisible = false;
       try {
-        let transaction = await NewTronWeb().transactionBuilder.unfreezeBalance(
-          "BANDWIDTH",
-          this.currentAccount.address
-        );
-        const { result } = await InternalMessage.widthPayload(
-          InternalMessageTypes.SIGNSENDTRANSACTION,
-          { address: this.currentAccount.address, transaction: transaction }
-        ).send();
         let success = result;
         this.$store.commit("loading", false);
         if (success) {

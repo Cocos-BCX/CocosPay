@@ -1,64 +1,57 @@
-import TronWeb from 'tronweb'
-import Axios from 'axios'
+export default class ExtensionProvider {
+  // constructor (...args) {
+  //   super(...args)
 
-const {
-  HttpProvider
-} = TronWeb.providers
+  //   this.ready = false
+  //   this.queue = []
+  // }
 
-export default class ExtensionProvider extends HttpProvider {
-  constructor (...args) {
-    super(...args)
+  // setURL (url) {
+  //   this.instance = Axios.create({
+  //     baseURL: url,
+  //     timeout: 30000
+  //   })
 
-    this.ready = false
-    this.queue = []
-  }
+  //   this.ready = true
 
-  setURL (url) {
-    this.instance = Axios.create({
-      baseURL: url,
-      timeout: 30000
-    })
+  //   while (this.queue.length) {
+  //     const {
+  //       args,
+  //       resolve,
+  //       reject
+  //     } = this.queue.shift()
 
-    this.ready = true
+  //     this.request(...args)
+  //       .then(resolve)
+  //       .catch(reject)
+  //       .then(() => (
+  //         console.info(`Request to ${args[0]} completed`)
+  //       ))
+  //   }
+  // }
 
-    while (this.queue.length) {
-      const {
-        args,
-        resolve,
-        reject
-      } = this.queue.shift()
+  // request (url, payload = {}, method = 'get') {
+  //   if (!this.ready) {
+  //     return new Promise((resolve, reject) => {
+  //       this.queue.push({
+  //         args: [url, payload, method],
+  //         resolve,
+  //         reject
+  //       })
+  //     })
+  //   }
 
-      this.request(...args)
-        .then(resolve)
-        .catch(reject)
-        .then(() => (
-          console.info(`Request to ${args[0]} completed`)
-        ))
-    }
-  }
+  //   return super.request(url, payload, method).then(res => {
+  //     // Some transaction calls have a nested transaction property
+  //     const obj = res.hasOwnProperty('transaction') ? res.transaction : res
+  //     Object.defineProperty(obj, '__payload__', {
+  //       writable: false,
+  //       enumerable: false,
+  //       configurable: false,
+  //       value: payload
+  //     })
 
-  request (url, payload = {}, method = 'get') {
-    if (!this.ready) {
-      return new Promise((resolve, reject) => {
-        this.queue.push({
-          args: [url, payload, method],
-          resolve,
-          reject
-        })
-      })
-    }
-
-    return super.request(url, payload, method).then(res => {
-      // Some transaction calls have a nested transaction property
-      const obj = res.hasOwnProperty('transaction') ? res.transaction : res
-      Object.defineProperty(obj, '__payload__', {
-        writable: false,
-        enumerable: false,
-        configurable: false,
-        value: payload
-      })
-
-      return res
-    }).catch(err => Promise.reject(err))
-  }
+  //     return res
+  //   }).catch(err => Promise.reject(err))
+  // }
 }

@@ -3,7 +3,7 @@
     <logo-header/>
     <section class="app-container">
       <div class="text-center mt30">
-        <img src="/images/new-account.png">
+        <img @click="logout()" src="/images/new-account.png">
       </div>
       <el-button
         class="full-btn mt30"
@@ -44,20 +44,43 @@
         >{{$t('button.keysLogin')}}</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      top="15vh"
+      center
+      :title="$t('button.createAccount')"
+      @closed="closedDialog"
+      :visible.sync="register"
+    >
+      <!-- <div class="warm-tip">{{$t('message.savePrivateKey')}}</div> -->
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          class="full-btn"
+          type="primary"
+          @click="accountRegister"
+        >{{$t('title.accountType')}}</el-button>
+        <el-button
+          class="full-btn mt20"
+          style="margin-left: 0 !important;"
+          type="primary"
+          @click="walletRegister"
+        >{{$t('title.walletType')}}</el-button>
+      </span>
+    </el-dialog>
   </section>
 </template>
 <script>
 import LogoHeader from "../../components/logo-header";
 import { createAccountName } from "../../utils/tools";
 import utils from "../../../lib/utils";
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   components: {
     LogoHeader
   },
   data() {
     return {
-      currentCreateVisible: false
+      currentCreateVisible: false,
+      register: false
     };
   },
   computed: {
@@ -70,13 +93,21 @@ export default {
       "setCurrentCreateAccount",
       "setCurrentCreateVisible"
     ]),
+    ...mapActions("wallet", ["deleteWallet"]),
+    ...mapActions("account", ["logoutBCXAccount"]),
     closedDialog() {
       this.currentCreateVisible = false;
+      this.register = false;
     },
     copySuccess() {
       this.$kalert({
         message: this.$i18n.t("alert.copySuccess")
       });
+    },
+    logout() {
+      console.log("logout");
+      this.deleteWallet();
+      // this.logoutBCXAccount();
     },
     copyError() {
       this.$kalert({
@@ -84,10 +115,27 @@ export default {
       });
     },
     createAccount() {
-      this.$router.push({ name: "createAccount" });
+      this.register = true;
+      // this.$router.push({ name: "createAccount" });
       // const account = utils.generateAccount()
       // this.setCurrentCreateAccount({ privateKey: account.privateKey, address: account.address, name: createAccountName() })
       // this.setCurrentCreateVisible(true)
+    },
+    accountRegister() {
+      this.$router.push({
+        name: "createAccount",
+        params: {
+          type: "account"
+        }
+      });
+    },
+    walletRegister() {
+      this.$router.push({
+        name: "createAccount",
+        params: {
+          type: "wallet"
+        }
+      });
     },
     importAccount() {
       this.currentCreateVisible = true;

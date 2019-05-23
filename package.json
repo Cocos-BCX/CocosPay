@@ -1,8 +1,8 @@
 {
   "name": "CocosPay",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "CocosPay",
-  "author": "info@dappp.com",
+  "author": "chain@cocosbcx.io",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -30,7 +30,6 @@
     "pbkdf2": "^3.0.17",
     "perfect-scrollbar": "^1.4.0",
     "tcomb": "^3.2.29",
-    "tronweb": "^2.1.3",
     "uuid": "^3.3.2",
     "v-click-outside": "^2.0.1",
     "validator": "^10.8.0",
@@ -62,7 +61,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.26.0",
-    "bcxjs-api": "^1.3.6",
+    "bcxjs-api": "^1.4.1",
     "bcxjs-cores": "^1.0.2",
     "buble": "^0.16.0",
     "buble-loader": "^0.4.1",

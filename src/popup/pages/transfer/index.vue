@@ -63,318 +63,305 @@
   </section>
 </template>
 <script>
-  import Navigation from "../../components/navigation";
-  import Alert from "../../components/kalert/function";
-  import { mapState, mapMutations, mapActions } from "vuex";
-  import { NewTronWeb } from "../../utils/tools";
-  import utils from "../../../lib/utils";
-  import InternalMessage from "../../../messages/InternalMessage";
-  import * as InternalMessageTypes from "../../../messages/InternalMessageTypes";
-  import { setTimeout } from "timers";
-  export default {
-    components: {
-      Navigation
-    },
-    data() {
-      const frommValidator = (rule, value, callback) => {
-        if (value === "") {
-          callback(new Error(this.$i18n.t("verify.ownerAccountNull")));
+import Navigation from "../../components/navigation";
+import Alert from "../../components/kalert/function";
+import { mapState, mapMutations, mapActions } from "vuex";
+import utils from "../../../lib/utils";
+import InternalMessage from "../../../messages/InternalMessage";
+import * as InternalMessageTypes from "../../../messages/InternalMessageTypes";
+import { setTimeout } from "timers";
+export default {
+  components: {
+    Navigation
+  },
+  data() {
+    const frommValidator = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error(this.$i18n.t("verify.ownerAccountNull")));
+      } else {
+        callback();
+      }
+    };
+    const toValidator = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error(this.$i18n.t("verify.toAddressNull")));
+      } else {
+        callback();
+      }
+    };
+    const tokenValidator = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error(this.$i18n.t("verify.tokenNull")));
+      } else {
+        callback();
+      }
+    };
+    const amountValidator = (rule, value, callback) => {
+      if (!/^(-?\d+)(\.\d+)?$/.test(value)) {
+        callback(new Error(this.$i18n.t("verify.number")));
+      } else if (value * 1 > 0) {
+        callback();
+      } else {
+        callback(new Error(this.$i18n.t("verify.numberGtZero")));
+      }
+    };
+    return {
+      popup: false,
+      formData: {
+        from: "",
+        to: "",
+        token: "",
+        amount: 0
+      },
+      formRules: {
+        from: { validator: frommValidator, trigger: "blur" },
+        to: { validator: toValidator, trigger: "blur" },
+        token: { validator: tokenValidator, trigger: "blur" },
+        amount: { validator: amountValidator, trigger: "blur" }
+      },
+      tokens: [],
+      assetKey: this.$route.params.assetKey ? this.$route.params.assetKey : "",
+      coins: []
+    };
+  },
+  computed: {
+    ...mapState(["cocosAccount", "cocosCount"]),
+    ...mapState("wallet", ["accounts"]),
+    ...mapState("trans", ["tranferInfo"]),
+    payName() {
+      let account = this.accounts.find(
+        ele => ele.address === this.formData.from
+      );
+      if (account) {
+        return account.name;
+      } else {
+        return "";
+      }
+    }
+  },
+  async created() {
+    this.formData.from = this.cocosAccount.accounts;
+    await this.UserAccount().then(res => {
+      if (res.code === 1) {
+        if (Array.isArray(res.data)) {
+          this.coins = res.data;
         } else {
-          callback();
-        }
-      };
-      const toValidator = (rule, value, callback) => {
-        if (value === "") {
-          callback(new Error(this.$i18n.t("verify.toAddressNull")));
-        } else {
-          callback();
-        }
-      };
-      const tokenValidator = (rule, value, callback) => {
-        if (value === "") {
-          callback(new Error(this.$i18n.t("verify.tokenNull")));
-        } else {
-          callback();
-        }
-      };
-      const amountValidator = (rule, value, callback) => {
-        if (!/^(-?\d+)(\.\d+)?$/.test(value)) {
-          callback(new Error(this.$i18n.t("verify.number")));
-        } else if (value * 1 > 0) {
-          callback();
-        } else {
-          callback(new Error(this.$i18n.t("verify.numberGtZero")));
-        }
-      };
-      return {
-        popup: false,
-        formData: {
-          from: "",
-          to: "",
-          token: "",
-          amount: 0
-        },
-        formRules: {
-          from: { validator: frommValidator, trigger: "blur" },
-          to: { validator: toValidator, trigger: "blur" },
-          token: { validator: tokenValidator, trigger: "blur" },
-          amount: { validator: amountValidator, trigger: "blur" }
-        },
-        tokens: [],
-        assetKey: this.$route.params.assetKey ? this.$route.params.assetKey : "",
-        coins: []
-      };
-    },
-    computed: {
-      ...mapState(["cocosAccount", "cocosCount"]),
-      ...mapState("wallet", ["accounts"]),
-      ...mapState("trans", ["tranferInfo"]),
-      payName() {
-        let account = this.accounts.find(
-          ele => ele.address === this.formData.from
-        );
-        if (account) {
-          return account.name;
-        } else {
-          return "";
+          for (let [key, value] of Object.entries(res.data)) {
+            this.coins.push({
+              coin: key,
+              amount: value
+            });
+          }
         }
       }
-    },
-    async created() {
-      this.formData.from = this.cocosAccount.accounts;
-      await this.UserAccount().then(res => {
-        if (res.code === 1) {
-          if (Array.isArray(res.data)) {
-            this.coins = res.data;
-          } else {
-            for (let [key, value] of Object.entries(res.data)) {
-              this.coins.push({
-                coin: key,
-                amount: value
-              });
+    });
+    // this.loadTokens()
+  },
+  methods: {
+    ...mapMutations("trans", ["setAccount"]),
+    ...mapActions("trans", ["tranferBCX", "queryTranferRate"]),
+    ...mapActions("account", ["UserAccount"]),
+    onSubmit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.queryTranferRate({ feeAssetId: this.formData.token }).then(
+            res => {
+              if (
+                res.data.fee_amount + Number(this.formData.amount) <
+                this.cocosCount
+              ) {
+                this.popup = true;
+              } else {
+                this.$kalert({
+                  message: this.$i18n.t("alert.transferFail")
+                });
+              }
             }
-          }
+          );
         }
       });
-      // this.loadTokens()
     },
-    methods: {
-      ...mapMutations("trans", ["setAccount"]),
-      ...mapActions("trans", ["tranferBCX", "queryTranferRate"]),
-      ...mapActions("account", ["UserAccount"]),
-      onSubmit(formName) {
-        this.$refs[formName].validate(valid => {
-          if (valid) {
-            this.queryTranferRate({ feeAssetId: this.formData.token }).then(
-              res => {
-                if (
-                  res.data.fee_amount + Number(this.formData.amount) <
-                  this.cocosCount
-                ) {
-                  this.popup = true;
-                } else {
-                  this.$kalert({
-                    message: this.$i18n.t("alert.transferFail")
-                  });
-                }
-              }
-            );
-          }
-        });
-      },
-      surePay() {
-        this.setAccount({
-          toAccount: this.formData.to,
-          coin: this.formData.token,
-          amount: this.formData.amount,
-          memo: ""
-        });
-        this.popup = false;
-        this.tranferBCX().then(res => {
-          if (res.code === 1) {
-            this.$kalert({
-              message: this.$i18n.t("alert.tranferSuccess")
-            });
-            setTimeout(() => {
-              this.$router.push({ name: "home" });
-            }, 2000);
-          }
-        });
-      },
-      async transferTrx(amount) {
-        this.popup = false;
-        this.$store.commit("loading", true);
-        try {
-          let transaction = await NewTronWeb().transactionBuilder.sendTrx(
-            this.formData.to,
-            amount * 1,
-            this.formData.from
-          );
-          const fromAccount = this.accounts.find(
-            ele => ele.address === this.formData.from
-          );
-          if (!fromAccount) {
-            this.$kalert({
-              message: this.$i18n.t("alert.sendFail")
-            });
-            return false;
-          }
-          const { result } = await InternalMessage.widthPayload(
-            InternalMessageTypes.SIGNSENDTRANSACTION,
-            { address: this.formData.from, transaction: transaction }
-          ).send();
-          let success = result;
-          this.$store.commit("loading", false);
-          if (success) {
-            this.formData.to = "";
-            this.formData.amount = 0;
-            this.$kalert({
-              message: this.$i18n.t("alert.sendSuccess")
-            });
-          } else {
-            this.$kalert({
-              message: this.$i18n.t("alert.sendFail")
-            });
-          }
-        } catch (e) {
-          this.$store.commit("loading", false);
+    surePay() {
+      this.setAccount({
+        toAccount: this.formData.to,
+        coin: this.formData.token,
+        amount: this.formData.amount,
+        memo: ""
+      });
+      this.popup = false;
+      this.tranferBCX().then(res => {
+        if (res.code === 1) {
+          this.$kalert({
+            message: this.$i18n.t("alert.tranferSuccess")
+          });
+          setTimeout(() => {
+            this.$router.push({ name: "home" });
+          }, 2000);
+        }
+      });
+    },
+    async transferTrx(amount) {
+      this.popup = false;
+      this.$store.commit("loading", true);
+      try {
+        const fromAccount = this.accounts.find(
+          ele => ele.address === this.formData.from
+        );
+        if (!fromAccount) {
+          this.$kalert({
+            message: this.$i18n.t("alert.sendFail")
+          });
+          return false;
+        }
+        const { result } = await InternalMessage.widthPayload(
+          InternalMessageTypes.SIGNSENDTRANSACTION,
+          { address: this.formData.from, transaction: transaction }
+        ).send();
+        let success = result;
+        this.$store.commit("loading", false);
+        if (success) {
+          this.formData.to = "";
+          this.formData.amount = 0;
+          this.$kalert({
+            message: this.$i18n.t("alert.sendSuccess")
+          });
+        } else {
           this.$kalert({
             message: this.$i18n.t("alert.sendFail")
           });
         }
+      } catch (e) {
+        this.$store.commit("loading", false);
+        this.$kalert({
+          message: this.$i18n.t("alert.sendFail")
+        });
       }
-      // async transferToken(amount) {
-      //   this.popup = false;
-      //   this.$store.commit("loading", true);
-      //   try {
-      //     let transaction = await NewTronWeb().transactionBuilder.sendToken(
-      //       this.formData.to,
-      //       amount * 1,
-      //       this.formData.token,
-      //       this.formData.from
-      //     );
-      //     const fromAccount = this.accounts.find(
-      //       ele => ele.address === this.formData.from
-      //     );
-      //     if (!fromAccount) {
-      //       this.$kalert({
-      //         message: this.$i18n.t("alert.sendFail")
-      //       });
-      //       return false;
-      //     }
-      //     const { result } = await InternalMessage.widthPayload(
-      //       InternalMessageTypes.SIGNSENDTRANSACTION,
-      //       { address: this.formData.from, transaction: transaction }
-      //     ).send();
-      //     let success = result;
-      //     this.$store.commit("loading", false);
-      //     if (success) {
-      //       this.formData.to = "";
-      //       this.formData.amount = 0;
-      //       this.$kalert({
-      //         message: this.$i18n.t("alert.sendSuccess")
-      //       });
-      //     } else {
-      //       this.$kalert({
-      //         message: this.$i18n.t("alert.sendFail")
-      //       });
-      //     }
-      //   } catch (err) {
-      //     this.$store.commit("loading", false);
-      //     this.$kalert({
-      //       message: this.$i18n.t("alert.sendFail")
-      //     });
-      //   }
-      // },
-      // // 加载tokens
-      // async loadTokens() {
-      //   this.$store.commit("loading", true);
-      //   const accountData = await NewTronWeb().trx.getAccount(this.formData.from);
-      //   if (accountData.asset) {
-      //     this.tokens = [
-      //       { key: "TRX", value: utils.getTokenAmount(accountData.balance) }
-      //     ].concat(accountData.asset);
-      //   } else {
-      //     this.tokens = [
-      //       { key: "TRX", value: utils.getTokenAmount(accountData.balance) }
-      //     ];
-      //   }
-      //   this.$store.commit("loading", false);
-      //   if (this.assetKey) {
-      //     this.formData.token = this.assetKey;
-      //   } else {
-      //     this.formData.token = this.tokens[0].key;
-      //   }
-      // }
     }
-  };
+    // async transferToken(amount) {
+    //   this.popup = false;
+    //   this.$store.commit("loading", true);
+    //   try {
+    //     const fromAccount = this.accounts.find(
+    //       ele => ele.address === this.formData.from
+    //     );
+    //     if (!fromAccount) {
+    //       this.$kalert({
+    //         message: this.$i18n.t("alert.sendFail")
+    //       });
+    //       return false;
+    //     }
+    //     const { result } = await InternalMessage.widthPayload(
+    //       InternalMessageTypes.SIGNSENDTRANSACTION,
+    //       { address: this.formData.from, transaction: transaction }
+    //     ).send();
+    //     let success = result;
+    //     this.$store.commit("loading", false);
+    //     if (success) {
+    //       this.formData.to = "";
+    //       this.formData.amount = 0;
+    //       this.$kalert({
+    //         message: this.$i18n.t("alert.sendSuccess")
+    //       });
+    //     } else {
+    //       this.$kalert({
+    //         message: this.$i18n.t("alert.sendFail")
+    //       });
+    //     }
+    //   } catch (err) {
+    //     this.$store.commit("loading", false);
+    //     this.$kalert({
+    //       message: this.$i18n.t("alert.sendFail")
+    //     });
+    //   }
+    // },
+    // // 加载tokens
+    // async loadTokens() {
+    //   this.$store.commit("loading", true);
+    //   if (accountData.asset) {
+    //     this.tokens = [
+    //       { key: "TRX", value: utils.getTokenAmount(accountData.balance) }
+    //     ].concat(accountData.asset);
+    //   } else {
+    //     this.tokens = [
+    //       { key: "TRX", value: utils.getTokenAmount(accountData.balance) }
+    //     ];
+    //   }
+    //   this.$store.commit("loading", false);
+    //   if (this.assetKey) {
+    //     this.formData.token = this.assetKey;
+    //   } else {
+    //     this.formData.token = this.tokens[0].key;
+    //   }
+    // }
+  }
+};
 </script>
 <style lang="scss" scoped>
-  @import "../../theme/v1/variable";
-  .popup {
-    position: fixed;
-    background-color: rgba(0, 0, 0, 0.5);
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 99;
-  }
-  .popup-container {
-    width: 100%;
+@import "../../theme/v1/variable";
+.popup {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+}
+.popup-container {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 20px;
+  background-color: #fff;
+  .close {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 20px;
-    background-color: #fff;
-    .close {
-      position: absolute;
-      right: 20px;
-      top: 5px;
-      font-size: 18px;
-      cursor: pointer;
+    right: 20px;
+    top: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    color: $color-second;
+  }
+  .title {
+    text-align: center;
+    padding-bottom: 15px;
+    font-size: 16px;
+    border-bottom: 1px dashed #e6e6e6;
+  }
+  .item {
+    display: flex;
+    height: 50px;
+    overflow: hidden;
+    .label {
+      white-space: nowrap;
       color: $color-second;
-    }
-    .title {
-      text-align: center;
-      padding-bottom: 15px;
-      font-size: 16px;
-      border-bottom: 1px dashed #e6e6e6;
-    }
-    .item {
       display: flex;
-      height: 50px;
+      align-items: center;
+    }
+    .content {
+      padding-left: 5px;
+      flex: 1;
       overflow: hidden;
-      .label {
-        white-space: nowrap;
-        color: $color-second;
-        display: flex;
-        align-items: center;
-      }
-      .content {
-        padding-left: 5px;
-        flex: 1;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-      }
-      .memo-content {
-        max-height: 50px;
-        line-height: 18px;
-      }
-      .money-label {
-        color: $color-base;
-      }
-      .money-content {
-        color: $primary-color;
-        justify-content: flex-end;
-        span {
-          font-size: 20px;
-          position: relative;
-          top: -2px;
-          padding-right: 5px;
-        }
+      display: flex;
+      align-items: center;
+    }
+    .memo-content {
+      max-height: 50px;
+      line-height: 18px;
+    }
+    .money-label {
+      color: $color-base;
+    }
+    .money-content {
+      color: $primary-color;
+      justify-content: flex-end;
+      span {
+        font-size: 20px;
+        position: relative;
+        top: -2px;
+        padding-right: 5px;
       }
     }
   }
+}
 </style>

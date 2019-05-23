@@ -7,8 +7,8 @@ import { keccak256 } from 'js-sha3'
 import {
   ENCRYPTION_ALGORITHM,
   ONE_TRX,
-  TRON_CONSTANTS_MAINNET,
-  TRON_CONSTANTS_TESTNET
+  COCOS_CONSTANTS_MAINNET,
+  COCOS_CONSTANTS_TESTNET
 } from './constants'
 
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
@@ -35,11 +35,11 @@ export default class utils {
 
     const prefix = this.base58ToHex(address).substr(0, 2)
 
-    if (prefix === TRON_CONSTANTS_MAINNET.ADD_PRE_FIX_STRING) {
+    if (prefix === COCOS_CONSTANTS_MAINNET.ADD_PRE_FIX_STRING) {
       return true
     }
 
-    if (prefix === TRON_CONSTANTS_TESTNET.ADD_PRE_FIX_STRING) {
+    if (prefix === COCOS_CONSTANTS_TESTNET.ADD_PRE_FIX_STRING) {
       return true
     }
 
@@ -82,7 +82,7 @@ export default class utils {
   static publicKeyToAddress (pubKey) {
     const publicKey = (pubKey.length === 65) ? pubKey.slice(1) : pubKey
     const hash = keccak256(publicKey).toString()
-    const address = TRON_CONSTANTS_MAINNET.ADD_PRE_FIX_STRING + hash.substring(24)
+    const address = COCOS_CONSTANTS_MAINNET.ADD_PRE_FIX_STRING + hash.substring(24)
 
     return ByteArray.fromHexString(address)
   }

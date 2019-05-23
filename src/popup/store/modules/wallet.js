@@ -1,6 +1,9 @@
 import InternalMessage from '../../../messages/InternalMessage'
 import * as InternalMessageTypes from '../../../messages/InternalMessageTypes'
 import utils from '../../../lib/utils'
+import Alert from '../../components/kalert/function'
+import bcx from '../../utils/bcx'
+let NewBCX = bcx.getBCXWithState();
 
 export default {
   namespaced: true,
@@ -11,6 +14,7 @@ export default {
     lockTime: 60 * 30, // 30 minute will autolock
     accounts: [],
     whiteList: [],
+    contractWhiteList: [],
     prompt: null,
   },
 
@@ -42,8 +46,12 @@ export default {
         return ele.address !== account.address
       })
     },
+
     addWhiteList(state, white) {
       state.whiteList = [...state.whiteList, white]
+    },
+    addContractWhiteList(state, white) {
+      state.contractWhiteList = [...state.contractWhiteList, white]
     },
     removeWhiteList(state, white) {
       state.whiteList = state.whiteList.filter(ele => {
@@ -100,6 +108,232 @@ export default {
     }, prompt) {
       if (state.prompt) state.prompt.responder && state.prompt.responder(null)
       commit('pushPrompt', prompt)
+    },
+    // 钱包模式注册
+    async WalletBCXAccount({
+      commit,
+      state,
+      rootState
+    }) {
+      commit('loading', true, {
+        root: true
+      })
+      try {
+        console.log(rootState.cocosAccount);
+        let resData
+        await NewBCX.createAccountWithWallet({
+          account: rootState.cocosAccount.accounts,
+          password: rootState.cocosAccount.passwords
+        }).then(res => {
+          console.log(res);
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          } else {
+            commit('setAccountType', 'wallet', {
+              root: true
+            })
+          }
+          resData = res
+        })
+        return resData
+      } catch (e) {
+        console.log(e)
+        return e
+      }
+    },
+
+    // 查看钱包账户
+    async getAccounts({
+      commit
+    }) {
+      try {
+        return NewBCX.getAccounts()
+      } catch (e) {
+        return e
+      }
+    },
+    // 切换钱包账户
+    async setCurrentAccounts({
+      commit
+    }, account) {
+      commit('loading', true, {
+        root: true
+      })
+      try {
+        let resData
+        await NewBCX.setCurrentAccount(account).then(res => {
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+    // 删除钱包
+    async deleteWallet({
+      commit
+    }) {
+      try {
+        commit('loading', true, {
+          root: true
+        })
+        let resData
+        await NewBCX.deleteWallet().then(res => {
+          commit('loading', false, {
+            root: true
+          })
+          console.log(res)
+          commit('setAccountType', '', {
+            root: true
+          })
+          resData = res
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+    // 私钥登录
+    async importPrivateKey({
+      commit,
+      state,
+      rootState
+    }) {
+      commit('loading', true, {
+        root: true
+      })
+      try {
+        setTimeout(() => {
+          commit('loading', false, {
+            root: true
+          })
+          // Alert({
+          //   message: CommonJs.getI18nMessages(I18n).error[150]
+          // })
+        }, 10000)
+        let resData
+        console.log(rootState.privateKeys);
+        console.log(rootState.cocosAccount.passwords);
+
+        await NewBCX.importPrivateKey({
+          privateKey: rootState.privateKeys,
+          password: rootState.cocosAccount.passwords
+        }).then(res => {
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code === 1) {
+            commit('setIsAccount', true, {
+              root: true
+            })
+            commit('setLogin', true, {
+              root: true
+            })
+            if (rootState.accountType !== 'account') {
+              commit('setAccountType', 'wallet', {
+                root: true
+              })
+            }
+          } else {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+    // 查询账户状态
+    async loadingBCXAccount({
+      commit
+    }) {
+      commit('loading', true, {
+        root: true
+      })
+      try {
+        let data = await NewBCX.getAccountInfo()
+        commit('loading', false, {
+          root: true
+        })
+        return data
+      } catch (e) {
+        return e
+      }
+    },
+    // 恢复钱包
+    async RestoreWallet({
+      commit,
+      state,
+      rootState
+    }) {
+      let resData
+      commit('loading', true, {
+        root: true
+      })
+      try {
+        await NewBCX.restoreWallet({
+          password: rootState.cocosAccount.passwords
+        }).then(res => {
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+    // 导出私钥
+    async OutWalletPutKey({
+      commit
+    }) {
+      let resData
+      commit('loading', true, {
+        root: true
+      })
+      try {
+        await NewBCX.getPrivateKey().then(res => {
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
     }
-  }
+  },
 }

@@ -12,7 +12,7 @@
         <!-- drawer-content -->
         <div class="token-title">
           <span class="token-user">{{currentAccount.name}}</span>
-          <span class="close-drawer" @click="closeDrawer">
+          <span class="close-drawer">
             <v-icon name="times" scale="1.4"></v-icon>
           </span>
         </div>
@@ -45,32 +45,31 @@
             >
               <div class="account">
                 <div class="current-account">{{ cocosAccount.accounts }}</div>
-                <!-- <v-icon class="account-arrow" name="angle-down"/> -->
+                <v-icon class="account-arrow" name="angle-down"/>
               </div>
-              <!-- <ul class="account-list" v-show="accountExpand" id="accountScroller">
+              <ul
+                class="account-list"
+                v-show="accountExpand && accountType === 'wallet'"
+                id="accountScroller"
+              >
                 <li
                   v-for="(item, index) in accounts"
-                  @click.prevent="selectAccount(item)"
+                  @click.prevent="chooseAccount(item,index)"
                   :key="index"
                 >
-                  <div class="selected" v-if="item.address === currentAccount.address">
+                  <div class="selected" v-if="item === cocosAccount.accounts">
                     <v-icon class="account-arrow" name="check"/>
                   </div>
                   <div class="account-item">
-                    <k-avatar class="avatar-small" :name="item.name" :diameter="20"/>
-                    <div class="account-name">{{item.name}}</div>
+                    <div class="account-name">{{item}}</div>
                   </div>
                 </li>
                 <div class="dashed-line" v-if="accounts.length > 0"></div>
                 <li
-                  :class="['text-center', 'operate-item', { 'mt15': accounts.length > 0 }]"
-                  @click="createAccount"
-                >{{$t('button.createAccount')}}</li>
-                <li
                   class="text-center operate-item"
-                  @click="importAccount"
+                  @click="$router.push({name:'importAccount'})"
                 >{{$t('button.importAccount')}}</li>
-              </ul>-->
+              </ul>
             </div>
             <div
               class="more pull-left"
@@ -86,11 +85,18 @@
                   {{$t('button.editAccountName')}}
                 </li>-->
                 <li>
-                  <a :href="`${accountDetail}/${cocosAccount.accounts}/${accountDetailTail}`" target="_blank">
+                  <a
+                    :href="`${accountDetail}/${cocosAccount.accounts}/${accountDetailTail}`"
+                    target="_blank"
+                  >
                     <img class="icon-img" src="/images/look-icon.png">
                     {{$t('button.lookAccount')}}
                   </a>
                 </li>
+                <!-- <li @click="$router.push({name:'importAccount'})" v-if="accountType === 'wallet'">
+                  <img class="icon-img" src="/images/edit-icon.png" style="padding-right:5px">
+                  {{$t('button.importAccount')}}
+                </li>-->
                 <li @click="OutPutKeys()">
                   <img class="icon-img" src="/images/export-icon.png">
                   {{$t('button.exportPrivateKey')}}
@@ -198,11 +204,11 @@
           v-clipboard:success="copySuccess"
           v-clipboard:error="copyError"
         >{{$t('button.copyPrivate')}}</el-button>
-        <el-button
+        <!-- <el-button
           class="full-btn gradual-button mt20"
           style="margin-left: 0 !important;"
           @click="sureCreateAccount"
-        >{{$t('button.sureCreateAccount')}}</el-button>
+        >{{$t('button.sureCreateAccount')}}</el-button>-->
       </span>
     </el-dialog>
     <!-- 私钥 -->
@@ -214,17 +220,25 @@
       :visible.sync="accountKey"
     >
       <div class="warm-tip">{{$t('message.savePrivateKey')}}</div>
-      <section class="privateKey-area">{{active_private_key}}</section>
+      <section v-if="active_private_key" class="privateKey-area">{{active_private_key}}</section>
       <!-- <div class="warm-tip">{{$t('message.privateKeyOnly')}}</div> -->
-      <span slot="footer" class="dialog-footer">
-        <el-button
-          class="full-btn"
-          type="primary"
-          v-clipboard:copy="active_private_key"
-          v-clipboard:success="copySuccess"
-          v-clipboard:error="copyError"
-        >{{$t('button.copyPrivate')}}</el-button>
-      </span>
+      <el-button
+        class="full-btn"
+        type="primary"
+        v-clipboard:copy="active_private_key"
+        v-clipboard:success="copySuccess"
+        v-clipboard:error="copyError"
+        v-if="active_private_key"
+      >{{$t('button.copy')}}active_key</el-button>
+      <section v-if="owner_private_key" class="privateKey-area">{{owner_private_key}}</section>
+      <el-button
+        class="full-btn"
+        type="primary"
+        v-clipboard:copy="owner_private_key"
+        v-clipboard:success="copySuccess"
+        v-clipboard:error="copyError"
+        v-if="owner_private_key"
+      >{{$t('button.copy')}}owner_key</el-button>
     </el-dialog>
     <el-dialog top="15vh" center :title="$t('title.editorAccount')" :visible.sync="nameVisible">
       <el-form :model="newAccountNameForm" :rules="newAccountNameRules">
@@ -268,252 +282,264 @@
   </section>
 </template>
 <script>
-  import AppHeader from "../../components/app-header";
-  import { mapState, mapMutations, mapActions } from "vuex";
-  import store from "../../store";
-  import defaultNetworks from "../../config/networks";
-  import KDialog from "../../components/dialog/DialogComponent";
-  import PerfectScrollbar from "perfect-scrollbar";
-  import ActionItem from "../../components/action-item";
-  import InfiniteLoading from "vue-infinite-loading";
-  import { createAccountName } from "../../utils/tools";
-  import vClickOutside from "v-click-outside";
-  import utils from "../../../lib/utils";
-  import InternalMessage from "../../../messages/InternalMessage";
-  import * as InternalMessageTypes from "../../../messages/InternalMessageTypes";
-  import { apis } from "../../../lib/BrowserApis";
-  import Prompt from "../../../models/prompt/Prompt";
-  export default {
-    name: "home",
-    components: {
-      KDialog,
-      AppHeader,
-      ActionItem,
-      InfiniteLoading
-    },
-    data() {
-      const validatePass = (rule, value, callback) => {
-        if (value === "") {
-          callback(new Error(this.$i18n.t("verify.passwordNull")));
-        } else {
-          callback();
-        }
-      };
-      let accountDetail = ''
-      let accountDetailTail = ''
-      if ('developmentNewTest' === process.env.NODE_ENV) {
-        accountDetail = "http://easywallet.pro/terminal/#/account"
-        accountDetailTail = "lastOperation"
-
+import AppHeader from "../../components/app-header";
+import { mapState, mapMutations, mapActions } from "vuex";
+import store from "../../store";
+import defaultNetworks from "../../config/networks";
+import KDialog from "../../components/dialog/DialogComponent";
+import PerfectScrollbar from "perfect-scrollbar";
+import ActionItem from "../../components/action-item";
+import InfiniteLoading from "vue-infinite-loading";
+import { createAccountName } from "../../utils/tools";
+import vClickOutside from "v-click-outside";
+import utils from "../../../lib/utils";
+import InternalMessage from "../../../messages/InternalMessage";
+import * as InternalMessageTypes from "../../../messages/InternalMessageTypes";
+import { apis } from "../../../lib/BrowserApis";
+import Prompt from "../../../models/prompt/Prompt";
+export default {
+  name: "home",
+  components: {
+    KDialog,
+    AppHeader,
+    ActionItem,
+    InfiniteLoading
+  },
+  data() {
+    const validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error(this.$i18n.t("verify.passwordNull")));
       } else {
-        accountDetail = "https://explorer.cocosbcx.io/address"
+        callback();
       }
+    };
+    let accountDetail = "";
+    let accountDetailTail = "";
+    if ("developmentNewTest" === process.env.NODE_ENV) {
+      accountDetail = "http://easywallet.pro/terminal/#/account";
+      accountDetailTail = "lastOperation";
+    } else {
+      accountDetail = "https://explorer.cocosbcx.io/address";
+    }
 
-      return {
-        tokenScroller: null,
-        transactionsScroller: null,
-        accountScroller: null,
-        accountExpand: false,
-        moreExpand: false,
-        hiding: true,
-        keyShow: false,
-        removePasswordShow: false,
-        accountDetail: accountDetail,
-        accountDetailTail: accountDetailTail,
-        newAccountNameForm: {
-          newAccountName: ""
-        },
-        newAccountNameRules: {
-          newAccountName: [
-            {
-              required: true,
-              message: this.$i18n.t("verify.accountNull"),
-              trigger: "blur"
-            }
-          ]
-        },
-        accountKey: false,
-        nameVisible: false,
-        pageVo: {
-          page: 1,
-          pageSize: 4
-        },
-        formData: {
-          password: ""
-        },
-        transactions: [],
-        transactionsAll: [],
-        total: 0,
-        noResult: false,
-        formRules: {
-          password: [{ validator: validatePass, trigger: "blur" }]
-        },
-        currentAccountPrivateKey: "",
-        cocosInfo: {},
-        tranfers: [],
-        active_private_key: ""
-      };
-    },
-    computed: {
-      ...mapState(["currentAccount", "currentCreateAccount"]),
-      ...mapState("account", ["balance", "assets"]),
-      ...mapState("wallet", ["accounts", "pwdhash"]),
-      ...mapState("trans", ["tranferList"]),
-      ...mapState(["cocosAccount", "cocosCount"]),
-      currentCreateVisible: {
-        get() {
-          return this.$store.state.currentCreateVisible;
-        },
-        set(val) {
-          this.setCurrentCreateVisible(val);
-        }
+    return {
+      tokenScroller: null,
+      transactionsScroller: null,
+      accountScroller: null,
+      accountExpand: false,
+      moreExpand: false,
+      hiding: true,
+      keyShow: false,
+      removePasswordShow: false,
+      accountDetail: accountDetail,
+      accountDetailTail: accountDetailTail,
+      newAccountNameForm: {
+        newAccountName: ""
+      },
+      newAccountNameRules: {
+        newAccountName: [
+          {
+            required: true,
+            message: this.$i18n.t("verify.accountNull"),
+            trigger: "blur"
+          }
+        ]
+      },
+      accountKey: false,
+      nameVisible: false,
+      pageVo: {
+        page: 1,
+        pageSize: 4
+      },
+      formData: {
+        password: ""
+      },
+      transactions: [],
+      transactionsAll: [],
+      total: 0,
+      noResult: false,
+      formRules: {
+        password: [{ validator: validatePass, trigger: "blur" }]
+      },
+      currentAccountPrivateKey: "",
+      cocosInfo: {},
+      tranfers: [],
+      accounts: [],
+      active_private_key: "",
+      owner_private_key: ""
+    };
+  },
+  computed: {
+    ...mapState(["currentAccount", "currentCreateAccount", "accountType"]),
+    ...mapState("account", ["balance", "assets"]),
+    ...mapState("wallet", ["pwdhash"]),
+    ...mapState("trans", ["tranferList"]),
+    ...mapState(["cocosAccount", "cocosCount"]),
+    currentCreateVisible: {
+      get() {
+        return this.$store.state.currentCreateVisible;
+      },
+      set(val) {
+        this.setCurrentCreateVisible(val);
       }
-      // accountDetail() {
-      //   let network = defaultNetworks.networks.find(
-      //     ele => ele.type === store.state.currentNetwork.name
-      //   );
-      //   return network && network.AccountDetailUrl;
-      // }
-    },
-    created() {
-      // this.loadAccount();
-      this.loadData();
-    },
-    mounted() {
-      this.tokenScroller = new PerfectScrollbar("#tokenScroller", {
+    }
+    // accountDetail() {
+    //   let network = defaultNetworks.networks.find(
+    //     ele => ele.type === store.state.currentNetwork.name
+    //   );
+    //   return network && network.AccountDetailUrl;
+    // }
+  },
+  created() {
+    // this.loadAccount();
+    this.loadData();
+  },
+  mounted() {
+    this.tokenScroller = new PerfectScrollbar("#tokenScroller", {
+      minScrollbarLength: 40,
+      maxScrollbarLength: 40
+    });
+    this.transactionsScroller = new PerfectScrollbar(
+      "#perfect-scroll-wrapper",
+      {
         minScrollbarLength: 40,
         maxScrollbarLength: 40
-      });
-      this.transactionsScroller = new PerfectScrollbar(
-        "#perfect-scroll-wrapper",
-        {
-          minScrollbarLength: 40,
-          maxScrollbarLength: 40
+      }
+    );
+    // this.accountScroller = new PerfectScrollbar("#accountScroller", {
+    //   minScrollbarLength: 40
+    // });
+    // fix drawer issue
+    const drawerWrap = document.getElementsByClassName("drawer-wrap")[0];
+    this.$nextTick(() => {
+      drawerWrap.style.left = "-300px";
+    });
+  },
+  directives: {
+    clickOutside: vClickOutside.directive
+  },
+  methods: {
+    ...mapMutations([
+      "setCurrentAccount",
+      "setCurrentCreateAccount",
+      "setCurrentCreateVisible",
+      "setLogin",
+      "setIsAccount",
+      "setAccount",
+      "setCocosCount",
+      "setAccountType"
+    ]),
+    ...mapMutations("trans", ["setTranferList"]),
+    ...mapMutations("wallet", ["addAccount", "removeAccount", "updateAccount"]),
+    ...mapActions("account", [
+      "loadAccount",
+      "loadTransactionsByNode",
+      "loadingBCXAccount",
+      "UserMessage",
+      "UserAccount",
+      "OutPutKey",
+      "logoutBCXAccount"
+    ]),
+    ...mapActions("wallet", [
+      "deleteWallet",
+      "getAccounts",
+      "setCurrentAccounts"
+    ]),
+    ...mapActions("trans", ["queryTranferList"]),
+    loadData() {
+      this.loadingBCXAccount().then(res => {
+        if (res && res.locked) {
+          this.$router.replace({ name: "unlock" });
+        } else {
+          // this.transferList();
+          this.UserAccount().then(res => {
+            if (res.code === 1) {
+              this.setCocosCount(res.data.COCOS);
+            }
+          });
+          this.getAccounts().then(res => {
+            console.log(res);
+            console.log(this.cocosAccount.accounts);
+            this.accounts = res.accounts;
+            this.setAccountType(res.current_account.mode);
+          });
         }
-      );
-      // this.accountScroller = new PerfectScrollbar("#accountScroller", {
-      //   minScrollbarLength: 40
-      // });
-      // fix drawer issue
-      const drawerWrap = document.getElementsByClassName("drawer-wrap")[0];
-      this.$nextTick(() => {
-        drawerWrap.style.left = "-300px";
+        // this.UserAccount().then(res => {
+        //   if (res.code === 1) {
+        //     this.cocosCount = res.data.COCOS;
+        //   }
+        // });
       });
     },
-    directives: {
-      clickOutside: vClickOutside.directive
+    transferList() {
+      this.setTranferList({
+        limit: 5,
+        startId: "",
+        endId: ""
+      });
+      this.queryTranferList().then(res => {
+        this.tranfers = res;
+      });
     },
-    methods: {
-      ...mapMutations([
-        "setCurrentAccount",
-        "setCurrentCreateAccount",
-        "setCurrentCreateVisible",
-        "setLogin",
-        "setIsAccount",
-        "setAccount",
-        "setCocosCount"
-      ]),
-      ...mapMutations("trans", ["setTranferList"]),
-      ...mapMutations("wallet", ["addAccount", "removeAccount", "updateAccount"]),
-      ...mapActions("account", [
-        "loadAccount",
-        "loadTransactionsByNode",
-        "loadingBCXAccount",
-        "UserMessage",
-        "UserAccount",
-        "OutPutKey",
-        "logoutBCXAccount"
-      ]),
-      ...mapActions("trans", ["queryTranferList"]),
-      loadData() {
-        this.loadingBCXAccount().then(res => {
-          if (res && res.locked) {
-            this.$router.replace({ name: "login" });
-          } else {
-            // this.transferList();
-            this.UserAccount().then(res => {
-              if (res.code === 1) {
-                this.setCocosCount(res.data.COCOS);
-              }
-            });
-          }
-          // this.UserAccount().then(res => {
-          //   if (res.code === 1) {
-          //     this.cocosCount = res.data.COCOS;
-          //   }
-          // });
-        });
-      },
-      transferList() {
-        this.setTranferList({
-          limit: 5,
-          startId: "",
-          endId: ""
-        });
-        this.queryTranferList().then(res => {
-          this.tranfers = res;
-        });
-      },
-      //倒出私钥
-      OutPutKeys() {
-        this.OutPutKey().then(res => {
-          if (res.code === 1) {
-            this.active_private_key = res.data.owner_private_key;
-            this.accountKey = true;
-          }
-        });
-      },
-      closedAccountDialog() {
-        this.accountKey = false;
-      },
-      closedDialog() {
-        this.setCurrentCreateAccount({ privateKey: "", address: "", name: "" });
-      },
-      copySuccess() {
-        this.$kalert({
-          message: this.$i18n.t("alert.copySuccess")
-        });
-        setTimeout(() => {
-          this.keyShow = false;
-          this.hiding = true;
-          this.formData.password = "";
-        }, 1000);
-      },
-      copyError() {
-        this.$kalert({
-          message: this.$i18n.t("alert.copyFail")
-        });
-      },
-      onClickMoreOutside() {
-        this.moreExpand = false;
-      },
-      onClickAccountOutside() {
-        this.accountExpand = false;
-      },
-      modifyName() {
-        this.currentAccount.name = this.newAccountNameForm.newAccountName;
-        this.updateAccount(this.currentAccount);
-        this.newAccountNameForm.newAccountName = "";
-        this.nameVisible = false;
-      },
-      createAccount() {
-        const account = utils.generateAccount();
-        this.setCurrentCreateAccount({
-          privateKey: account.privateKey,
-          address: account.address,
-          name: createAccountName()
-        });
-        this.setCurrentCreateVisible(true);
-      },
-      sureCreateAccount() {
-        this.setCurrentCreateVisible(false);
-        this.addAccount(this.currentCreateAccount);
-        this.selectAccount(this.currentCreateAccount);
-      },
-      importAccount() {
-        this.$router.push({ name: "importAccount" });
-      },
-      removeCurrentAccount(formName) {
+    //倒出私钥
+    OutPutKeys() {
+      this.OutPutKey().then(res => {
+        if (res.code === 1) {
+          console.log(res.data);
+          this.active_private_key = res.data.active_private_keys[0];
+          this.owner_private_key = res.data.owner_private_keys[0];
+          this.accountKey = true;
+        }
+      });
+    },
+    closedAccountDialog() {
+      this.accountKey = false;
+    },
+    closedDialog() {
+      this.setCurrentCreateAccount({ privateKey: "", address: "", name: "" });
+    },
+    copySuccess() {
+      this.$kalert({
+        message: this.$i18n.t("alert.copySuccess")
+      });
+      setTimeout(() => {
+        this.keyShow = false;
+        this.hiding = true;
+        this.formData.password = "";
+      }, 1000);
+    },
+    copyError() {
+      this.$kalert({
+        message: this.$i18n.t("alert.copyFail")
+      });
+    },
+    onClickMoreOutside() {
+      this.moreExpand = false;
+    },
+    onClickAccountOutside() {
+      this.accountExpand = false;
+    },
+    modifyName() {
+      this.currentAccount.name = this.newAccountNameForm.newAccountName;
+      this.updateAccount(this.currentAccount);
+      this.newAccountNameForm.newAccountName = "";
+      this.nameVisible = false;
+    },
+    createAccount() {
+      const account = utils.generateAccount();
+      this.setCurrentCreateAccount({
+        privateKey: account.privateKey,
+        address: account.address,
+        name: createAccountName()
+      });
+      this.setCurrentCreateVisible(true);
+    },
+    importAccount() {
+      this.$router.push({ name: "importAccount" });
+    },
+    removeCurrentAccount(formName) {
+      console.log(this.accountType);
+      if (this.accountType === "account") {
         this.logoutBCXAccount().then(res => {
           if (res.code === 1) {
             this.setLogin(false);
@@ -525,164 +551,185 @@
             this.$router.replace({ name: "initAccount" });
           }
         });
-        // this.$refs[formName].validate(valid => {
-        //   if (valid) {
-        //     if (utils.hashPassword(this.formData.password) === this.pwdhash) {
-        //       this.removeAccount(this.currentAccount);
-        //       this.formData.password = "";
-        //       this.removePasswordShow = false;
-        //       if (this.accounts.length > 0) {
-        //         this.setCurrentAccount(this.accounts[0]);
-        //         this.selectAccount(this.accounts[0]);
-        //       } else {
-        //         this.setCurrentAccount({});
-        //         this.$router.replace({ name: "initAccount" });
-        //       }
-        //     } else {
-        //       this.$kalert({
-        //         message: this.$i18n.t("alert.passwordError")
-        //       });
-        //     }
-        //   }
-        // });
-      },
-      selectAccount(account) {
-        this.setCurrentAccount(account);
-        this.loadAccount();
-        this.refreshTransactions();
-      },
-      goRecharge() {
-        this.$router.push({ name: "recharge" });
-      },
-      goTransfer() {
-        this.$router.push({ name: "transfer" });
-      },
-      jumpTransfer(key) {
-        this.$router.push({ name: "transfer", params: { assetKey: key } });
-      },
-      goResource() {
-        this.$router.push({ name: "resource" });
-      },
-      validatePassword(formName) {
-        this.$refs[formName].validate(valid => {
-          if (valid) {
-            if (utils.hashPassword(this.formData.password) === this.pwdhash) {
-              // request private key
-              const keystore = this.currentAccount.keystore;
-              InternalMessage.widthPayload(InternalMessageTypes.DECRYPTKEYSTORE, {
-                keystore: keystore
-              })
-                .send()
-                .then(res => {
-                  const { privateKey } = res;
-                  this.currentAccountPrivateKey = privateKey;
-                  this.hiding = false;
-                });
-            } else {
-              this.$kalert({
-                message: this.$i18n.t("alert.passwordError")
-              });
-            }
+      } else {
+        this.deleteWallet().then(res => {
+          if (res.code === 1) {
+            this.setLogin(false);
+            this.setIsAccount(false);
+            this.setAccount({
+              account: "",
+              password: ""
+            });
+            this.$router.replace({ name: "initAccount" });
           }
         });
-      },
-      closeKeyDialog() {
-        this.keyShow = false;
-        this.hiding = true;
-        this.formData.password = "";
-      },
-      openDrawer() {
-        this.$refs.drawer.toggle(true);
-      },
-      closeDrawer() {
-        this.$refs.drawer.toggle(false);
-      },
-      refreshAccount() {
+      }
+
+      // this.$refs[formName].validate(valid => {
+      //   if (valid) {
+      //     if (utils.hashPassword(this.formData.password) === this.pwdhash) {
+      //       this.removeAccount(this.currentAccount);
+      //       this.formData.password = "";
+      //       this.removePasswordShow = false;
+      //       if (this.accounts.length > 0) {
+      //         this.setCurrentAccount(this.accounts[0]);
+      //         this.selectAccount(this.accounts[0]);
+      //       } else {
+      //         this.setCurrentAccount({});
+      //         this.$router.replace({ name: "initAccount" });
+      //       }
+      //     } else {
+      //       this.$kalert({
+      //         message: this.$i18n.t("alert.passwordError")
+      //       });
+      //     }
+      //   }
+      // });
+    },
+    chooseAccount(account, index) {
+      this.setCurrentAccounts({ account }).then(res => {
+        if (res.code === 1) {
+          this.setAccount({
+            account: account,
+            password: ""
+          });
+        }
         this.loadData();
-        // this.loadAccount();
-        // this.refreshTransactions();
-      },
-      async infiniteHandler($state) {
-        if (!this.tranfers.length) {
+      });
+    },
+
+    goRecharge() {
+      this.$router.push({ name: "recharge" });
+    },
+    goTransfer() {
+      this.$router.push({ name: "transfer" });
+    },
+    jumpTransfer(key) {
+      this.$router.push({ name: "transfer", params: { assetKey: key } });
+    },
+    goResource() {
+      this.$router.push({ name: "resource" });
+    },
+    validatePassword(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (utils.hashPassword(this.formData.password) === this.pwdhash) {
+            // request private key
+            const keystore = this.currentAccount.keystore;
+            InternalMessage.widthPayload(InternalMessageTypes.DECRYPTKEYSTORE, {
+              keystore: keystore
+            })
+              .send()
+              .then(res => {
+                const { privateKey } = res;
+                this.currentAccountPrivateKey = privateKey;
+                this.hiding = false;
+              });
+          } else {
+            this.$kalert({
+              message: this.$i18n.t("alert.passwordError")
+            });
+          }
+        }
+      });
+    },
+    closeKeyDialog() {
+      this.keyShow = false;
+      this.hiding = true;
+      this.formData.password = "";
+    },
+    openDrawer() {
+      this.$refs.drawer.toggle(true);
+    },
+    closeDrawer() {
+      this.$refs.drawer.toggle(false);
+    },
+    refreshAccount() {
+      this.loadData();
+      // this.loadAccount();
+      // this.refreshTransactions();
+    },
+    async infiniteHandler($state) {
+      if (!this.tranfers.length) {
+        this.setTranferList({
+          limit: 5,
+          startId: "1.11.0",
+          endId: ""
+        });
+        await this.queryTranferList().then(res => {
+          this.tranfers = this.tranfers.concat(res);
+          $state.loaded();
+        });
+      } else {
+        if (
+          this.tranferList.endId === this.tranfers[this.tranfers.length - 1].id
+        ) {
+          this.tranfers.splice(this.tranfers.length - 1, 1);
+          $state.complete();
+          return;
+        } else {
           this.setTranferList({
             limit: 5,
             startId: "1.11.0",
-            endId: ""
+            endId: this.tranfers[this.tranfers.length - 1].id
           });
           await this.queryTranferList().then(res => {
             this.tranfers = this.tranfers.concat(res);
             $state.loaded();
           });
-        } else {
-          if (
-            this.tranferList.endId === this.tranfers[this.tranfers.length - 1].id
-          ) {
-            this.tranfers.splice(this.tranfers.length - 1, 1);
-            $state.complete();
-            return;
-          } else {
-            this.setTranferList({
-              limit: 5,
-              startId: "1.11.0",
-              endId: this.tranfers[this.tranfers.length - 1].id
-            });
-            await this.queryTranferList().then(res => {
-              this.tranfers = this.tranfers.concat(res);
-              $state.loaded();
-            });
-          }
         }
-
-        // if (this.transactionsAll.length === 0) {
-        //   const result = await this.loadTransactionsByNode();
-        //   this.total = result.length;
-        //   this.transactionsAll = result;
-        // }
-        // if (this.transactions.length === this.total) {
-        //   $state.complete();
-        // } else {
-        //   this.transactions = this.transactions.concat(
-        //     this.transactionsAll.slice(
-        //       this.transactions.length,
-        //       this.transactions.length + 10
-        //     )
-        //   );
-        //   $state.loaded();
-        // }
-        // this.$store.commit("loading", false);
-        // this.$nextTick(() => {
-        //   this.transactionsScroller.update(this.$refs.scrollWrapper);
-        // });
-      },
-      refreshTransactions() {
-        this.pageVo.page = 1;
-        this.transactions = [];
-        this.transactionsAll = [];
-        this.$nextTick(() => {
-          this.$refs.infiniteLoading.$emit("$InfiniteLoading:reset");
-        });
       }
+
+      // if (this.transactionsAll.length === 0) {
+      //   const result = await this.loadTransactionsByNode();
+      //   this.total = result.length;
+      //   this.transactionsAll = result;
+      // }
+      // if (this.transactions.length === this.total) {
+      //   $state.complete();
+      // } else {
+      //   this.transactions = this.transactions.concat(
+      //     this.transactionsAll.slice(
+      //       this.transactions.length,
+      //       this.transactions.length + 10
+      //     )
+      //   );
+      //   $state.loaded();
+      // }
+      // this.$store.commit("loading", false);
+      // this.$nextTick(() => {
+      //   this.transactionsScroller.update(this.$refs.scrollWrapper);
+      // });
     },
-    watch: {
-      transactions: function(transactions) {
-        this.noResult = !(transactions.length > 0);
-      },
-      nameVisible: function(visible) {
-        if (visible) {
-          this.newAccountNameForm.newAccountName = this.currentAccount.name;
-        }
+    refreshTransactions() {
+      this.pageVo.page = 1;
+      this.transactions = [];
+      this.transactionsAll = [];
+      this.$nextTick(() => {
+        this.$refs.infiniteLoading.$emit("$InfiniteLoading:reset");
+      });
+    }
+  },
+  watch: {
+    transactions: function(transactions) {
+      this.noResult = !(transactions.length > 0);
+    },
+    nameVisible: function(visible) {
+      if (visible) {
+        this.newAccountNameForm.newAccountName = this.currentAccount.name;
       }
     }
-  };
+  }
+};
 </script>
 <style lang="scss" scoped>
-  @import "../../theme/v1/variable";
-  @import "../../styles/home.scss";
-  .privateKey-area {
-    background-color: $bg-shallow;
-    font-size: 12px;
-    border-radius: 8px;
-    padding: 10px;
-    margin: 10px 0;
-  }
+@import "../../theme/v1/variable";
+@import "../../styles/home.scss";
+.privateKey-area {
+  background-color: $bg-shallow;
+  font-size: 12px;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+}
 </style>

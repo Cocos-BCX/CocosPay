@@ -47,7 +47,7 @@ export default {
           amount: state.tranferInfo.amount,
           memo: state.tranferInfo.memo,
           assetId: state.tranferInfo.coin,
-          isPropos: false,
+          isPropose: false,
           onlyGetFee: false
         }).then((res) => {
           commit('loading', false, {
@@ -78,6 +78,31 @@ export default {
           transactionType: 'transfer',
           feeAssetId: params.feeAssetId,
         }).then((res) => {
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res;
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+    async callContractFunction({
+      commit,
+      state
+    }, params) {
+      try {
+        commit('loading', true, {
+          root: true
+        })
+        let resData;
+        await NewBCX.callContractFunction(params).then((res) => {
           commit('loading', false, {
             root: true
           })

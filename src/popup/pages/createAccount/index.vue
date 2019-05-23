@@ -15,7 +15,7 @@
       <img class="block-center" src="/icons/logo-big.png" alt>
     </section>
     <h2 class="text-center index-title">CocosPay</h2>
-    <el-form ref="form" :model="formData" :rules="formRules" class="mt20">
+    <el-form ref="form" :model="formData" :rules="formRules" class="mt20" v-if="!accountKey">
       <el-form-item prop="account">
         <el-input
           class="no-border"
@@ -49,77 +49,128 @@
       </el-form-item>
     </el-form>
     <section class="small-tip text-center">{{$t('message.rememberPassword')}}</section>
+    <el-dialog
+      top="15vh"
+      center
+      :title="$t('button.exportPrivateKey')"
+      @closed="closedAccountDialog"
+      :close-on-click-modal="false"
+      :visible.sync="accountKey"
+    >
+      <div class="warm-tip">{{$t('message.savePrivateKey')}}</div>
+      <section class="privateKey-area">{{active_private_key}}</section>
+      <!-- <div class="warm-tip">{{$t('message.privateKeyOnly')}}</div> -->
+      <el-button
+        class="full-btn"
+        type="primary"
+        v-clipboard:copy="active_private_key"
+        v-clipboard:success="copySuccess"
+        v-clipboard:error="copyError"
+      >{{$t('button.copy')}}active_key</el-button>
+      <section class="privateKey-area">{{owner_private_key}}</section>
+      <el-button
+        class="full-btn"
+        type="primary"
+        v-clipboard:copy="owner_private_key"
+        v-clipboard:success="copySuccess"
+        v-clipboard:error="copyError"
+      >{{$t('button.copy')}}owner_key</el-button>
+    </el-dialog>
   </section>
 </template>
 <script>
-  import { mapState, mapMutations, mapActions } from "vuex";
-  import Navigation from "../../components/navigation";
-  export default {
-    components: {
-      Navigation
+import { mapState, mapMutations, mapActions } from "vuex";
+import Navigation from "../../components/navigation";
+export default {
+  components: {
+    Navigation
+  },
+  data() {
+    const validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error(this.$i18n.t("verify.passwordNull")));
+      } else if (value.length < 8) {
+        callback(new Error(this.$i18n.t("verify.passwordLength")));
+      } else {
+        callback();
+      }
+    };
+    const accountPass = (rule, value, callback) => {
+      let reg = /^[a-z]([a-z0-9\.-]){4,63}$/;
+      if (value === "") {
+        callback(new Error(this.$i18n.t("verify.accountNull")));
+      } else if (!reg.test(value)) {
+        callback(new Error(this.$i18n.t("verify.accountReg")));
+      } else {
+        callback();
+      }
+    };
+    const validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error(this.$i18n.t("verify.passwordSure")));
+      } else if (value !== this.formData.password) {
+        callback(new Error(this.$i18n.t("verify.passwordMatch")));
+      } else {
+        callback();
+      }
+    };
+    return {
+      wallet: null,
+      lang: "zh",
+      formData: {
+        account: "",
+        password: ""
+        // repassword: ""
+      },
+      type: "",
+      formRules: {
+        account: [{ validator: accountPass, trigger: "blur" }],
+        password: [{ validator: validatePass, trigger: "blur" }],
+        repassword: [{ validator: validatePass2, trigger: "blur" }]
+      },
+      owner_private_key: "",
+      active_private_key: "",
+      accountKey: false,
+      langs: [{ name: "中文", value: "zh" }, { name: "English", value: "en" }]
+    };
+  },
+  computed: {
+    ...mapState(["curLng", "accounts", "passwords"])
+  },
+  created() {
+    this.lang = this.curLng;
+    this.type = this.$route.params.type;
+    console.log(this.type);
+  },
+  methods: {
+    ...mapMutations(["setCurLng", "setAccount", "setLogin", "setIsAccount"]),
+    ...mapActions("account", [
+      "loadBCXAccount",
+      "loginBCXAccount",
+      "logoutBCXAccount",
+      "OutPutKey"
+    ]),
+    ...mapActions("wallet", ["WalletBCXAccount"]),
+    copySuccess() {
+      this.$kalert({
+        message: this.$i18n.t("alert.copySuccess")
+      });
     },
-    data() {
-      const validatePass = (rule, value, callback) => {
-        if (value === "") {
-          callback(new Error(this.$i18n.t("verify.passwordNull")));
-        } else if (value.length < 8) {
-          callback(new Error(this.$i18n.t("verify.passwordLength")));
-        } else {
-          callback();
-        }
-      };
-      const accountPass = (rule, value, callback) => {
-        let reg = /^[a-z]([a-z0-9\.-]){4,63}$/;
-        if (value === "") {
-          callback(new Error(this.$i18n.t("verify.accountNull")));
-        } else if (!reg.test(value)) {
-          callback(new Error(this.$i18n.t("verify.accountReg")));
-        } else {
-          callback();
-        }
-      };
-      const validatePass2 = (rule, value, callback) => {
-        if (value === "") {
-          callback(new Error(this.$i18n.t("verify.passwordSure")));
-        } else if (value !== this.formData.password) {
-          callback(new Error(this.$i18n.t("verify.passwordMatch")));
-        } else {
-          callback();
-        }
-      };
-      return {
-        wallet: null,
-        lang: "zh",
-        formData: {
-          account: "",
-          password: ""
-          // repassword: ""
-        },
-        formRules: {
-          account: [{ validator: accountPass, trigger: "blur" }],
-          password: [{ validator: validatePass, trigger: "blur" }],
-          repassword: [{ validator: validatePass2, trigger: "blur" }]
-        },
-        langs: [{ name: "中文", value: "zh" }, { name: "English", value: "en" }]
-      };
+    copyError() {
+      this.$kalert({
+        message: this.$i18n.t("alert.copyFail")
+      });
     },
-    computed: {
-      ...mapState(["curLng", "accounts", "passwords"])
+    closedAccountDialog() {
+      console.log("close");
+      this.$router.go(-1);
+      this.accountKey = false;
     },
-    created() {
-      this.lang = this.curLng;
-    },
-    methods: {
-      ...mapMutations(["setCurLng", "setAccount", "setLogin", "setIsAccount"]),
-      ...mapActions("account", [
-        "loadBCXAccount",
-        "loginBCXAccount",
-        "logoutBCXAccount"
-      ]),
-      createWallet(formName) {
-        this.$refs[formName].validate(valid => {
-          if (valid) {
-            this.setAccount(this.formData);
+    createWallet(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.setAccount(this.formData);
+          if (this.type === "account") {
             this.loadBCXAccount().then(res => {
               if (res.code === 1) {
                 this.setIsAccount(true);
@@ -133,28 +184,48 @@
                 });
               }
             });
+          } else {
+            this.WalletBCXAccount().then(res => {
+              if (res.code === 1) {
+                this.setAccount({
+                  account: this.formData.account,
+                  password: ""
+                });
+                this.OutPutKey().then(res => {
+                  if (res.code === 1) {
+                    console.log(res.data);
+                    this.active_private_key = res.data.active_private_keys[0];
+                    this.owner_private_key = res.data.owner_private_keys[0];
+                    this.accountKey = true;
+                  }
+                });
+              }
+              // this.$route.go(-1);
+              // this.setLogin(true);
+            });
           }
-        });
-      },
-      changeLanguage() {
-        this.setCurLng(this.lang);
-        this.$i18n.locale = this.lang;
-      }
+        }
+      });
+    },
+    changeLanguage() {
+      this.setCurLng(this.lang);
+      this.$i18n.locale = this.lang;
     }
-  };
+  }
+};
 </script>
 <style lang="scss" scoped>
-  .logo {
-    margin-top: 40px;
-  }
-  .select-lang {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    height: 50px;
-  }
-  .index-title {
-    font-size: 30px;
-    margin: 25px auto 40px;
-  }
+.logo {
+  margin-top: 40px;
+}
+.select-lang {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 50px;
+}
+.index-title {
+  font-size: 30px;
+  margin: 25px auto 40px;
+}
 </style>

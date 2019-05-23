@@ -1,33 +1,40 @@
 @charset "utf-8";
 @import "../theme/v1/variable";
-main{
+
+main {
   background-color: #fff;
 }
-.eos-info{
+
+.eos-info {
   display: flex;
   justify-content: space-between;
   height: 60px;
   margin: 0 auto;
 }
-.eos-main{
+
+.eos-main {
   padding-top: 20px;
   text-align: center;
   border-top: 1px dashed #e6e6e6;
-  .eos-logo{
+
+  .eos-logo {
     margin-top: 20px;
     border-radius: 100%;
-    &-small{
+
+    &-small {
       width: 80px;
       height: 80px;
     }
   }
-  .go-active{
-    a{
+
+  .go-active {
+    a {
       color: $danger-color;
       text-decoration: underline;
     }
   }
-  a.active-btn{
+
+  a.active-btn {
     display: block;
     width: 100px;
     height: 30px;
@@ -39,10 +46,12 @@ main{
     background-color: $danger-color;
     text-decoration: none;
   }
-  .translate-log-title{
+
+  .translate-log-title {
     position: relative;
     z-index: 1;
-    .log-line{
+
+    .log-line {
       width: 100%;
       height: 1px;
       background-color: #e6e6e6;
@@ -52,7 +61,8 @@ main{
       transform: translate(0, -50%);
       z-index: -1;
     }
-    .log-title{
+
+    .log-title {
       width: 80px;
       background-color: #fff;
       text-align: center;
@@ -60,7 +70,8 @@ main{
       margin: 0 auto;
       font-size: 14px;
     }
-    .log-option{
+
+    .log-option {
       position: absolute;
       top: 50%;
       right: 0;
@@ -70,25 +81,29 @@ main{
     }
   }
 }
-.no-result{
+
+.no-result {
   font-size: 12px;
   padding: 0;
   margin-top: 15px;
   color: $color-second;
 }
-.account{
+
+.account {
   width: 160px;
   position: relative;
   height: 40px;
   line-height: 40px;
-  .avatar{
+
+  .avatar {
     position: absolute;
     top: 5px;
     left: 0;
     width: 30px;
     height: 30px;
   }
-  .current-account{
+
+  .current-account {
     display: flex;
     justify-content: center;
     font-size: 18px;
@@ -96,7 +111,8 @@ main{
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-  .account-arrow{
+
+  .account-arrow {
     position: absolute;
     width: 10px;
     height: 30px;
@@ -105,23 +121,29 @@ main{
     right: 0;
   }
 }
-ul, li{
+
+ul,
+li {
   margin: 0;
   padding: 0;
 }
-li{
+
+li {
   list-style: none;
 }
-.account-container{
+
+.account-container {
   position: relative;
   width: 160px;
   height: 40px;
   margin-top: 10px;
   cursor: pointer;
-  i{
+
+  i {
     font-size: 20px;
   }
-  .account-list{
+
+  .account-list {
     position: absolute;
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 8px;
@@ -132,11 +154,13 @@ li{
     width: 190px;
     max-height: 240px;
     z-index: 99;
-    ul{
+
+    ul {
       margin: 0;
       padding: 0;
     }
-    li{
+
+    li {
       width: 100%;
       position: relative;
       margin: 0;
@@ -146,25 +170,29 @@ li{
       line-height: 40px;
       color: #fff;
       cursor: pointer;
-      .selected{
+
+      .selected {
         position: absolute;
         top: 0;
         left: 0;
         width: 20px;
         line-height: 47px;
       }
-      .account-item{
+
+      .account-item {
         position: relative;
         width: 100%;
         padding: 0 0 0 25px;
-        .avatar-small{
+
+        .avatar-small {
           top: 10px;
           left: 25px;
           position: absolute;
           width: 20px;
           height: 20px;
         }
-        .account-name{
+
+        .account-name {
           width: 100%;
           padding-left: 25px;
           font-size: 16px;
@@ -173,7 +201,8 @@ li{
           overflow: hidden;
         }
       }
-      .is-import{
+
+      .is-import {
         position: absolute;
         width: 35px;
         top: 0;
@@ -181,34 +210,41 @@ li{
         color: $primary-color;
       }
     }
-    .operate-item{
+
+    .operate-item {
       height: 30px;
       line-height: 30px;
     }
   }
 }
-.dashed-line{
+
+.dashed-line {
   width: 100%;
   height: 0;
   border-bottom: 1px dashed #e6e6e6;
 }
-.more{
+
+.more {
   position: relative;
   margin-top: 10px;
-  span{
+
+  span {
     display: flex;
     width: 40px;
     height: 40px;
     cursor: pointer;
     align-items: center;
-    i{
+
+    i {
       font-size: 20px;
     }
   }
-  &-btn{
+
+  &-btn {
     justify-content: flex-end;
   }
-  .more-list{
+
+  .more-list {
     position: absolute;
     background-color: rgba(0, 0, 0, 0.7);
     top: 40px;
@@ -216,10 +252,12 @@ li{
     width: 160px;
     padding: 0 10px;
     border-radius: 8px;
-    .icon-img{
+
+    .icon-img {
       vertical-align: middle;
     }
-    li{
+
+    li {
       width: 100%;
       margin: 0;
       padding: 0;
@@ -230,75 +268,87 @@ li{
       text-overflow: ellipsis;
       overflow: hidden;
       cursor: pointer;
-      a{
+
+      a {
         color: #fff;
         text-decoration: none;
       }
     }
   }
 }
-.btn-group{
+
+.btn-group {
   position: relative;
   z-index: 9;
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
 }
-.action-group{
+
+.action-group {
   display: flex;
   justify-content: space-around;
   margin-bottom: 10px;
-  .button{
+
+  .button {
     width: 130px;
   }
 }
-.translate-container{
+
+.translate-container {
   margin: 0 -15px;
 }
-.translate-list{
+
+.translate-list {
   position: relative;
   height: 200px;
   padding: 0 15px;
 }
-.eos-style{
+
+.eos-style {
   line-height: 1.6;
   font-size: 24px;
   margin-bottom: 20px;
   font-weight: normal;
   color: $warning-color;
 }
-.warning-tip{
+
+.warning-tip {
   font-size: 12px;
   color: $danger-color;
 }
-.key-container{
+
+.key-container {
   margin-top: 15px;
   background: $bg-shallow;
   border-radius: 8px;
   padding: 10px 5px;
   line-height: 1.6;
 }
-.copy-btn{
+
+.copy-btn {
   width: 132px;
   font-size: 14px;
   height: 36px;
   line-height: 26px;
 }
 
-.token-title{
+.token-title {
   position: relative;
   height: 80px;
   line-height: 80px;
   text-align: center;
   border-bottom: 1px dashed #e6e6e6;
-  .token-user{
+
+  .token-user {
     display: inline-block;
     font-size: 18px;
     width: 100%;
     padding-right: 40px;
     padding-left: 15px;
   }
-  .close-drawer{
+
+  .close-drawer {
     position: absolute;
     right: 15px;
     top: 10px;
@@ -308,14 +358,17 @@ li{
     cursor: pointer;
   }
 }
-.assets{
+
+.assets {
   position: relative;
   height: 440px;
-  ul{
+
+  ul {
     padding: 0 15px;
     margin-top: 20px;
   }
-  li{
+
+  li {
     list-style: none;
     display: flex;
     justify-content: space-between;
@@ -326,17 +379,21 @@ li{
     height: 50px;
     cursor: pointer;
     border-radius: 4px;
-    &:last-child{
+
+    &:last-child {
       margin-bottom: 0;
     }
-    .asset-value{
+
+    .asset-value {
       color: $warning-color;
     }
-    .asset-name{
+
+    .asset-name {
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      span{
+
+      span {
         padding-left: 10px;
       }
     }

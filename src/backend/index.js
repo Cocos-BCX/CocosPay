@@ -19,7 +19,6 @@ export default class Background {
     this.Params()
     this.watchInternalMessaging()
   }
-
   // watch internal message (LocalStream)
   watchInternalMessaging() {
     LocalStream.watch((request, response) => {
@@ -36,14 +35,14 @@ export default class Background {
   dispenseMessage(sendResponse, message) {
     switch (message.type) {
       case InternalMessageTypes.SIGNATURE:
-        if (Repeat.has(message.resolver)){
+        if (Repeat.has(message.resolver)) {
           break
         }
         Background.signature(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break
       case InternalMessageTypes.SET_PROMPT:
-        Background.setPrompt(sendResponse, message.payload)
+        Background.setPrompt(sendResponse, message)
         break
       case InternalMessageTypes.GET_PROMPT:
         Background.getPrompt(sendResponse)
@@ -55,30 +54,54 @@ export default class Background {
         Background.setCurrentNetwork(sendResponse, message)
         break
       case InternalMessageTypes.CALL_CONTRACT:
-        Background.callContract(sendResponse, message)
+        console.log(message)
+        Background.callContract(sendResponse, message.payload)
+        Repeat.add(message.resolver)
         break
     }
   }
 
-  static callContract(sendResponse, message) {
+  static callContract(sendResponse, payload) {
     this.lockGuard(sendResponse, async () => {
       try {
-        this.getBCX().callContractFunction(message.payload).then(res => {
-          console.log(res)
-          console.log(this._getLocalData())
-          sendResponse(res)})
+        const store = this._getLocalData()
+        let contractWhiteList = store.wallet.contractWhiteList.some(ele => {
+          return ele.nameOrId === payload.payload.nameOrId && ele.functionName === payload.payload.functionName && ele.domain === payload.domain
+        })
+        if (contractWhiteList) {
+          await this.getBCX().callContractFunction({
+            nameOrId: payload.payload.nameOrId,
+            functionName: payload.payload.functionName,
+            valueList: payload.payload.valueList,
+            runTime: payload.payload.runTime,
+            onlyGetFee: payload.payload.onlyGetFee,
+          }).then((res) => {
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+            sendResponse(res);
+            return
+          })
+        } else {
+          this.openDialog(sendResponse, payload)
+        }
+
       } catch (e) {
+        console.log(e)
         sendResponse(Error.maliciousEvent())
       }
     })
   }
 
   static signature(sendResponse, payload) {
+
     this.lockGuard(sendResponse, async () => {
       try {
         const store = this._getLocalData()
         let whiteList = store.wallet.whiteList.some(ele => {
-          return ele.domain === payload.domain && ele.address === payload.toAccount
+          return ele.domain === payload.domain && ele.account_name === payload.toAccount
         })
         if (whiteList) {
           await this.getBCX().transferAsset({
@@ -87,7 +110,7 @@ export default class Background {
             amount: payload.amount,
             memo: payload.memo,
             assetId: payload.coin,
-            isPropos: false,
+            isPropose: false,
             onlyGetFee: false
           }).then((res) => {
             if (res.code !== 1) {
@@ -95,42 +118,45 @@ export default class Background {
                 message: CommonJs.getI18nMessages(I18n).error[res.code]
               })
             }
+            sendResponse(res);
+            return true
           })
-
-          sendResponse(payload);
-          return true
+        } else {
+          this.openDialog(sendResponse, payload)
         }
-
-        NotificationService.open(
-          new Prompt(
-            PromptTypes.SIGNATURE,
-            payload.domain,
-            payload,
-            approval => {
-              if (chrome.runtime.lastError) {
-                // If I click learningPointButton, the line will excute, and log 'ERROR:  {message: "Could not establish connection. Receiving end does not exist."}'
-                console.log('ERROR: ', chrome.runtime.lastError)
-                return false
-              } else if (!approval || !approval.hasOwnProperty('accepted')) {
-                sendResponse(
-                  Error.signatureError(
-                    'signature_rejected',
-                    'User rejected the signature request'
-                  )
-                )
-                return false
-              }
-              if (approval) {
-                sendResponse(payload)
-                return true
-              }
-            }
-          )
-        )
       } catch (e) {
         sendResponse(Error.maliciousEvent())
       }
     })
+  }
+
+  static openDialog(sendResponse, payload) {
+    NotificationService.open(
+      new Prompt(
+        PromptTypes.SIGNATURE,
+        payload.domain,
+        payload,
+        approval => {
+          if (chrome.runtime.lastError) {
+            // If I click learningPointButton, the line will excute, and log 'ERROR:  {message: "Could not establish connection. Receiving end does not exist."}'
+            console.log('ERROR: ', chrome.runtime.lastError)
+            return false
+          } else if (!approval || !approval.hasOwnProperty('accepted')) {
+            sendResponse(
+              Error.signatureError(
+                'signature_rejected',
+                'User rejected the signature request'
+              )
+            )
+            return false
+          }
+          if (approval) {
+            sendResponse(approval.res)
+            return true
+          }
+        }
+      )
+    )
   }
 
   static lockGuard(sendResponse, cb) {
@@ -151,8 +177,8 @@ export default class Background {
       this._getLocalData().cocosAccount &&
       this._getLocalData().cocosAccount.accounts
     ) {
-      let address = this._getLocalData().cocosAccount.accounts
-      sendResponse(address)
+      let account_name = this._getLocalData().cocosAccount.accounts
+      sendResponse(account_name)
     }
   }
 
@@ -168,8 +194,7 @@ export default class Background {
     return Storage.get('vuex')
   }
 
-  Params() {
-  }
+  Params() {}
 
   static getBCX() {
     return newBcx.GetNewBCX()

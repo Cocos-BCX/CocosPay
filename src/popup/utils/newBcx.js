@@ -4,33 +4,31 @@ let bcxNodes = []
 export default class NewBCX {
 
   static _ininBcxNodes() {
-    if ('developmentNewTest' === process.env.NODE_ENV) {
-      bcxNodes.push({
-        url: 'ws://47.93.62.96:8020',
-        name: 'COCOS - China - Beijing',
-        ip: '47.93.62.96'
-      })
-    }
+    // if ('developmentNewTest' === process.env.NODE_ENV) {
     bcxNodes.push({
-      url: 'ws://47.93.62.96:8050',
-      name: 'COCOS节点1',
-      ip: '47.93.62.96'
+      url: "ws://47.93.62.96:8049",
+      name: "COCOS3.0节点1"
     })
+    // }
     bcxNodes.push({
-      url: 'ws://39.96.33.61:8080',
-      name: 'COCOS节点2',
-      ip: '39.96.33.61'
+      url: "ws://39.106.126.54:8049",
+      name: "COCOS3.0节点2"
     })
-    bcxNodes.push({
-      url: 'ws://39.96.29.40:8050',
-      name: 'COCOS节点3',
-      ip: '39.96.29.40'
-    })
-    bcxNodes.push({
-      url: 'ws://39.106.126.54:8050',
-      name: 'COCOS节点4',
-      ip: '39.106.126.54'
-    })
+    // bcxNodes.push({
+    //   url: 'ws://39.96.33.61:8080',
+    //   name: 'COCOS节点2',
+    //   ip: '39.96.33.61'
+    // })
+    // bcxNodes.push({
+    //   url: 'ws://39.96.29.40:8050',
+    //   name: 'COCOS节点3',
+    //   ip: '39.96.29.40'
+    // })
+    // bcxNodes.push({
+    //   url: 'ws://39.106.126.54:8050',
+    //   name: 'COCOS节点4',
+    //   ip: '39.106.126.54'
+    // })
   }
 
   static GetDefaultNodes() {
@@ -48,9 +46,9 @@ export default class NewBCX {
 
     let faucetUrl = ''
     if ('developmentNewTest' === process.env.NODE_ENV) {
-      faucetUrl = 'http://47.93.62.96:4000'
+      faucetUrl = 'http://47.93.62.96:8041'
     } else {
-      faucetUrl = 'http://' + node.ip + ':3000'
+      faucetUrl = 'http://47.93.62.96:8041'
     }
     let NewBCX = new BCX({
       default_ws_node: node.url,
@@ -60,7 +58,7 @@ export default class NewBCX {
       }],
       networks: [{
         core_asset: 'COCOS',
-        chain_id: '53b98adf376459cc29e5672075ed0c0b1672ea7dce42b0b1fe5e021c02bda640'
+        chain_id: 'b9e7cee4709ddaf08e3b7cba63b71c211c845e37c9bf2b865a7b2a592c8adb28'
       }],
       faucet_url: faucetUrl,
       auto_reconnect: true,

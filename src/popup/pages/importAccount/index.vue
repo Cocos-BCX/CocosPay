@@ -2,7 +2,7 @@
   <section class="app-container">
     <navigation :title="$t('title.importAccount')"/>
     <el-form ref="form" :model="formData" :rules="formRules" label-position="top">
-      <el-form-item :label="$t('label.tronPrivate')" prop="privateKey">
+      <el-form-item :label="$t('label.cocosPrivate')" prop="privateKey">
         <el-input type="textarea" :rows="4" v-model="formData.privateKey"></el-input>
       </el-form-item>
       <el-form-item prop="password">

@@ -23,12 +23,6 @@ export default new Vuex.Store({
     currentNetwork: {
       id: 1,
       name: 'TestNet',
-      transcanUrl: 'https://api.tronscan.org',
-      fullNodeUrl: 'https://api.trongrid.io',
-      solidityUrl: 'https://api.trongrid.io',
-      eventGridUrl: 'https://api.trongrid.io',
-      AccountDetailUrl: 'https://tronscan.org/#/address',
-      HistoryDetailUrl: 'https://tronscan.org/#/transaction',
       type: 'TestNet'
     },
     networks: defaultNetworks.networks,
@@ -57,6 +51,8 @@ export default new Vuex.Store({
     isLogin: false,
     isAccount: false,
     cocosCount: '',
+    callback: '',
+    accountType: ''
   },
   mutations: {
     loading(state, loading) {
@@ -71,12 +67,15 @@ export default new Vuex.Store({
     setCurrentNetwork(state, network) {
       state.currentNetwork = network
       InternalMessage.widthPayload(InternalMessageTypes.SETCURRENTNETWORK, {
-        network: network
-      })
+          network: network
+        })
         .send()
     },
     setCocosCount(state, cocos) {
       state.cocosCount = cocos
+    },
+    setAccountType(state, accountType) {
+      state.accountType = accountType
     },
     settemporaryKeys(state, temporaryKeys) {
       state.temporaryKeys = temporaryKeys
@@ -98,8 +97,8 @@ export default new Vuex.Store({
       // fix changepassword bug
       state.currentAccount = Object.assign({}, account)
       InternalMessage.widthPayload(InternalMessageTypes.SETCURRENTACCOUNT, {
-        address: account.address
-      })
+          address: account.address
+        })
         .send()
     },
     setCurrentCreateAccount(state, account) {

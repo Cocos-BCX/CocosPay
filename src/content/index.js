@@ -1,14 +1,13 @@
-/**
- * inject tronPay and tronweb to global window
- */
-import { EncryptedStream } from 'extension-streams'
+import {
+  EncryptedStream
+} from 'extension-streams'
 import IdGenerator from '../lib/IdGenerator'
 import * as MessageTypes from '../messages/MessageTypes'
 import utils from '../lib/utils'
 import Message from '../messages/Message'
 import * as TabMessageTypes from '../messages/TabsMessageTypes'
 import newBcx from '../popup/utils/newBcx'
-
+import Storage from '../lib/storage'
 /***
  * This is just a helper to manage resolving fake-async
  * requests using browser messaging.
@@ -27,39 +26,45 @@ let resolvers = []
 const eventQueue = []
 class BcxWeb {
   constructor() {
-    this.address = ""
+    this.account_name = ""
     this.BCX = false
   }
 
-  static setBCX(BCX){
+  static setBCX(BCX) {
     this.BCX = BCX
   }
 
-  static setTransferAsset(tranferCount){
+  static setTransferAsset(tranferCount) {
     this.BCX.transferAsset = tranferCount
   }
 
-  static setCallContractFunction(callContractFunction){
+  static setCallContractFunction(callContractFunction) {
     this.BCX.callContractFunction = callContractFunction
   }
 
-  static setAddress(address) {
-    this.address = address
+  static setAddress(account_name) {
+    this.account_name = account_name
+  }
+
+  static callContractFunction(message) {
+    message.payload.domain = utils.strippedHost()
+    _send(MessageTypes.CALL_CONTRACT, message)
   }
 
   static tranferCount(message) {
     message.payload.domain = utils.strippedHost()
-    _send(message.type, message.payload)
+    _send(MessageTypes.SIGNATURE, message)
   }
 }
 
 const _subscribe = () => {
-  stream.listenWith(msg => {
+  stream.listenWith(async msg => {
     if (!msg || !msg.hasOwnProperty('type')) return false
     for (let i = 0; i < resolvers.length; i++) {
       if (resolvers[i].id === msg.resolver) {
         // if (msg.type === 'error') resolvers[i].reject(msg.payload)
         // else
+        // let res = await callListen(msg.payload);
         resolvers[i].resolve(msg.payload)
         resolvers = resolvers.slice(i, 1)
       }
@@ -67,25 +72,32 @@ const _subscribe = () => {
   })
 }
 
+
 const _send = (_type, _payload) => {
   return new Promise((resolve, reject) => {
     let id = IdGenerator.numeric(24)
     let message = new Message(_type, _payload, id)
     localStorage.setItem('sing', true)
-    // resolvers.push(new DanglingResolver(id, resolve, reject))
+    resolvers.push(new DanglingResolver(id, resolve, reject))
+    console.log(message)
     stream.send(message, MessageTypes.CONTENT)
   })
 }
 
+
 function tranferCount(message) {
-  message.payload.domain = utils.strippedHost()
-  _send(message.type, message.payload)
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.SIGNATURE, message))
+  })
+  // _send(MessageTypes.SIGNATURE, message)
 }
 
 function callContractFunction(message) {
-  console.log(message)
-  _send(MessageTypes.CALL_CONTRACT, message)
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.CALL_CONTRACT, message))
+  })
 }
+
 
 let bcxWeb = newBcx.GetNewBCX()
 export default class Content {
@@ -98,7 +110,9 @@ export default class Content {
     // Syncing the streams between the extension and the web application
     stream.sync(MessageTypes.CONTENT, stream.key)
     _subscribe()
-    stream.onSync(async () => { document.dispatchEvent(new CustomEvent("cocosLoaded"))})
+    stream.onSync(async () => {
+      document.dispatchEvent(new CustomEvent("cocosLoaded"))
+    })
   }
   contentListener(msg) {
     if (!msg) return
@@ -131,14 +145,20 @@ export default class Content {
   initCOCOSWeb(message) {
     // console.log('CocosPay init initCOCOSWeb')
     const payload = message.payload
-    if (payload.address) {
+    if (payload.account_name) {
       BcxWeb.setBCX(bcxWeb)
-      BcxWeb.setAddress(payload.address)
+      BcxWeb.setAddress(payload.account_name)
       BcxWeb.setTransferAsset(tranferCount)
       BcxWeb.setCallContractFunction(callContractFunction)
-      window.BcxWeb = BcxWeb
+      BcxWeb.BCX.account_name = payload.account_name
+      window.BcxWeb = BcxWeb.BCX
     }
-    eventQueue.forEach(({ resolve, reject, args, func }, index) => {
+    eventQueue.forEach(({
+      resolve,
+      reject,
+      args,
+      func
+    }, index) => {
       func(...args)
         .then(resolve)
         .catch(reject)

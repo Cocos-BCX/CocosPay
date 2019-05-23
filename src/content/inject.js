@@ -78,7 +78,7 @@ class Inject {
     if (!message) return
     switch (message.type) {
       case TabMessageTypes.LOCK_STAUS:
-        stream.send(Message.widthPayload(message.type, message.payload), MessageTypes.INJECTED).catch(function(reason){
+        stream.send(Message.widthPayload(message.type, message.payload), MessageTypes.INJECTED).catch(function (reason) {
           // Failed silently if receiveing end does not exist
         })
 
@@ -95,6 +95,7 @@ class Inject {
   _contentListener(msg) {
     if (!isReady) return
     if (!msg) return
+
     // Always including the domain for every request.
     msg.domain = utils.strippedHost()
     let nonSyncMessage = Message.fromJson(msg)
@@ -131,16 +132,16 @@ class Inject {
     stream.synced = true
   }
   callContract(message) {
-    InternalMessage.widthPayload(InternalMessageTypes.CALL_CONTRACT, message.payload)
+    InternalMessage.widthPayload(InternalMessageTypes.CALL_CONTRACT, message, message.resolver)
       .send().then(res => {
-      this.respond(message, res)
-    })
+        this.respond(message, res)
+      })
   }
   signature(message) {
-    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.SIGNATURE, message.payload, message.resolver)
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.SIGNATURE, message, message.resolver)
       .send().then(res => {
-      this.respond(message, res)
-    })
+        this.respond(message, res)
+      })
   }
   getAddress() {
     return InternalMessage.signal(InternalMessageTypes.GET_ADDRESS)
@@ -153,9 +154,9 @@ class Inject {
   async initCOCOSWeb() {
     let node = newBcx.GetDefaultNodes()
     try {
-      const address = await this.getAddress()
+      const account_name = await this.getAddress()
       stream.send(Message.widthPayload(MessageTypes.INIT_COCOSWEB, {
-        address,
+        account_name,
         node
       }), MessageTypes.INJECTED)
       isReady = true

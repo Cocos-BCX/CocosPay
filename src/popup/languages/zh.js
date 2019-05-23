@@ -88,6 +88,8 @@ module.exports = {
     editorAccount: '修改账户名称',
     recharge: '充值',
     transfer: '转账',
+    walletType: '钱包模式',
+    accountType: '账户模式',
     sendDetail: '交易详情',
     welcome: '欢迎回来！',
     setting: '设置',
@@ -146,16 +148,19 @@ module.exports = {
     pledgeAmount: '冻结COCOS数量：',
     pledgeType: '选择想要获得的资源：',
     redeemAmount: '解冻COCOS数量：',
-    tronPrivate: '请在下方输入您的COCOS账户私钥',
+    cocosPrivate: '请在下方输入您的COCOS账户私钥',
     property: '属性',
     json: 'json数据',
-    contract: '合同信息',
+    contract: '合约',
+    operation: '操作',
     ptsite: '站点：',
     ptaddress: '转出：',
     ptamount: '数量：',
     ptcontract: '合约：',
     ptpayment: '支付：',
-    pttype: '类型：'
+    pttype: '类型：',
+    param: '参数',
+
   },
   // settings
   settings: {

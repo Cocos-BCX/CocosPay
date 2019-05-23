@@ -48,30 +48,23 @@ module.exports = {
   },
   // message
   message: {
-    rememberPassword:
-      'Please remember the password, forget the password will not be recovered',
+    rememberPassword: 'Please remember the password, forget the password will not be recovered',
     recommendNew: 'Recommend new users for use',
     recommendOld: 'Recommend to users who already have COCOS accounts',
-    savePrivateKey:
-      'Please note:  please export the corresponding private key in time and keep it in a safe place. Do not leak the private key to anyone',
-    privateKeyOnly:
-      'The private key will be the only way you can retrieve your account',
+    savePrivateKey: 'Please note:  please export the corresponding private key in time and keep it in a safe place. Do not leak the private key to anyone',
+    privateKeyOnly: 'The private key will be the only way you can retrieve your account',
     noMoreRecord: 'No more records',
     noRecord: 'No transaction record',
     noWhiteList: 'No whiteList',
     joinWhiteList: 'Add to white list, this site no longer prompts',
-    warningPrivateKey:
-      'Security warning: do not disclose your private key to anyone',
+    warningPrivateKey: 'Security warning: do not disclose your private key to anyone',
     rechargeOnly: 'This address only supports COCOS and its token',
     verifyPassword: 'You need to verify your current password',
     lockSetting: 'Automatic lock setting',
-    lockTip:
-      'When you stop, you can automatically lock CocosPay by setting the departure time',
+    lockTip: 'When you stop, you can automatically lock CocosPay by setting the departure time',
     changeLanguage: 'Select the language',
-    resourceTip:
-      'Transfers, transactions, execution of contracts and other operations consume resources, which can be obtained by mortgaging COCOS',
-    pledgeTip:
-      'Through mortgage COCOS (wave field voting rights) and resources, mortgage COCOS will be frozen for three days and cannot be traded.At the end of the freeze period, the mortgaged COCOS can be UnFreeze and traded.'
+    resourceTip: 'Transfers, transactions, execution of contracts and other operations consume resources, which can be obtained by mortgaging COCOS',
+    pledgeTip: 'Through mortgage COCOS (wave field voting rights) and resources, mortgage COCOS will be frozen for three days and cannot be traded.At the end of the freeze period, the mortgaged COCOS can be UnFreeze and traded.'
   },
   // verify
   verify: {
@@ -95,6 +88,8 @@ module.exports = {
     editorAccount: 'Change the account name',
     recharge: 'Deposit',
     transfer: 'Send',
+    walletType: 'Wallet Mode',
+    accountType: 'Account Mode',
     sendDetail: 'Transaction details',
     welcome: 'Welcome Back!',
     setting: 'Setting',
@@ -126,13 +121,11 @@ module.exports = {
     pledgeFail: 'Freeze Fail',
     existAccount: 'Exist Account',
     illegalPrivateKey: 'Illegal PrivateKey',
-    transferFail:
-      'The available balance is insufficient after deducting the service charge'
+    transferFail: 'The available balance is insufficient after deducting the service charge'
   },
   // confirm
   confirm: {
-    removeAccount:
-      'Make sure the private key is exported before Exit the account or remember the password, otherwise the account cannot be restored after Exit'
+    removeAccount: 'Make sure the private key is exported before Exit the account or remember the password, otherwise the account cannot be restored after Exit'
   },
   // label
   label: {
@@ -155,16 +148,18 @@ module.exports = {
     pledgeAmount: 'Freeze Amount:',
     pledgeType: 'Freeze Type:',
     redeemAmount: 'UnFreeze Amount',
-    tronPrivate: 'COCOS PrivateKey',
+    cocosPrivate: 'COCOS PrivateKey',
     property: 'label',
     json: 'Json',
     contract: 'Contract',
+    operation: 'Operation',
     ptsite: 'Site：',
     ptaddress: 'To：',
     ptamount: 'Value：',
     ptcontract: 'Contract：',
     ptpayment: 'Payment：',
-    pttype: 'Type：'
+    pttype: 'Type：',
+    param: 'parameters',
   },
   // settings
   settings: {

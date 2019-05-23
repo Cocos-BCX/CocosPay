@@ -25,11 +25,14 @@
 </template>
 <script>
 import SettingNavigation from "../../components/setting-navigation";
-import { createNamespacedHelpers } from "vuex";
+import { createNamespacedHelpers, mapState } from "vuex";
 const { mapActions } = createNamespacedHelpers("wallet");
 export default {
   components: {
     SettingNavigation
+  },
+  computed: {
+    ...mapState(["accountType"])
   },
   data() {
     return {
@@ -48,11 +51,6 @@ export default {
           route: "language",
           name: this.$i18n.t("settings.language"),
           icon: "yuyan"
-        },
-        {
-          route: "modifyPassword",
-          name: this.$i18n.t("settings.modifyPassword"),
-          icon: "mima"
         }
         // {
         //   route: "lockSetting",
@@ -60,10 +58,6 @@ export default {
         //   icon: "lock"
         // },
         // {
-        //   route: "about",
-        //   name: this.$i18n.t("settings.about"),
-        //   icon: "tronpay"
-        // }
       ]
     };
   },
@@ -72,6 +66,15 @@ export default {
     lockApp() {
       this.lock().then(() => {
         this.$router.push({ name: "unlock" });
+      });
+    }
+  },
+  mounted() {
+    if (this.accountType === "account") {
+      this.links.push({
+        route: "modifyPassword",
+        name: this.$i18n.t("settings.modifyPassword"),
+        icon: "mima"
       });
     }
   }

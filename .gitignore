@@ -11,6 +11,9 @@ yarn.lock
 
 # Backpack build
 build
+CocosPay
+CocosPay.zip
+build.crx
 release
 
 # pack

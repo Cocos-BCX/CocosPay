@@ -1,94 +1,98 @@
 <template>
   <section class="app-container" @keyup.enter="unLock('form')">
     <section class="logo mt40">
-      <img class="block-center" src="/images/logo.png" alt="">
+      <img class="block-center" src="/icons/logo-big.png" alt>
     </section>
     <h2 class="welcome-title mt20">{{$t('title.welcome')}}</h2>
-    <el-form ref="form" :model="formData" :rules="formRules" class="mt40">
+    <el-form class="mt40">
       <el-form-item prop="password">
-        <el-input class="no-border" v-model="formData.password" type="password" :placeholder="$t('placeholder.password')"></el-input>
+        <el-input
+          class="no-border"
+          v-model="unlock"
+          type="password"
+          :placeholder="$t('placeholder.password')"
+        ></el-input>
         <!-- 解决隐式提交的问题 -->
-        <input type="text" value="" style="display: none;" />
+        <input type="text" value style="display: none;">
       </el-form-item>
       <el-form-item class="mt20">
-        <el-button class="full-btn" type="primary" @click="unLock('form')">{{$t('button.unlock')}}</el-button>
+        <el-button class="full-btn" type="primary" @click="unlockWallet()">{{$t('button.unlock')}}</el-button>
       </el-form-item>
     </el-form>
   </section>
 </template>
 <script>
-import utils from '../../../lib/utils'
-import { mapState, mapActions, mapMutations } from 'vuex'
+import utils from "../../../lib/utils";
+import { mapState, mapActions, mapMutations } from "vuex";
 export default {
-  data () {
-    const validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error(this.$i18n.t('verify.passwordNull')))
-      } else {
-        callback()
-      }
-    }
+  data() {
+    // const validatePass = (rule, value, callback) => {
+    //   if (value === "") {
+    //     callback(new Error(this.$i18n.t("verify.passwordNull")));
+    //   } else {
+    //     callback();
+    //   }
+    // };
     return {
-      formData: {
-        password: ''
-      },
-      formRules: {
-        password: [
-          { validator: validatePass, trigger: 'blur' }
-        ]
-      }
-    }
+      unlock: ""
+      // formData: {
+      //   password: ""
+      // },
+      // formRules: {
+      //   password: [{ validator: validatePass, trigger: "blur" }]
+      // }
+    };
   },
   computed: {
-    ...mapState('wallet', [
-      'accounts',
-      'pwdhash',
-      'password'
-    ])
+    ...mapState("wallet", ["accounts", "pwdhash", "password"]),
+    ...mapState(["accountType", "cocosAccount"])
   },
   methods: {
-    ...mapActions('wallet', [
-      'setSeed'
-    ]),
-    ...mapMutations('wallet', [
-      'setPassword',
-      'upgradeAccounts'
-    ]),
+    ...mapMutations("wallet", ["setPassword", "upgradeAccounts"]),
+    ...mapMutations(["upgradeCurrentAccount", "setAccount"]),
+    ...mapActions("account", ["unlockAccount", "loginBCXAccount"]),
     ...mapMutations([
-      'upgradeCurrentAccount'
+      "upgradeCurrentAccount",
+      "setAccount",
+      "setLogin",
+      "setIsAccount"
     ]),
-    unLock (formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          /**
-           * upgrade debug version local data to new version
-           */
-          if (this.password && this.formData.password === this.password) {
-            this.setPassword(this.formData.password)
-            // update keystore
-            this.upgradeCurrentAccount(this.formData.password)
-            this.upgradeAccounts(this.formData.password)
-
-            this.setSeed(this.formData.password).then(() => {
-              this.$router.push({ name: 'home' })
-            })
-          } else if (utils.hashPassword(this.formData.password) === this.pwdhash) {
-            this.setSeed(this.formData.password).then(() => {
-              this.$router.push({ name: 'home' })
-            })
-          } else {
-            this.$kalert({
-              message: this.$i18n.t('alert.passwordError')
-            })
+    unlockWallet() {
+      this.setAccount({
+        account: this.cocosAccount.accounts,
+        password: this.unlock
+      });
+      if (this.accountType === "wallet") {
+        this.unlockAccount().then(res => {
+          this.setAccount({
+            account: this.cocosAccount.accounts,
+            password: ""
+          });
+          if (res.code === 1) {
+            this.setIsAccount(true);
+            this.setLogin(true);
+            this.$router.push({ name: "home" });
           }
-        }
-      })
+        });
+      } else {
+        this.loginBCXAccount().then(res => {
+          this.setAccount({
+            account: this.cocosAccount.accounts,
+            password: ""
+          });
+          if (res.code === 1) {
+            this.setIsAccount(true);
+            this.setLogin(true);
+            this.$router.push({ name: "home" });
+          }
+        });
+      }
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
-.welcome-title{
+.welcome-title {
   text-align: center;
   font-size: 30px;
 }
