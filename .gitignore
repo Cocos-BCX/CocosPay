@@ -11,6 +11,7 @@ yarn.lock
 
 # Backpack build
 build
+build.zip
 CocosPay
 CocosPay.zip
 build.crx

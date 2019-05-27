@@ -1,19 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from '../pages/home'
-import CreateWallet from '../pages/createWallet'
-import CreateAccount from '../pages/createAccount'
-import Unlock from '../pages/unlock'
-import Login from '../pages/login'
-import Agreement from '../pages/agreement'
-import InitAccount from '../pages/initAccount'
-import ImportAccount from '../pages/importAccount'
-import OrderDeatil from '../pages/orderDeatil'
-import Recharge from '../pages/recharge'
-import Transfer from '../pages/transfer'
-import Resource from '../pages/resource'
-import Settings from '../pages/settings'
 import Language from '../pages/settings/language'
 import LockSetting from '../pages/settings/lockSetting'
 import ModifyPassword from '../pages/settings/modifyPassword'
@@ -30,12 +17,16 @@ const routes = [{
   {
     path: '/unlock',
     name: 'unlock',
-    component: Unlock,
+    component: (r) => {
+      require(['../pages/unlock'], r)
+    },
   },
   {
     path: '/home',
     name: 'home',
-    component: Home,
+    component: (r) => {
+      require(['../pages/home'], r)
+    },
     meta: {
       isLogin: true
     }
@@ -43,57 +34,78 @@ const routes = [{
   {
     path: '/createWallet',
     name: 'createWallet',
-    component: CreateWallet
+    component: (r) => {
+      require(['../pages/createWallet'], r)
+    },
   },
   {
     path: '/createAccount',
     name: 'createAccount',
-    component: CreateAccount
+    component: (r) => {
+      require(['../pages/createAccount'], r)
+    },
   },
   {
     path: '/login',
     name: 'login',
-    component: Login
-  },
-  {
-    path: '/agreement',
-    name: 'agreement',
-    component: Agreement
+    component: (r) => {
+      require(['../pages/login'], r)
+    },
   },
   {
     path: '/initAccount',
     name: 'initAccount',
-    component: InitAccount,
+    component: (r) => {
+      require(['../pages/initAccount'], r)
+    },
   },
   {
     path: '/importAccount',
     name: 'importAccount',
-    component: ImportAccount
+    component: (r) => {
+      require(['../pages/importAccount'], r)
+    },
   },
   {
     path: '/orderDeatil',
     name: 'OrderDeatil',
-    component: OrderDeatil
+    component: (r) => {
+      require(['../pages/orderDeatil'], r)
+    },
   },
   {
     path: '/recharge',
     name: 'recharge',
-    component: Recharge,
+    component: (r) => {
+      require(['../pages/recharge'], r)
+    },
+    meta: {
+      isLogin: true
+    }
   },
   {
     path: '/transfer',
     name: 'transfer',
-    component: Transfer,
+    component: (r) => {
+      require(['../pages/transfer'], r)
+    },
+    meta: {
+      isLogin: true
+    }
   },
   {
     path: '/resource',
     name: 'resource',
-    component: Resource,
+    component: (r) => {
+      require(['../pages/resource'], r)
+    },
   },
   {
     path: '/settings',
     name: 'settings',
-    component: Settings,
+    component: (r) => {
+      require(['../pages/settings'], r)
+    },
   },
   {
     path: '/network',

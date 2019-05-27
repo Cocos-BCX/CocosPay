@@ -54,7 +54,6 @@ export default class Background {
         Background.setCurrentNetwork(sendResponse, message)
         break
       case InternalMessageTypes.CALL_CONTRACT:
-        console.log(message)
         Background.callContract(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break

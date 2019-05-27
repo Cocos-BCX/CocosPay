@@ -45,7 +45,7 @@
             >
               <div class="account">
                 <div class="current-account">{{ cocosAccount.accounts }}</div>
-                <v-icon class="account-arrow" name="angle-down"/>
+                <v-icon class="account-arrow" v-if="accountType === 'wallet'" name="angle-down"/>
               </div>
               <ul
                 class="account-list"
@@ -114,14 +114,8 @@
               class="eos-style mt15"
             >{{$formatNumber(cocosCount, { maximumSignificantDigits: 7 }) || 0}} COCOS</h2>
             <div class="btn-group" style="justify-content: space-around;">
-              <el-button
-                class="gradual-button three-btn"
-                @click="goRecharge"
-              >{{$t('button.recharge')}}</el-button>
-              <el-button
-                class="gradual-button three-btn"
-                @click="goTransfer"
-              >{{$t('button.transfer')}}</el-button>
+              <el-button class="gradual-button charge" @click="goRecharge">{{$t('button.recharge')}}</el-button>
+              <el-button class="gradual-button charge" @click="goTransfer">{{$t('button.transfer')}}</el-button>
               <!-- <el-button
                 class="gradual-button three-btn"
                 @click="goResource"
@@ -458,8 +452,6 @@ export default {
             }
           });
           this.getAccounts().then(res => {
-            console.log(res);
-            console.log(this.cocosAccount.accounts);
             this.accounts = res.accounts;
             this.setAccountType(res.current_account.mode);
           });
@@ -485,7 +477,6 @@ export default {
     OutPutKeys() {
       this.OutPutKey().then(res => {
         if (res.code === 1) {
-          console.log(res.data);
           this.active_private_key = res.data.active_private_keys[0];
           this.owner_private_key = res.data.owner_private_keys[0];
           this.accountKey = true;
@@ -538,7 +529,6 @@ export default {
       this.$router.push({ name: "importAccount" });
     },
     removeCurrentAccount(formName) {
-      console.log(this.accountType);
       if (this.accountType === "account") {
         this.logoutBCXAccount().then(res => {
           if (res.code === 1) {

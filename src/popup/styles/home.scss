@@ -283,6 +283,10 @@ li {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
+
+  .charge {
+    width: 130px;
+  }
 }
 
 .action-group {

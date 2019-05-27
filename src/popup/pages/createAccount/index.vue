@@ -140,7 +140,6 @@ export default {
   created() {
     this.lang = this.curLng;
     this.type = this.$route.params.type;
-    console.log(this.type);
   },
   methods: {
     ...mapMutations(["setCurLng", "setAccount", "setLogin", "setIsAccount"]),
@@ -162,7 +161,6 @@ export default {
       });
     },
     closedAccountDialog() {
-      console.log("close");
       this.$router.go(-1);
       this.accountKey = false;
     },
@@ -193,7 +191,6 @@ export default {
                 });
                 this.OutPutKey().then(res => {
                   if (res.code === 1) {
-                    console.log(res.data);
                     this.active_private_key = res.data.active_private_keys[0];
                     this.owner_private_key = res.data.owner_private_keys[0];
                     this.accountKey = true;

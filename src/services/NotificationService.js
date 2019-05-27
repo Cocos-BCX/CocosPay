@@ -11,7 +11,6 @@ export default class NotificationService {
       openWindow.close()
       openWindow = null
     }
-    console.log(notification)
     const height = 480
     const width = 600
     let middleX = window.screen.availWidth / 2 - (width / 2)
@@ -46,8 +45,6 @@ export default class NotificationService {
         return null
       }
     }
-    // console.log(InternalMessageTypes.SET_PROMPT, JSON.stringify(notification))
-    // console.log(InternalMessage.widthPayload())
     // await InternalMessage.widthPayload(InternalMessageTypes.SET_PROMPT, JSON.stringify(notification)).send()
     await new Promise((resolve) => setTimeout(resolve, 600))
     let popup = await getPopup()

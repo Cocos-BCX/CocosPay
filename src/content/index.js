@@ -79,7 +79,6 @@ const _send = (_type, _payload) => {
     let message = new Message(_type, _payload, id)
     localStorage.setItem('sing', true)
     resolvers.push(new DanglingResolver(id, resolve, reject))
-    console.log(message)
     stream.send(message, MessageTypes.CONTENT)
   })
 }

@@ -1,6 +1,6 @@
 {
   "name": "CocosPay",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "CocosPay",
   "author": "chain@cocosbcx.io",
   "license": "MIT",
@@ -15,6 +15,7 @@
   "dependencies": {
     "aes-js": "^3.1.1",
     "axios": "^0.17.0",
+    "babel-polyfill": "^6.26.0",
     "bigi": "^1.4.2",
     "bignumber.js": "^7.2.1",
     "buffer": "^5.2.1",
@@ -23,6 +24,7 @@
     "element-ui": "^2.0.1",
     "elliptic": "^6.4.1",
     "extension-streams": "^1.0.7",
+    "indexeddbshim": "^2.2.1",
     "jazzicon": "^1.5.0",
     "js-sha3": "^0.8.0",
     "jssha": "^2.3.1",
@@ -61,7 +63,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.26.0",
-    "bcxjs-api": "^1.4.1",
+    "bcxjs-api": "^1.4.10",
     "bcxjs-cores": "^1.0.2",
     "buble": "^0.16.0",
     "buble-loader": "^0.4.1",

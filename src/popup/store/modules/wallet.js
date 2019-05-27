@@ -119,13 +119,11 @@ export default {
         root: true
       })
       try {
-        console.log(rootState.cocosAccount);
         let resData
         await NewBCX.createAccountWithWallet({
           account: rootState.cocosAccount.accounts,
           password: rootState.cocosAccount.passwords
         }).then(res => {
-          console.log(res);
           commit('loading', false, {
             root: true
           })
@@ -195,7 +193,6 @@ export default {
           commit('loading', false, {
             root: true
           })
-          console.log(res)
           commit('setAccountType', '', {
             root: true
           })
@@ -230,9 +227,6 @@ export default {
           // })
         }, 10000)
         let resData
-        console.log(rootState.privateKeys);
-        console.log(rootState.cocosAccount.passwords);
-
         await NewBCX.importPrivateKey({
           privateKey: rootState.privateKeys,
           password: rootState.cocosAccount.passwords

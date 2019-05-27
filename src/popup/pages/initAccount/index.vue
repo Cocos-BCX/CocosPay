@@ -105,7 +105,6 @@ export default {
       });
     },
     logout() {
-      console.log("logout");
       this.deleteWallet();
       // this.logoutBCXAccount();
     },

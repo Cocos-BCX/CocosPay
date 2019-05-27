@@ -177,7 +177,6 @@ export default {
       }
       this.callContractFunction(this.prompt.data.payload)
         .then(res => {
-          console.log(res);
           this.prompt.responder({ accepted: true, res: res });
           NotificationService.close();
         })
