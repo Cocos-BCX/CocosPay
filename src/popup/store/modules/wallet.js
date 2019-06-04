@@ -227,6 +227,8 @@ export default {
           // })
         }, 10000)
         let resData
+        console.log(rootState.cocosAccount);
+        console.log(rootState.privateKeys);
         await NewBCX.importPrivateKey({
           privateKey: rootState.privateKeys,
           password: rootState.cocosAccount.passwords

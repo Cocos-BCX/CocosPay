@@ -101,7 +101,8 @@ module.exports = {
     importAccount: 'ImportAccount',
     removeAccount: 'Exit Account',
     signature: 'Request Signature',
-    locked: 'Not logged in or locked'
+    locked: 'Not logged in or locked',
+    test: 'TEST',
   },
   // alert
   alert: {
@@ -110,6 +111,7 @@ module.exports = {
     copyFail: 'Copy Fail',
     exportSuccess: 'Export success',
     exportFail: 'Export Fail',
+    changeFail: 'Change Fail',
     passwordError: 'Password Error',
     sendSuccess: 'Send Success',
     sendFail: 'Send Fail',

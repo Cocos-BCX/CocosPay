@@ -113,6 +113,9 @@ class Inject {
       case MessageTypes.CALL_CONTRACT:
         this.callContract(nonSyncMessage)
         break
+      case MessageTypes.GET_ACCOUNT_INFO:
+        this.getAccountInfo(nonSyncMessage)
+        break
       default:
         stream.send(nonSyncMessage.error(Error.maliciousEvent()), MessageTypes.INJECTED)
     }
@@ -133,6 +136,13 @@ class Inject {
   }
   callContract(message) {
     InternalMessage.widthPayload(InternalMessageTypes.CALL_CONTRACT, message, message.resolver)
+      .send().then(res => {
+        this.respond(message, res)
+      })
+  }
+  getAccountInfo(message) {
+    message.payload = {}
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.GET_ACCOUNT_INFO, message, message.resolver)
       .send().then(res => {
         this.respond(message, res)
       })

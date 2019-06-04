@@ -102,12 +102,14 @@ module.exports = {
     removeAccount: '退出账号',
     signature: '签名请求',
     locked: '未登录或已锁定',
+    test: '测试',
   },
   // alert
   alert: {
     tranferSuccess: '转账成功',
     copySuccess: '复制成功',
     copyFail: '复制失败',
+    changeFail: '切换失败',
     exportSuccess: '导出成功',
     exportFail: '导出失败',
     passwordError: '密码错误',

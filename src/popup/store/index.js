@@ -8,7 +8,8 @@ import trans from './modules/trans'
 import InternalMessage from '../../messages/InternalMessage'
 import * as InternalMessageTypes from '../../messages/InternalMessageTypes'
 import utils from '../../lib/utils'
-
+import Storage from "../../lib/storage";
+import axios from "axios";
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -137,7 +138,24 @@ export default new Vuex.Store({
     }
   },
   actions: {
-
+    async nodeLists({
+      commit
+    }) {
+      try {
+        let nodes = [];
+        axios
+          .get("http://backend.test.cjfan.net/getParams")
+          .then(response => {
+            nodes = response.data.data;
+            Storage.set("node", nodes);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } catch (e) {
+        console.log(e);
+      }
+    }
   },
   plugins: [createPersistedState()]
 })

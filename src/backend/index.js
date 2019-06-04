@@ -57,7 +57,26 @@ export default class Background {
         Background.callContract(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break
+      case InternalMessageTypes.GET_ACCOUNT_INFO:
+        Background.getAccountInfo(sendResponse, message.payload)
+        Repeat.add(message.resolver)
+        break
     }
+  }
+
+  static getAccountInfo(sendResponse, payload) {
+    this.lockGuard(sendResponse, async () => {
+      try {
+        // this.getBCX().getAccountInfo().then(res => {
+        //   console.log(res);
+        // })
+        let info = await this.getBCX().getAccountInfo()
+        sendResponse(info)
+        return
+      } catch (e) {
+        sendResponse(Error.maliciousEvent())
+      }
+    })
   }
 
   static callContract(sendResponse, payload) {

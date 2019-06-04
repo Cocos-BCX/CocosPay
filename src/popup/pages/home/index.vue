@@ -112,7 +112,7 @@
             <img class="eos-logo" src="/icons/logo-middle.png">
             <h2
               class="eos-style mt15"
-            >{{$formatNumber(cocosCount, { maximumSignificantDigits: 7 }) || 0}} COCOS</h2>
+            >{{$formatNumber(cocosCount, { maximumSignificantDigits: 7 }) || 0}} COCOS ({{$t('title.test')}})</h2>
             <div class="btn-group" style="justify-content: space-around;">
               <el-button class="gradual-button charge" @click="goRecharge">{{$t('button.recharge')}}</el-button>
               <el-button class="gradual-button charge" @click="goTransfer">{{$t('button.transfer')}}</el-button>
@@ -386,6 +386,7 @@ export default {
   },
   created() {
     // this.loadAccount();
+    this.nodeLists();
     this.loadData();
   },
   mounted() {
@@ -427,7 +428,6 @@ export default {
     ...mapMutations("wallet", ["addAccount", "removeAccount", "updateAccount"]),
     ...mapActions("account", [
       "loadAccount",
-      "loadTransactionsByNode",
       "loadingBCXAccount",
       "UserMessage",
       "UserAccount",
@@ -439,6 +439,7 @@ export default {
       "getAccounts",
       "setCurrentAccounts"
     ]),
+    ...mapActions(["nodeLists"]),
     ...mapActions("trans", ["queryTranferList"]),
     loadData() {
       this.loadingBCXAccount().then(res => {
@@ -453,7 +454,8 @@ export default {
           });
           this.getAccounts().then(res => {
             this.accounts = res.accounts;
-            this.setAccountType(res.current_account.mode);
+            // console.log(res.current_account.mode);
+            // this.setAccountType(res.current_account.mode);
           });
         }
         // this.UserAccount().then(res => {
@@ -529,31 +531,35 @@ export default {
       this.$router.push({ name: "importAccount" });
     },
     removeCurrentAccount(formName) {
-      if (this.accountType === "account") {
-        this.logoutBCXAccount().then(res => {
-          if (res.code === 1) {
-            this.setLogin(false);
-            this.setIsAccount(false);
-            this.setAccount({
-              account: "",
-              password: ""
-            });
-            this.$router.replace({ name: "initAccount" });
-          }
+      Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
+        this.setLogin(false);
+        this.setIsAccount(false);
+        this.setAccount({
+          account: "",
+          password: ""
         });
-      } else {
-        this.deleteWallet().then(res => {
-          if (res.code === 1) {
-            this.setLogin(false);
-            this.setIsAccount(false);
-            this.setAccount({
-              account: "",
-              password: ""
-            });
-            this.$router.replace({ name: "initAccount" });
-          }
-        });
-      }
+        this.$router.replace({ name: "initAccount" });
+      });
+      // if (this.accountType === "account") {
+      //   this.logoutBCXAccount().then(res => {
+      //     if (res.code === 1) {
+      //       this.setLogin(false);
+      //       this.setIsAccount(false);
+      //       this.setAccount({
+      //         account: "",
+      //         password: ""
+      //       });
+      //       this.$router.replace({ name: "initAccount" });
+      //     }
+      //   });
+      // } else {
+      //   this.deleteWallet().then(res => {
+      //     if (res.code === 1) {
+
+      //       this.$router.replace({ name: "initAccount" });
+      //     }
+      //   });
+      // }
 
       // this.$refs[formName].validate(valid => {
       //   if (valid) {
@@ -644,7 +650,7 @@ export default {
         this.setTranferList({
           limit: 5,
           startId: "1.11.0",
-          endId: ""
+          endId: "1.11.0"
         });
         await this.queryTranferList().then(res => {
           this.tranfers = this.tranfers.concat(res);
@@ -675,21 +681,21 @@ export default {
       //   this.total = result.length;
       //   this.transactionsAll = result;
       // }
-      // if (this.transactions.length === this.total) {
-      //   $state.complete();
-      // } else {
-      //   this.transactions = this.transactions.concat(
-      //     this.transactionsAll.slice(
-      //       this.transactions.length,
-      //       this.transactions.length + 10
-      //     )
-      //   );
-      //   $state.loaded();
-      // }
-      // this.$store.commit("loading", false);
-      // this.$nextTick(() => {
-      //   this.transactionsScroller.update(this.$refs.scrollWrapper);
-      // });
+      if (this.transactions.length === this.total) {
+        $state.complete();
+      } else {
+        this.transactions = this.transactions.concat(
+          this.transactionsAll.slice(
+            this.transactions.length,
+            this.transactions.length + 10
+          )
+        );
+        $state.loaded();
+      }
+      this.$store.commit("loading", false);
+      this.$nextTick(() => {
+        this.transactionsScroller.update(this.$refs.scrollWrapper);
+      });
     },
     refreshTransactions() {
       this.pageVo.page = 1;

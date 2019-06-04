@@ -35,6 +35,8 @@ export default {
         root: true
       })
       try {
+        console.log(rootState.cocosAccount);
+
         let resData;
         await NewBCX.createAccountWithPassword({
           account: rootState.cocosAccount.accounts,

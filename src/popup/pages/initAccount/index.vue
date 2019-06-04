@@ -86,8 +86,12 @@ export default {
   computed: {
     ...mapState(["currentCreateAccount"])
   },
+  mounted() {
+    this.nodeLists();
+  },
   methods: {
     ...mapMutations("wallet", ["addAccount"]),
+    ...mapActions(["nodeLists"]),
     ...mapMutations([
       "setCurrentAccount",
       "setCurrentCreateAccount",

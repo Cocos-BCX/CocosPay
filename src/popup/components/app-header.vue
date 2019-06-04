@@ -10,7 +10,7 @@
     >
       <a class="network-toggle">
         <span class="network-icon"></span>
-        <span class="network-name">{{ $t(`networkName.${currentNetwork.type}`)}}</span>
+        <span class="network-name">{{ choose.name }}</span>
         <span class="network-arrow">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
             <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"></path>
@@ -18,10 +18,10 @@
         </span>
       </a>
       <div class="network-dropdown" v-show="showNetworkDropdown">
-        <a @click="changeNetwork(network)" v-for="network in networks" :key="network.id">
+        <a @click="changeNetwork(network)" v-for="(network,index) in nodes" :key="index">
           <span class="network-dropdown-icon">
             <svg
-              v-if="currentNetwork.id === network.id"
+              v-if="network.ws === choose.ws"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="-2 -1.5 24 24"
               width="24"
@@ -47,7 +47,7 @@
               ></path>
             </svg>
           </span>
-          <span>{{ $t(`networkName.${network.type}`)}}</span>
+          <span>{{network.name}}</span>
         </a>
       </div>
     </div>
@@ -60,25 +60,44 @@
 <script>
 import { mapState } from "vuex";
 import vClickOutside from "v-click-outside";
+import Storage from "../../lib/storage";
+import bcx from "../utils/bcx";
+let NewBCX = bcx.getBCXWithState();
 export default {
   data() {
     return {
-      showNetworkDropdown: false
+      showNetworkDropdown: false,
+      nodes: [],
+      choose: ""
     };
   },
   computed: {
-    ...mapState(["route", "currentNetwork", "networks"])
+    ...mapState(["route", "currentNetwork"])
   },
   directives: {
     clickOutside: vClickOutside.directive
+  },
+  mounted() {
+    this.nodes = Storage.get("node");
+    this.choose = Storage.get("choose_node");
   },
   methods: {
     onClickOutside() {
       this.showNetworkDropdown = false;
     },
     changeNetwork(network) {
-      this.$store.commit("setCurrentNetwork", network);
-      this.refreshData();
+      NewBCX.switchAPINode({
+        url: network.ws
+      }).then(res => {
+        if (res.code === 1) {
+          this.choose = network;
+          Storage.set("choose_node", network);
+        } else {
+          this.$kalert({
+            message: this.$i18n.t("alert.changeFail")
+          });
+        }
+      });
     },
     goSettings() {
       this.$router.push({ name: "settings" });

@@ -43,9 +43,7 @@ export default {
       // }
     };
   },
-  mounted() {
-    console.log("unlock");
-  },
+  mounted() {},
   computed: {
     ...mapState("wallet", ["accounts", "pwdhash", "password"]),
     ...mapState(["accountType", "cocosAccount"])
@@ -67,7 +65,6 @@ export default {
       });
       if (this.accountType === "wallet") {
         this.unlockAccount().then(res => {
-          console.log(res);
           this.setAccount({
             account: this.cocosAccount.accounts,
             password: ""
