@@ -19,13 +19,13 @@ module.exports = {
     page: 'pages/background.html'
   },
   content_scripts: [{
-    js: ['js/vendor.js', 'js/inject.js'],
+    js: ['js/cocospay.js', 'js/inject.js'],
     run_at: 'document_start',
     matches: ['<all_urls>'],
     all_frames: true
   }],
   content_security_policy: "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  web_accessible_resources: ['js/vendor.js', 'js/content.js']
+  web_accessible_resources: ['js/cocospay.js', 'js/content.js']
   // "externally_connectable": {
   //   "matches": ["*://127.0.0.1:9000/*"]
   // }

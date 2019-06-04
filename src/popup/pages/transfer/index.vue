@@ -20,9 +20,9 @@
         <el-select class="no-border" v-model="formData.token" style="width: 100%;">
           <el-option
             v-for="(item, index) in coins"
-            :value="item.coin"
+            :value="item.coin + $t('title.test')"
             :key="index"
-            :label="item.coin"
+            :label="item.coin + $t('title.test')"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -53,7 +53,8 @@
             <div class="label money-label">{{$t('label.amount')}}</div>
             <div class="content money-content">
               <span>{{formData.amount}}</span>
-              {{this.formData.token}}
+              {{formData.token}}
+              <span class="test-coin">({{$t('title.test')}})</span>
             </div>
           </div>
           <el-button class="full-btn" type="primary" @click="surePay">{{$t('button.surePay')}}</el-button>
@@ -110,7 +111,7 @@ export default {
       formData: {
         from: "",
         to: "",
-        token: "",
+        token: "COCOS" + this.$t("title.test"),
         amount: 0
       },
       formRules: {

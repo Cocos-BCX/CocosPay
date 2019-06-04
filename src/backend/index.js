@@ -91,7 +91,7 @@ export default class Background {
             nameOrId: payload.payload.nameOrId,
             functionName: payload.payload.functionName,
             valueList: payload.payload.valueList,
-            runTime: payload.payload.runTime,
+            runtime: payload.payload.runtime,
             onlyGetFee: payload.payload.onlyGetFee,
           }).then((res) => {
             if (res.code !== 1) {
@@ -114,7 +114,6 @@ export default class Background {
   }
 
   static signature(sendResponse, payload) {
-
     this.lockGuard(sendResponse, async () => {
       try {
         const store = this._getLocalData()
@@ -123,13 +122,11 @@ export default class Background {
         })
         if (whiteList) {
           await this.getBCX().transferAsset({
-            fromAccount: payload.fromAccount,
-            toAccount: payload.toAccount,
-            amount: payload.amount,
-            memo: payload.memo,
-            assetId: payload.coin,
-            isPropose: false,
-            onlyGetFee: false
+            fromAccount: payload.payload.fromAccount,
+            toAccount: payload.payload.toAccount,
+            amount: payload.payload.amount,
+            memo: payload.payload.memo,
+            assetId: payload.payload.coin,
           }).then((res) => {
             if (res.code !== 1) {
               Alert({
@@ -137,7 +134,7 @@ export default class Background {
               })
             }
             sendResponse(res);
-            return true
+            return
           })
         } else {
           this.openDialog(sendResponse, payload)
@@ -192,7 +189,7 @@ export default class Background {
 
   static getAddress(sendResponse) {
     if (
-      this._getLocalData().cocosAccount &&
+      this._getLocalData() && this._getLocalData().cocosAccount &&
       this._getLocalData().cocosAccount.accounts
     ) {
       let account_name = this._getLocalData().cocosAccount.accounts

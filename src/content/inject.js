@@ -53,11 +53,11 @@ class Inject {
    * sync up with the one here.
    */
   _injectInteractionScript() {
-    this._injectscript('js/vendor.js', () => {
+    this._injectscript('js/cocospay.js', () => {
       this._injectscript('js/content.js')
     })
   }
-  /**
+  /**np
    * watch internal message (LocalStream)
    * waiting message from background or popup
    */
@@ -81,7 +81,6 @@ class Inject {
         stream.send(Message.widthPayload(message.type, message.payload), MessageTypes.INJECTED).catch(function (reason) {
           // Failed silently if receiveing end does not exist
         })
-
         if (message.payload.unlocked) {
           this.initCOCOSWeb()
         }
@@ -99,6 +98,7 @@ class Inject {
     // Always including the domain for every request.
     msg.domain = utils.strippedHost()
     let nonSyncMessage = Message.fromJson(msg)
+
     if (!stream.synced && (!msg.hasOwnProperty('type') || msg.type !== 'sync')) {
       stream.send(nonSyncMessage.error(Error.maliciousEvent()), MessageTypes.INJECTED)
       return
@@ -122,9 +122,9 @@ class Inject {
   }
   respond(message, payload) {
     if (!isReady) return
-    const response = (!payload || payload.hasOwnProperty('isError')) ?
+    const response = (payload && payload.hasOwnProperty('isError')) ?
       message.error(payload) :
-      message.respond(payload)
+      message.respond(payload);
     stream.send(response, MessageTypes.INJECTED)
   }
   sync(message) {
@@ -135,7 +135,7 @@ class Inject {
     stream.synced = true
   }
   callContract(message) {
-    InternalMessage.widthPayload(InternalMessageTypes.CALL_CONTRACT, message, message.resolver)
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.CALL_CONTRACT, message, message.resolver)
       .send().then(res => {
         this.respond(message, res)
       })
@@ -170,7 +170,9 @@ class Inject {
         node
       }), MessageTypes.INJECTED)
       isReady = true
-    } catch (e) {}
+    } catch (e) {
+      console.log('init CocosPay Fail')
+    }
   }
 }
 // eslint-disable-next-line

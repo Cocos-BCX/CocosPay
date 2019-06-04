@@ -12,6 +12,7 @@ import Storage from '../lib/storage'
  * This is just a helper to manage resolving fake-async
  * requests using browser messaging.
  */
+
 class DanglingResolver {
   constructor(_id, _resolve, _reject) {
     this.id = _id
@@ -46,13 +47,6 @@ class BcxWeb {
     this.BCX.getAccountInfo = getAccountInfo
   }
 
-  static getAccountInfo(message) {
-    // console.log(message);
-    // message.payload.domain = utils.strippedHost()
-    _send(MessageTypes.GET_ACCOUNT_INFO, message)
-  }
-
-
   static setAddress(account_name) {
     this.account_name = account_name
   }
@@ -60,6 +54,12 @@ class BcxWeb {
   static callContractFunction(message) {
     message.payload.domain = utils.strippedHost()
     _send(MessageTypes.CALL_CONTRACT, message)
+  }
+
+  static getAccountInfo(message) {
+    // console.log(message);
+    // message.payload.domain = utils.strippedHost()
+    _send(MessageTypes.GET_ACCOUNT_INFO, message)
   }
 
   static tranferCount(message) {
@@ -94,18 +94,18 @@ const _send = (_type, _payload) => {
   })
 }
 
+function getAccountInfo(message) {
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.GET_ACCOUNT_INFO, message))
+  })
+}
+
 
 function tranferCount(message) {
   return new Promise((resolve, reject) => {
     resolve(_send(MessageTypes.SIGNATURE, message))
   })
   // _send(MessageTypes.SIGNATURE, message)
-}
-
-function getAccountInfo(message) {
-  return new Promise((resolve, reject) => {
-    resolve(_send(MessageTypes.GET_ACCOUNT_INFO, message))
-  })
 }
 
 function callContractFunction(message) {
@@ -161,15 +161,15 @@ export default class Content {
   initCOCOSWeb(message) {
     // console.log('CocosPay init initCOCOSWeb')
     const payload = message.payload
-    // if (payload.account_name) {
-    BcxWeb.setBCX(bcxWeb)
-    BcxWeb.setAddress(payload.account_name)
-    BcxWeb.setTransferAsset(tranferCount)
-    BcxWeb.setCallContractFunction(callContractFunction)
-    BcxWeb.setCallContractFunction(callContractFunction)
-    BcxWeb.BCX.account_name = payload.account_name
-    window.BcxWeb = BcxWeb.BCX
-    // }
+    if (payload.account_name) {
+      BcxWeb.setBCX(bcxWeb)
+      BcxWeb.setAddress(payload.account_name)
+      BcxWeb.setTransferAsset(tranferCount)
+      BcxWeb.setCallContractFunction(callContractFunction)
+      BcxWeb.setGetAccountInfo(getAccountInfo)
+      BcxWeb.BCX.account_name = payload.account_name
+      window.BcxWeb = BcxWeb.BCX
+    }
     eventQueue.forEach(({
       resolve,
       reject,

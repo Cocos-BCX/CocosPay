@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "aes-js": "^3.1.1",
-    "axios": "^0.17.0",
+    "axios": "^0.17.1",
     "babel-polyfill": "^6.26.0",
     "bigi": "^1.4.2",
     "bignumber.js": "^7.2.1",
@@ -29,9 +29,7 @@
     "js-sha3": "^0.8.0",
     "jssha": "^2.3.1",
     "lodash": "^4.17.4",
-    "pbkdf2": "^3.0.17",
     "perfect-scrollbar": "^1.4.0",
-    "tcomb": "^3.2.29",
     "uuid": "^3.3.2",
     "v-click-outside": "^2.0.1",
     "validator": "^10.8.0",
@@ -53,7 +51,6 @@
     "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
-    "archiver": "^2.1.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
     "babel-loader": "^7.1.2",
@@ -63,7 +60,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.26.0",
-    "bcxjs-api": "^1.4.14",
+    "bcxjs-api": "^1.4.18",
     "bcxjs-cores": "^1.0.2",
     "buble": "^0.16.0",
     "buble-loader": "^0.4.1",

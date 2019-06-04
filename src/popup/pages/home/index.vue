@@ -112,7 +112,7 @@
             <img class="eos-logo" src="/icons/logo-middle.png">
             <h2
               class="eos-style mt15"
-            >{{$formatNumber(cocosCount, { maximumSignificantDigits: 7 }) || 0}} COCOS ({{$t('title.test')}})</h2>
+            >{{$formatNumber(cocosCount, { maximumSignificantDigits: 7 }) || 0}} COCOS <span class="test-coin">({{$t('title.test')}})</span></h2>
             <div class="btn-group" style="justify-content: space-around;">
               <el-button class="gradual-button charge" @click="goRecharge">{{$t('button.recharge')}}</el-button>
               <el-button class="gradual-button charge" @click="goTransfer">{{$t('button.transfer')}}</el-button>

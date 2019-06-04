@@ -23,7 +23,7 @@
       <span class="action-eos">
         <span v-if="cocosAccount.accounts === data.parse_operations.to">+</span>
         <span v-else>-</span>
-        <span>{{data.parse_operations.amount}}</span>
+        <span>{{data.parse_operations.amount}}<span class="test-coin">({{$t('title.test')}})</span></span>
       </span>
     </div>
   </div>
