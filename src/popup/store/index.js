@@ -155,7 +155,23 @@ export default new Vuex.Store({
       } catch (e) {
         console.log(e);
       }
-    }
+    },
+    async init({
+      commit
+    }) {
+      try {
+        commit('loading', true, {
+          root: true
+        })
+        await NewBCX.init().then((res) => {
+          commit('loading', false, {
+            root: true
+          })
+        })
+      } catch (e) {
+        return e
+      }
+    },
   },
   plugins: [createPersistedState()]
 })

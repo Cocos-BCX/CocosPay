@@ -43,12 +43,15 @@ export default {
       // }
     };
   },
-  mounted() {},
+  mounted() {
+    this.init()
+  },
   computed: {
     ...mapState("wallet", ["accounts", "pwdhash", "password"]),
     ...mapState(["accountType", "cocosAccount"])
   },
   methods: {
+    ...mapActions(["init"]),
     ...mapMutations("wallet", ["setPassword", "upgradeAccounts"]),
     ...mapMutations(["upgradeCurrentAccount", "setAccount"]),
     ...mapActions("account", ["unlockAccount", "loginBCXAccount"]),

@@ -51,7 +51,7 @@
         <div class="info">
           <div class="info-label">{{$t('label.ptamount')}}</div>
           <div class="info-content">
-            <span>{{prompt.data.payload.amount}}({{$t('title.test')}} {{prompt.data.payload.assetId}}</span>
+            <span>{{prompt.data.payload.amount}} {{prompt.data.payload.assetId}} ({{$t('title.test')}}) </span>
           </div>
         </div>
       </div>
