@@ -35,8 +35,6 @@ export default {
         root: true
       })
       try {
-        console.log(rootState.cocosAccount);
-
         let resData;
         await NewBCX.createAccountWithPassword({
           account: rootState.cocosAccount.accounts,
@@ -72,9 +70,9 @@ export default {
           })
           resData = res;
           if (res.code !== 1) {
-            Alert({
-              message: CommonJs.getI18nMessages(I18n).error[res.code]
-            })
+            // Alert({
+            //   message: CommonJs.getI18nMessages(I18n).error[res.code]
+            // })
           } else {
             commit('setAccountType', '', {
               root: true
@@ -166,15 +164,18 @@ export default {
           commit('loading', false, {
             root: true
           })
-          if (res.code !== 1) {
-            Alert({
-              message: CommonJs.getI18nMessages(I18n).error[res.code]
-            })
+          if (res.code !== 1 && !rootState.loginNoAlert) {
+            // Alert({
+            //   message: CommonJs.getI18nMessages(I18n).error[res.code]
+            // })
           } else {
             commit('setIsAccount', false, {
               root: true
             })
           }
+          commit('setLoginNoAlert', false, {
+            root: true
+          })
           resData = res
         })
         return resData

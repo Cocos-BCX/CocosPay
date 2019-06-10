@@ -86,7 +86,7 @@ export default class NewBCX {
         chain_id: Node.chainId,
       }, ],
       faucet_url: faucetUrl,
-      auto_reconnect: true,
+      auto_reconnect: false,
       worker: false,
     })
     Storage.set('choose_node', Node)

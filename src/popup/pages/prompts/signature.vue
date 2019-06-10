@@ -51,7 +51,7 @@
         <div class="info">
           <div class="info-label">{{$t('label.ptamount')}}</div>
           <div class="info-content">
-            <span>{{prompt.data.payload.amount}} {{prompt.data.payload.assetId}} ({{$t('title.test')}}) </span>
+            <span>{{prompt.data.payload.amount}} {{prompt.data.payload.assetId}} ({{$t('title.test')}})</span>
           </div>
         </div>
       </div>
@@ -165,19 +165,19 @@ export default {
       NotificationService.close();
     },
     contractAccept() {
-      if (this.joinContractWhiteList) {
-        let white = {
-          id: IdGenerator.numeric(24),
-          nameOrId: this.prompt.data.payload.nameOrId,
-          domain: this.prompt.domain,
-          functionName: this.prompt.data.payload.functionName,
-          createTime: this.$moment().format("x")
-        };
-        this.addContractWhiteList(white);
-      }
       this.callContractFunction(this.prompt.data.payload)
         .then(res => {
           this.prompt.responder({ accepted: true, res: res });
+          if (this.joinContractWhiteList) {
+            let white = {
+              id: IdGenerator.numeric(24),
+              nameOrId: this.prompt.data.payload.nameOrId,
+              domain: this.prompt.domain,
+              functionName: this.prompt.data.payload.functionName,
+              createTime: this.$moment().format("x")
+            };
+            this.addContractWhiteList(white);
+          }
           NotificationService.close();
         })
         .catch(err => {
@@ -192,19 +192,19 @@ export default {
         amount: this.prompt.data.payload.amount,
         memo: ""
       });
-      if (this.joinWhiteList) {
-        // 加入白名单
-        let white = {
-          id: IdGenerator.numeric(24),
-          address: this.prompt.data.payload.toAccount,
-          domain: this.prompt.domain,
-          createTime: this.$moment().format("x")
-        };
-        this.addWhiteList(white);
-      }
       this.tranferBCX()
         .then(res => {
           this.prompt.responder({ accepted: true, res: res });
+          if (this.joinWhiteList) {
+            // 加入白名单
+            let white = {
+              id: IdGenerator.numeric(24),
+              address: this.prompt.data.payload.toAccount,
+              domain: this.prompt.domain,
+              createTime: this.$moment().format("x")
+            };
+            this.addWhiteList(white);
+          }
           NotificationService.close();
         })
         .catch(err => {

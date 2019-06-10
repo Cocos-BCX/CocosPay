@@ -10,6 +10,8 @@ import * as InternalMessageTypes from '../../messages/InternalMessageTypes'
 import utils from '../../lib/utils'
 import Storage from "../../lib/storage";
 import axios from "axios";
+import bcx from '../utils/bcx'
+let NewBCX = bcx.getBCXWithState();
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -53,7 +55,8 @@ export default new Vuex.Store({
     isAccount: false,
     cocosCount: '',
     callback: '',
-    accountType: ''
+    accountType: '',
+    loginNoAlert: false,
   },
   mutations: {
     loading(state, loading) {
@@ -74,6 +77,9 @@ export default new Vuex.Store({
     },
     setCocosCount(state, cocos) {
       state.cocosCount = cocos
+    },
+    setLoginNoAlert(state, loginNoAlert) {
+      state.loginNoAlert = loginNoAlert
     },
     setAccountType(state, accountType) {
       state.accountType = accountType

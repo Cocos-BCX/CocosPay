@@ -4,7 +4,8 @@ import utils from '../../../lib/utils'
 import Alert from '../../components/kalert/function'
 import bcx from '../../utils/bcx'
 let NewBCX = bcx.getBCXWithState();
-
+import CommonJs from '../../config/common'
+import I18n from '../../languages'
 export default {
   namespaced: true,
   state: {
@@ -55,6 +56,11 @@ export default {
     },
     removeWhiteList(state, white) {
       state.whiteList = state.whiteList.filter(ele => {
+        return ele.id !== white.id
+      })
+    },
+    removeContractWhiteList(state, white) {
+      state.contractWhiteList = state.contractWhiteList.filter(ele => {
         return ele.id !== white.id
       })
     },
@@ -198,9 +204,9 @@ export default {
           })
           resData = res
           if (res.code !== 1) {
-            Alert({
-              message: CommonJs.getI18nMessages(I18n).error[res.code]
-            })
+            // Alert({
+            //   message: CommonJs.getI18nMessages(I18n).error[res.code]
+            // })
           }
         })
         return resData
@@ -227,8 +233,6 @@ export default {
           // })
         }, 10000)
         let resData
-        console.log(rootState.cocosAccount);
-        console.log(rootState.privateKeys);
         await NewBCX.importPrivateKey({
           privateKey: rootState.privateKeys,
           password: rootState.cocosAccount.passwords

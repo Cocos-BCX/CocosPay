@@ -63,6 +63,7 @@ import vClickOutside from "v-click-outside";
 import Storage from "../../lib/storage";
 import bcx from "../utils/bcx";
 let NewBCX = bcx.getBCXWithState();
+import BCX from "bcxjs-api";
 export default {
   data() {
     return {
@@ -78,7 +79,9 @@ export default {
     clickOutside: vClickOutside.directive
   },
   mounted() {
-    this.nodes = Storage.get("node");
+    this.nodes = Storage.get("node").concat(
+      Storage.get("add_node") ? Storage.get("add_node") : []
+    );
     this.choose = Storage.get("choose_node");
   },
   methods: {
@@ -86,17 +89,59 @@ export default {
       this.showNetworkDropdown = false;
     },
     changeNetwork(network) {
-      NewBCX.switchAPINode({
-        url: network.ws
-      }).then(res => {
-        if (res.code === 1) {
-          this.choose = network;
-          Storage.set("choose_node", network);
-        } else {
-          this.$kalert({
-            message: this.$i18n.t("alert.changeFail")
-          });
-        }
+      if (network.chainId === Storage.get("choose_node").chainId) {
+        NewBCX.switchAPINode({
+          url: network.ws
+        }).then(res => {
+          if (res.code === 1) {
+            this.$kalert({
+              message: this.$i18n.t("alert.modifySuccess")
+            });
+            this.choose = network;
+            Storage.set("choose_node", network);
+          }
+        });
+      } else {
+        let Node = network;
+        this.init(Node);
+        NewBCX.init({ refresh: true }).then(res => {
+          if (res.code !== 1) {
+            this.$kalert({
+              message: this.$i18n.t(`error[${res.code}]`)
+            });
+            this.init(this.nodes[0]);
+            NewBCX.init({ refresh: true }).then(change => {
+              NewBCX.switchAPINode({
+                url: this.nodes[0].ws
+              }).then(change => {});
+            });
+          } else {
+            this.$kalert({
+              message: this.$i18n.t("alert.modifySuccess")
+            });
+            this.choose = network;
+          }
+        });
+      }
+    },
+    init(Node) {
+      let NewBCX = new BCX({
+        default_ws_node: Node.ws,
+        ws_node_list: [
+          {
+            url: Node.ws,
+            name: Node.name
+          }
+        ],
+        networks: [
+          {
+            core_asset: "COCOS",
+            chain_id: Node.chainId
+          }
+        ],
+        faucet_url: Node.url,
+        auto_reconnect: false,
+        worker: false
       });
     },
     goSettings() {

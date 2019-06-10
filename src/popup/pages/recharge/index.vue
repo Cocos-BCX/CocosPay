@@ -1,58 +1,64 @@
 <template>
   <section>
-    <app-header @refresh="refreshAccount" />
+    <app-header @refresh="refreshAccount"/>
     <section class="app-container">
       <navigation :title="$t('title.recharge')"/>
       <div class="text-center mt20">{{$t('message.rechargeOnly')}}</div>
-      <qriously class="qr-code text-center mt20" foreground="#9328d4" :value="cocosAccount.accounts ? cocosAccount.accounts : ''" :size="130" />
+      <qriously class="qr-code text-center mt20" foreground="#0191ee" :value="account" :size="130"/>
       <div class="small-tip code text-center">{{currentAccount.accounts}}</div>
-      <el-button class="full-btn mt40" type="primary" v-clipboard:copy="cocosAccount.accounts"
-                 v-clipboard:success="copySuccess"
-                 v-clipboard:error="copyError">{{$t('button.copyAddress')}}</el-button>
+      <el-button
+        class="full-btn mt40"
+        type="primary"
+        v-clipboard:copy="cocosAccount.accounts"
+        v-clipboard:success="copySuccess"
+        v-clipboard:error="copyError"
+      >{{$t('button.copyAddress')}}</el-button>
     </section>
   </section>
 </template>
 <script>
-import Navigation from '../../components/navigation'
-import AppHeader from '../../components/app-header'
-import { mapState, mapActions } from 'vuex'
+import Navigation from "../../components/navigation";
+import AppHeader from "../../components/app-header";
+import { mapState, mapActions } from "vuex";
 export default {
   components: {
     Navigation,
     AppHeader
   },
-  data () {
-    return { }
+  data() {
+    return {
+      account: {}
+    };
+  },
+  mounted() {
+    this.account = JSON.stringify({
+      address: this.cocosAccount.accounts
+    });
   },
   computed: {
-    ...mapState([
-      'currentAccount',
-      "cocosAccount"
-    ])
+    ...mapState(["currentAccount", "cocosAccount"])
   },
   methods: {
-    ...mapActions('account', [
-      'loadAccount'
-    ]),
-    copySuccess () {
+    ...mapActions("account", ["loadAccount"]),
+    copySuccess() {
       this.$kalert({
-        message: this.$i18n.t('alert.copySuccess')
-      })
+        message: this.$i18n.t("alert.copySuccess")
+      });
     },
-    copyError () {
+    copyError() {
       this.$kalert({
-        message: this.$i18n.t('alert.copyFail')
-      })
+        message: this.$i18n.t("alert.copyFail")
+      });
     },
-    refreshAccount () {
-      this.loadAccount()
+    refreshAccount() {
+      this.loadAccount();
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
-.qr-code{
-  background-image: url('/images/qrcode-bg.png');
+.qr-code {
+  background-image: url("/images/qrcode-bg.png");
   background-repeat: no-repeat;
   background-position: center center;
   width: 160px;

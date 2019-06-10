@@ -37,11 +37,11 @@ export default {
   data() {
     return {
       links: [
-        // {
-        //   route: "network",
-        //   name: this.$i18n.t("settings.network"),
-        //   icon: "network"
-        // },
+        {
+          route: "network",
+          name: this.$i18n.t("settings.network"),
+          icon: "bianji"
+        },
         {
           route: "whiteList",
           name: this.$i18n.t("settings.whiteList"),

@@ -8,7 +8,7 @@
       :z-index="9"
       :drawer-width="300"
     >
-      <div class="drawer-content" slot="drawer">
+      <div class="drawer-content">
         <!-- drawer-content -->
         <div class="token-title">
           <span class="token-user">{{currentAccount.name}}</span>
@@ -110,9 +110,12 @@
           </div>
           <div class="eos-main">
             <img class="eos-logo" src="/icons/logo-middle.png">
-            <h2
-              class="eos-style mt15"
-            >{{$formatNumber(cocosCount, { maximumSignificantDigits: 7 }) || 0}} COCOS <span class="test-coin">({{$t('title.test')}})</span></h2>
+            <h2 class="eos-style mt15">
+              {{$formatNumber(cocosCount, { maximumSignificantDigits: 7 }) || 0}} COCOS
+              <span
+                class="test-coin"
+              >({{$t('title.test')}})</span>
+            </h2>
             <div class="btn-group" style="justify-content: space-around;">
               <el-button class="gradual-button charge" @click="goRecharge">{{$t('button.recharge')}}</el-button>
               <el-button class="gradual-button charge" @click="goTransfer">{{$t('button.transfer')}}</el-button>
@@ -126,7 +129,7 @@
               <div class="log-title">{{$t('title.history')}}</div>
             </div>
           </div>
-          <div class="translate-container">
+          <!-- <div class="translate-container">
             <div
               id="perfect-scroll-wrapper"
               class="translate-list"
@@ -143,6 +146,12 @@
                 <span slot="no-results"></span>
               </infinite-loading>
               <p v-if="noResult" class="no-result text-center">{{$t('message.noRecord')}}</p>
+            </div> 
+          </div>-->
+          <div class="translate-container">
+            <div id="perfect-scroll-wrapper" class="translate-list">
+              <action-item v-for="(item, index) in tranfers" :data="item" :key="index"/>
+              <p class="no-result text-center">{{$t('message.noMoreRecord')}}</p>
             </div>
           </div>
           <k-dialog
@@ -310,8 +319,9 @@ export default {
     let accountDetail = "";
     let accountDetailTail = "";
     if ("developmentNewTest" === process.env.NODE_ENV) {
-      accountDetail = "http://easywallet.pro/terminal/#/account";
-      accountDetailTail = "lastOperation";
+      accountDetail = "https://explorer.cocosbcx.io/address";
+      // accountDetail = "http://easywallet.pro/terminal/#/account";
+      // accountDetailTail = "lastOperation";
     } else {
       accountDetail = "https://explorer.cocosbcx.io/address";
     }
@@ -360,7 +370,9 @@ export default {
       tranfers: [],
       accounts: [],
       active_private_key: "",
-      owner_private_key: ""
+      owner_private_key: "",
+      is_lock: false,
+      timer: null
     };
   },
   computed: {
@@ -390,10 +402,10 @@ export default {
     this.loadData();
   },
   mounted() {
-    this.tokenScroller = new PerfectScrollbar("#tokenScroller", {
-      minScrollbarLength: 40,
-      maxScrollbarLength: 40
-    });
+    // this.tokenScroller = new PerfectScrollbar("#tokenScroller", {
+    //   minScrollbarLength: 40,
+    //   maxScrollbarLength: 40
+    // });
     this.transactionsScroller = new PerfectScrollbar(
       "#perfect-scroll-wrapper",
       {
@@ -405,10 +417,10 @@ export default {
     //   minScrollbarLength: 40
     // });
     // fix drawer issue
-    const drawerWrap = document.getElementsByClassName("drawer-wrap")[0];
-    this.$nextTick(() => {
-      drawerWrap.style.left = "-300px";
-    });
+    // const drawerWrap = document.getElementsByClassName("drawer-wrap")[0];
+    // this.$nextTick(() => {
+    //   drawerWrap.style.left = "-300px";
+    // });
   },
   directives: {
     clickOutside: vClickOutside.directive
@@ -439,14 +451,18 @@ export default {
       "getAccounts",
       "setCurrentAccounts"
     ]),
-    ...mapActions(["nodeLists"]),
+    ...mapActions(["nodeLists", "init"]),
     ...mapActions("trans", ["queryTranferList"]),
     loadData() {
       this.loadingBCXAccount().then(res => {
         if (res && res.locked) {
           this.$router.replace({ name: "unlock" });
         } else {
-          // this.transferList();
+          this.transferList();
+          clearInterval(this.timer);
+          this.timer = setInterval(() => {
+            this.transferList();
+          }, 5000);
           this.UserAccount().then(res => {
             if (res.code === 1) {
               this.setCocosCount(res.data.COCOS);
@@ -455,7 +471,7 @@ export default {
           this.getAccounts().then(res => {
             this.accounts = res.accounts;
             // console.log(res.current_account.mode);
-            // this.setAccountType(res.current_account.mode);
+            this.setAccountType(res.current_account.mode);
           });
         }
         // this.UserAccount().then(res => {
@@ -467,8 +483,8 @@ export default {
     },
     transferList() {
       this.setTranferList({
-        limit: 5,
-        startId: "",
+        limit: 50,
+        startId: "1.11.0",
         endId: ""
       });
       this.queryTranferList().then(res => {
@@ -648,9 +664,9 @@ export default {
     async infiniteHandler($state) {
       if (!this.tranfers.length) {
         this.setTranferList({
-          limit: 5,
+          limit: 50,
           startId: "1.11.0",
-          endId: "1.11.0"
+          endId: ""
         });
         await this.queryTranferList().then(res => {
           this.tranfers = this.tranfers.concat(res);
@@ -705,6 +721,9 @@ export default {
         this.$refs.infiniteLoading.$emit("$InfiniteLoading:reset");
       });
     }
+  },
+  destroyed() {
+    if (this.timer) clearInterval(this.timer);
   },
   watch: {
     transactions: function(transactions) {

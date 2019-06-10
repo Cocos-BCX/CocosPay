@@ -1,60 +1,29 @@
 <template>
   <section>
-    <setting-navigation :title="$t('settings.network')" />
+    <setting-navigation :title="$t('settings.network')"/>
     <section class="app-container bg-gray pt20" id="network">
       <section class="network-card">
-        <section class="title">{{$t('label.mainNetwork')}}</section>
-        <section>
-          <el-form :model="mainNet" label-position="left" label-width="95px" class="small-from">
-            <el-form-item label="Full Node" prop="fullNodeUrl">
-              <el-input class="no-border" v-model="mainNet.fullNodeUrl" size="small"></el-input>
-            </el-form-item>
-            <el-form-item label="Solidity Node" prop="solidityUrl">
-              <el-input class="no-border" v-model="mainNet.solidityUrl" size="small"></el-input>
-            </el-form-item>
-            <el-form-item label="Event Grid" prop="eventGridUrl">
-              <el-input class="no-border" v-model="mainNet.eventGridUrl" size="small"></el-input>
-            </el-form-item>
-            <section class="btn-group">
-              <el-button class="gradual-button" style="margin-right: 20px;" @click="resetNetwork('main')">{{$t('button.reset')}}</el-button>
-              <el-button type="primary" @click="saveNetwork('main')">{{$t('button.save')}}</el-button>
-            </section>
-          </el-form>
-        </section>
-      </section>
-      <section class="network-card mt20">
-        <section class="title">{{$t('label.testNetwork')}}</section>
-        <el-form :model="testNet" label-position="left" label-width="95px" class="small-from">
-          <el-form-item label="Full Node" prop="fullNodeUrl">
-            <el-input class="no-border" v-model="testNet.fullNodeUrl" size="small"></el-input>
-          </el-form-item>
-          <el-form-item label="Solidity Node" prop="solidityUrl">
-            <el-input class="no-border" v-model="testNet.solidityUrl" size="small"></el-input>
-          </el-form-item>
-          <el-form-item label="Event Grid" prop="eventGridUrl">
-            <el-input class="no-border" v-model="testNet.eventGridUrl" size="small"></el-input>
-          </el-form-item>
-          <section class="btn-group">
-            <el-button class="gradual-button" style="margin-right: 20px;" @click="resetNetwork('test')">{{$t('button.reset')}}</el-button>
-            <el-button type="primary" @click="saveNetwork('test')">{{$t('button.save')}}</el-button>
-          </section>
-        </el-form>
-      </section>
-      <section class="network-card mt20">
         <section class="title">{{$t('label.customNet')}}</section>
-        <el-form :model="customNet" label-position="left" label-width="95px" class="small-from">
-          <el-form-item label="Full Node" prop="fullNodeUrl">
-            <el-input class="no-border" v-model="customNet.fullNodeUrl" size="small"></el-input>
+        <el-form :model="formData" label-position="left" label-width="95px" class="small-from">
+          <el-form-item label="Ws" prop="fullNodeUrl">
+            <el-input class="no-border" v-model="formData.ws" size="small"></el-input>
           </el-form-item>
-          <el-form-item label="Solidity Node" prop="solidityUrl">
-            <el-input class="no-border" v-model="customNet.solidityUrl" size="small"></el-input>
+          <el-form-item label="FaucetUrl" prop="solidityUrl">
+            <el-input class="face" v-model="formData.url" size="small"></el-input>
           </el-form-item>
-          <el-form-item label="Event Grid" prop="eventGridUrl">
-            <el-input class="no-border" v-model="customNet.eventGridUrl" size="small"></el-input>
+          <el-form-item label="ChainId" prop="eventGridUrl">
+            <el-input class="no-border" v-model="formData.chainId" size="small"></el-input>
+          </el-form-item>
+          <el-form-item label="Name" prop="eventGridUrl">
+            <el-input class="no-border" v-model="formData.name" size="small"></el-input>
           </el-form-item>
           <section class="btn-group">
-            <el-button class="gradual-button" style="margin-right: 20px;" @click="resetNetwork('custom')">{{$t('button.reset')}}</el-button>
-            <el-button type="primary" @click="saveNetwork('custom')">{{$t('button.save')}}</el-button>
+            <el-button
+              class="gradual-button"
+              style="margin-right: 20px;"
+              @click="resetNetwork()"
+            >{{$t('button.reset')}}</el-button>
+            <el-button type="primary" @click="saveNetwork()">{{$t('button.save')}}</el-button>
           </section>
         </el-form>
       </section>
@@ -62,121 +31,107 @@
   </section>
 </template>
 <script>
-import SettingNavigation from '../../components/setting-navigation'
-import defaultNetworks from '../../config/networks'
-import { mapMutations, mapState } from 'vuex'
-import PerfectScrollbar from 'perfect-scrollbar'
+import SettingNavigation from "../../components/setting-navigation";
+import { mapMutations, mapState } from "vuex";
+import { GetBCXWithState } from "../../utils/bcx";
+import PerfectScrollbar from "perfect-scrollbar";
+import Storage from "../../utils/storage";
+import BCX from "bcxjs-api";
 export default {
   components: {
     SettingNavigation
   },
-  data () {
+  data() {
     return {
       ps: null,
-      mainNet: {
-        type: 'MainNet',
-        fullNodeUrl: '',
-        solidityUrl: '',
-        eventGridUrl: ''
-      },
-      testNet: {
-        type: 'TestNet',
-        fullNodeUrl: '',
-        solidityUrl: '',
-        eventGridUrl: ''
-      },
       customNet: {
-        type: 'PrivateNet',
-        fullNodeUrl: '',
-        solidityUrl: '',
-        eventGridUrl: ''
-      }
-    }
+        type: "PrivateNet",
+        fullNodeUrl: "",
+        solidityUrl: "",
+        eventGridUrl: ""
+      },
+      nodes: [],
+      node: "",
+      choose: "",
+      formData: {
+        ws: "",
+        url: "",
+        chainId: "",
+        name: "",
+        type: 2
+      },
+      add: true
+    };
   },
   computed: {
-    ...mapState([
-      'currentNetwork',
-      'networks'
-    ])
+    ...mapState(["currentNetwork", "networks"])
   },
-  created () {
-    this.loadNetwork()
+  created() {
+    // this.loadNetwork();
   },
-  mounted () {
-    this.ps = new PerfectScrollbar('#network', {
+  mounted() {
+    this.ps = new PerfectScrollbar("#network", {
       minScrollbarLength: 40,
       maxScrollbarLength: 40
-    })
+    });
+    this.nodes = Storage.get("node").concat(
+      Storage.get("add_node") ? Storage.get("add_node") : []
+    );
+    this.choose = Storage.get("choose_node").ws;
   },
   methods: {
-    ...mapMutations([
-      'updateNetwork',
-      'setCurrentNetwork'
-    ]),
-    loadNetwork () {
-      this.mainNet = { ...this.networks.find(ele => ele.type === 'MainNet') }
-      this.testNet = { ...this.networks.find(ele => ele.type === 'TestNet') }
-      this.customNet = { ...this.networks.find(ele => ele.type === 'PrivateNet') }
+    ...mapMutations(["updateNetwork", "setCurrentNetwork"]),
+    resetNetwork(type) {
+      this.formData = {
+        ws: "",
+        url: "",
+        chainId: "",
+        name: "",
+        type: 2
+      };
     },
-    resetNetwork (type) {
-      switch (type) {
-        case 'main':
-          this.mainNet = { ...defaultNetworks.networks.find(ele => ele.type === 'MainNet') }
-          break
-        case 'test':
-          this.testNet = { ...defaultNetworks.networks.find(ele => ele.type === 'TestNet') }
-          break
-        case 'custom':
-          this.customNet = { ...defaultNetworks.networks.find(ele => ele.type === 'PrivateNet') }
-          break
+    saveNetwork() {
+      if (
+        !this.formData.ws ||
+        !this.formData.url ||
+        !this.formData.chainId ||
+        !this.formData.name
+      ) {
+        this.$kalert({
+          message: this.$i18n.t("error[101]")
+        });
+        return
       }
-    },
-    saveNetwork (type) {
-      switch (type) {
-        case 'main':
-          this.updateNetwork(this.mainNet)
-          this.updateCurrentNetwork(this.mainNet)
-          break
-        case 'test':
-          this.updateNetwork(this.testNet)
-          this.updateCurrentNetwork(this.testNet)
-          break
-        case 'custom':
-          this.updateNetwork(this.customNet)
-          this.updateCurrentNetwork(this.customNet)
-          break
-      }
-      this.loadNetwork()
-      this.$kalert({
-        message: this.$i18n.t('alert.modifySuccess')
-      })
-    },
-    updateCurrentNetwork (network) {
-      if (network.type === this.currentNetwork.type) {
-        this.setCurrentNetwork(network)
-      }
+      this.formData.type = 2;
+      let add_node = Storage.get("add_node") ? Storage.get("add_node") : [];
+      add_node.push(this.formData);
+      Storage.set("add_node", add_node);
+      this.nodes = Storage.get("node").concat(
+        Storage.get("add_node") ? Storage.get("add_node") : []
+      );
+      this.$router.push({ name: "home" });
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
-.app-container{
+.app-container {
   position: relative;
   height: 540px;
 }
-.network-card{
+.network-card {
   background-color: #fff;
   border: 1px solid #e6e6e6;
   padding: 15px;
-  .title{
+  .title {
     line-height: 40px;
   }
-  .btn-group{
+  .btn-group {
     position: relative;
     z-index: 9;
     display: flex;
     justify-content: space-between;
-    button{
+    button {
       width: 45%;
     }
   }

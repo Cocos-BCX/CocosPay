@@ -68,6 +68,8 @@ module.exports = {
   },
   // verify
   verify: {
+    accountType: '4-63-bit lowercase letter beginning + number',
+    passwordType: '8-12 digits, letters and special symbols',
     passwordNull: 'The password cannot be empty',
     passwordLength: 'The password should be no less than 8 bits long',
     passwordSure: 'Please enter your password again',
@@ -78,7 +80,9 @@ module.exports = {
     toAddressNull: 'Please enter the receiving address',
     tokenNull: 'Please select a Token',
     number: 'Please enter the number',
-    numberGtZero: 'Please enter a number greater than 0'
+    numberGtZero: 'Please enter a number greater than 0',
+    ownerKey: 'Owner key cannot transfer,Please import active key',
+    minimum: 'The minimum accuracy is',
   },
   // title
   title: {
@@ -162,6 +166,7 @@ module.exports = {
     ptpayment: 'Payment：',
     pttype: 'Type：',
     param: 'parameters',
+    memo: 'memo',
   },
   // settings
   settings: {

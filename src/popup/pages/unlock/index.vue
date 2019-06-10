@@ -44,7 +44,11 @@ export default {
     };
   },
   mounted() {
-    this.init()
+    this.init().then(res => {
+      this.getAccounts().then(res => {
+        this.setAccountType(res.current_account.mode);
+      });
+    });
   },
   computed: {
     ...mapState("wallet", ["accounts", "pwdhash", "password"]),
@@ -52,45 +56,63 @@ export default {
   },
   methods: {
     ...mapActions(["init"]),
-    ...mapMutations("wallet", ["setPassword", "upgradeAccounts"]),
-    ...mapMutations(["upgradeCurrentAccount", "setAccount"]),
+    ...mapMutations("wallet", [
+      "setPassword",
+      "upgradeAccounts",
+      "getAccounts"
+    ]),
+    ...mapMutations(["upgradeCurrentAccount", "setAccount","setLoginNoAlert"]),
     ...mapActions("account", ["unlockAccount", "loginBCXAccount"]),
+    ...mapActions("wallet", ["getAccounts"]),
     ...mapMutations([
       "upgradeCurrentAccount",
       "setAccount",
       "setLogin",
-      "setIsAccount"
+      "setIsAccount",
+      "setAccountType"
     ]),
     unlockWallet() {
+      if (!this.unlock) {
+        this.$kalert({
+          message: this.$i18n.t("verify.passwordNull")
+        });
+        return;
+      }
       this.setAccount({
         account: this.cocosAccount.accounts,
         password: this.unlock
       });
       if (this.accountType === "wallet") {
         this.unlockAccount().then(res => {
-          this.setAccount({
-            account: this.cocosAccount.accounts,
-            password: ""
-          });
           if (res.code === 1) {
+            this.setLoginNoAlert(true);
+            this.setAccount({
+              account: this.cocosAccount.accounts,
+              password: ""
+            });
             this.setIsAccount(true);
             this.setLogin(true);
             this.$router.push({ name: "home" });
+          } else {
+            this.AccountLock();
           }
         });
       } else {
-        this.loginBCXAccount().then(res => {
-          this.setAccount({
-            account: this.cocosAccount.accounts,
-            password: ""
-          });
-          if (res.code === 1) {
-            this.setIsAccount(true);
-            this.setLogin(true);
-            this.$router.push({ name: "home" });
-          }
-        });
+        this.AccountLock();
       }
+    },
+    AccountLock() {
+      this.loginBCXAccount().then(res => {
+        this.setAccount({
+          account: this.cocosAccount.accounts,
+          password: ""
+        });
+        if (res.code === 1) {
+          this.setIsAccount(true);
+          this.setLogin(true);
+          this.$router.push({ name: "home" });
+        }
+      });
     }
   }
 };

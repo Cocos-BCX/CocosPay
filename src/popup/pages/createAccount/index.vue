@@ -81,16 +81,18 @@
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
 import Navigation from "../../components/navigation";
+import { setTimeout } from "timers";
 export default {
   components: {
     Navigation
   },
   data() {
     const validatePass = (rule, value, callback) => {
+      let reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{8,12}$/;
       if (value === "") {
         callback(new Error(this.$i18n.t("verify.passwordNull")));
-      } else if (value.length < 8) {
-        callback(new Error(this.$i18n.t("verify.passwordLength")));
+      } else if (!reg.test(value)) {
+        callback(new Error(this.$i18n.t("verify.passwordType")));
       } else {
         callback();
       }
@@ -100,7 +102,7 @@ export default {
       if (value === "") {
         callback(new Error(this.$i18n.t("verify.accountNull")));
       } else if (!reg.test(value)) {
-        callback(new Error(this.$i18n.t("verify.accountReg")));
+        callback(new Error(this.$i18n.t("verify.accountType")));
       } else {
         callback();
       }
@@ -142,7 +144,13 @@ export default {
     this.type = this.$route.params.type;
   },
   methods: {
-    ...mapMutations(["setCurLng", "setAccount", "setLogin", "setIsAccount"]),
+    ...mapMutations([
+      "setCurLng",
+      "setAccount",
+      "setLogin",
+      "setIsAccount",
+      "loading"
+    ]),
     ...mapActions("account", [
       "loadBCXAccount",
       "loginBCXAccount",
@@ -161,7 +169,9 @@ export default {
       });
     },
     closedAccountDialog() {
-      this.$router.go(-1);
+      this.setIsAccount(true);
+      this.setLogin(true);
+      this.$router.replace({ name: "home" });
       this.accountKey = false;
     },
     createWallet(formName) {
@@ -169,33 +179,44 @@ export default {
         if (valid) {
           this.setAccount(this.formData);
           if (this.type === "account") {
-            this.loadBCXAccount().then(res => {
+            this.loading(true);
+            setTimeout(() => {
+              this.loading(false);
+              this.loadBCXAccount().then(res => {
+                if (res.code === 1) {
+                  this.setIsAccount(true);
+                  this.loginBCXAccount().then(res => {
+                    if (res.code === 1) {
+                      this.setAccount({
+                        account: this.formData.account,
+                        password: ""
+                      });
+                      this.setLogin(true);
+                      this.$router.push({ name: "home" });
+                    }
+                  });
+                }
+              });
+            }, 1500);
+          } else {
+            this.WalletBCXAccount().then(res => {
               if (res.code === 1) {
-                this.setIsAccount(true);
-                this.loginBCXAccount().then(res => {
+                this.loading(true);
+                setTimeout(() => {
                   this.setAccount({
                     account: this.formData.account,
                     password: ""
                   });
-                  this.setLogin(true);
-                  this.$router.push({ name: "home" });
-                });
-              }
-            });
-          } else {
-            this.WalletBCXAccount().then(res => {
-              if (res.code === 1) {
-                this.setAccount({
-                  account: this.formData.account,
-                  password: ""
-                });
-                this.OutPutKey().then(res => {
-                  if (res.code === 1) {
-                    this.active_private_key = res.data.active_private_keys[0];
-                    this.owner_private_key = res.data.owner_private_keys[0];
-                    this.accountKey = true;
-                  }
-                });
+                  this.loading(false);
+                  this.OutPutKey().then(key => {
+                    if (key.code === 1) {
+                      this.active_private_key = key.data.active_private_keys[0];
+                      this.owner_private_key = key.data.owner_private_keys[0];
+                      this.accountKey = true;
+                      // this.$router.push({ name: "home" });
+                    }
+                  });
+                }, 1500);
               }
               // this.$route.go(-1);
               // this.setLogin(true);

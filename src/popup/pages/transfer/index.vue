@@ -1,5 +1,5 @@
 <template>
-  <section class="app-container">
+  <section class="app-container transfers">
     <navigation :title="$t('title.transfer')"/>
     <el-form class="mt20" ref="form" :model="formData" :rules="formRules" label-position="top">
       <el-form-item :label="$t('label.ownerAccount')" prop="from">
@@ -16,21 +16,28 @@
       <el-form-item :label="$t('label.toAddress')" prop="to">
         <el-input class="no-border" v-model="formData.to"></el-input>
       </el-form-item>
-      <el-form-item :label="$t('label.tokenType')" prop="token">
+      <el-form-item :label="$t('label.tokenType') + $t('title.test')" prop="token">
         <el-select class="no-border" v-model="formData.token" style="width: 100%;">
           <el-option
             v-for="(item, index) in coins"
-            :value="item.coin + $t('title.test')"
+            :value="item.coin"
             :key="index"
-            :label="item.coin + $t('title.test')"
+            :label="item.coin"
           ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('label.amount')" prop="amount">
         <el-input class="no-border" v-model="formData.amount" type="text"></el-input>
       </el-form-item>
+      <el-form-item :label="$t('label.memo')" prop="memo">
+        <el-input class="no-border" v-model="formData.memo" type="text"></el-input>
+      </el-form-item>
       <el-form-item>
-        <el-button class="full-btn" type="primary" @click="onSubmit('form')">{{$t('button.send')}}</el-button>
+        <el-button
+          class="full-btn mt10"
+          type="primary"
+          @click="onSubmit('form')"
+        >{{$t('button.send')}}</el-button>
       </el-form-item>
     </el-form>
     <!-- transfer info -->
@@ -56,6 +63,10 @@
               {{formData.token}}
               <span class="test-coin">({{$t('title.test')}})</span>
             </div>
+          </div>
+          <div class="item">
+            <div class="label">{{$t('label.memo')}}</div>
+            <div class="content">{{formData.memo}}</div>
           </div>
           <el-button class="full-btn" type="primary" @click="surePay">{{$t('button.surePay')}}</el-button>
         </div>
@@ -102,6 +113,10 @@ export default {
         callback(new Error(this.$i18n.t("verify.number")));
       } else if (value * 1 > 0) {
         callback();
+      } else if (!/^(-?\d+)(\.\d{1,5})?$/.test(value)) {
+        this.$kalert({
+          message: this.$i18n.t("verify.minimum") + "5"
+        });
       } else {
         callback(new Error(this.$i18n.t("verify.numberGtZero")));
       }
@@ -111,9 +126,11 @@ export default {
       formData: {
         from: "",
         to: "",
-        token: "COCOS" + this.$t("title.test"),
-        amount: 0
+        token: "COCOS",
+        amount: 0,
+        memo: ""
       },
+      owner: false,
       formRules: {
         from: { validator: frommValidator, trigger: "blur" },
         to: { validator: toValidator, trigger: "blur" },
@@ -126,7 +143,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["cocosAccount", "cocosCount"]),
+    ...mapState(["cocosAccount", "cocosCount", "accountType"]),
     ...mapState("wallet", ["accounts"]),
     ...mapState("trans", ["tranferInfo"]),
     payName() {
@@ -156,18 +173,30 @@ export default {
         }
       }
     });
+    if (this.accountType === "wallet") {
+      this.OutPutKey().then(key => {
+        if (key.data.owner_private_keys && key.data.owner_private_keys.length) {
+          this.owner = true;
+        }
+      });
+    }
     // this.loadTokens()
   },
   methods: {
     ...mapMutations("trans", ["setAccount"]),
     ...mapActions("trans", ["tranferBCX", "queryTranferRate"]),
-    ...mapActions("account", ["UserAccount"]),
+    ...mapActions("account", ["UserAccount", "OutPutKey"]),
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.queryTranferRate({ feeAssetId: this.formData.token }).then(
             res => {
-              if (
+              if (this.owner) {
+                this.$kalert({
+                  message: this.$i18n.t("verify.ownerKey")
+                });
+                return;
+              } else if (
                 res.data.fee_amount + Number(this.formData.amount) <
                 this.cocosCount
               ) {
@@ -187,7 +216,7 @@ export default {
         toAccount: this.formData.to,
         coin: this.formData.token,
         amount: this.formData.amount,
-        memo: ""
+        memo: this.formData.memo
       });
       this.popup = false;
       this.tranferBCX().then(res => {
@@ -197,7 +226,7 @@ export default {
           });
           setTimeout(() => {
             this.$router.push({ name: "home" });
-          }, 2000);
+          }, 400);
         }
       });
     },

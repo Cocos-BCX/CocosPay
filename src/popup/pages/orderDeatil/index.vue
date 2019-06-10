@@ -4,7 +4,7 @@
     <div class="eos-main">
       <h2
         class="eos-style cocos mt20"
-      >{{cocosAccount.accounts === orderDeatil.parse_operations.from ? '-' : '+'}}{{orderDeatil.parse_operations.amount}}</h2>
+      >{{cocosAccount.accounts === orderDeatil.parse_operations.from ? '-' : '+'}}{{orderDeatil.parse_operations.amount}}({{$t('title.test')}})</h2>
       <div class="des">{{$t('alert.tranferSuccess')}}</div>
       <div class="translate-log-title mt40">
         <div class="log-line"></div>
@@ -61,6 +61,11 @@
         <div class="key">{{$t('label.tradeTime')}}:</div>
         <div class="name">{{orderDeatil.date}}</div>
       </div>
+
+      <div class="title mt20" v-if="memo">
+        <div class="key">{{$t('label.memo')}}:</div>
+        <div class="name">{{orderDeatil.memo.data.text}}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -68,20 +73,29 @@
 import Navigation from "../../components/navigation";
 import utils from "../../../lib/utils";
 import { mapState, mapActions, mapMutations } from "vuex";
+import bcx from "../../utils/bcx";
+let NewBCX = bcx.getBCXWithState();
 export default {
   components: {
     Navigation
   },
   data() {
     return {
-      orderDeatil: {}
+      orderDeatil: {},
+      memo:false
     };
   },
   computed: {
     ...mapState(["cocosAccount"])
   },
-  created() {
+  async created() {
     this.orderDeatil = this.$route.params;
+    this.orderDeatil.memo = this.orderDeatil.raw_data.memo
+      ? await NewBCX.decodeMemo(this.orderDeatil.raw_data.memo)
+      : "";
+    if(this.orderDeatil.memo){
+      this.memo = true;
+    }
   },
   methods: {
     copySuccess() {

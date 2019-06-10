@@ -93,6 +93,12 @@ export default {
         return e
       }
     },
+    async decodeMemo({
+      commit,
+      state
+    }, params) {
+      return await NewBCX.decodeMemo(params)
+    },
     async callContractFunction({
       commit,
       state
@@ -133,6 +139,9 @@ export default {
           endId: state.tranferList.endId || ''
         }
         if (!params.endId) {
+          delete params.endId
+        }
+        if (!params.startId) {
           delete params.endId
         }
         await NewBCX.queryAccountOperations(params).then((res) => {

@@ -109,7 +109,8 @@ export default {
       });
     },
     logout() {
-      this.deleteWallet();
+      Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
+      });
       // this.logoutBCXAccount();
     },
     copyError() {

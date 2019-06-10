@@ -69,6 +69,8 @@ module.exports = {
   // verify
   verify: {
     passwordNull: '密码不能为空',
+    accountType: '4-63位小写字母开头+数字',
+    passwordType: '8-12位数字、字母和特殊符号任两种',
     passwordLength: '密码长度不能少于8位',
     passwordSure: '请再次输入密码',
     passwordMatch: '两次输入密码不一致',
@@ -78,7 +80,9 @@ module.exports = {
     toAddressNull: '请选择付款账户',
     tokenNull: '请选择付款账户',
     number: '请输入数字',
-    numberGtZero: '请输入大于0的数字'
+    numberGtZero: '请输入大于0的数字',
+    ownerKey: 'owner_key不能进行转账，请导入active_key',
+    minimum: '最小精度为',
   },
   // title
   title: {
@@ -162,7 +166,7 @@ module.exports = {
     ptpayment: '支付：',
     pttype: '类型：',
     param: '参数',
-
+    memo: '备注',
   },
   // settings
   settings: {
