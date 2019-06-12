@@ -12,7 +12,7 @@
       >{{$t('button.createAccount')}}</el-button>
       <section class="small-tip text-center mt10">{{$t('message.recommendNew')}}</section>
       <div class="text-center mt15">
-        <img src="/images/import-account.png">
+        <img src="/images/import-account.png" @click="deleteWallet">
       </div>
       <el-button
         class="full-btn mt30"
@@ -109,8 +109,9 @@ export default {
       });
     },
     logout() {
-      Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
-      });
+      Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(
+        res => {}
+      );
       // this.logoutBCXAccount();
     },
     copyError() {

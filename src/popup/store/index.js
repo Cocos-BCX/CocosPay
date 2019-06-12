@@ -61,6 +61,9 @@ export default new Vuex.Store({
   mutations: {
     loading(state, loading) {
       state.loading = loading
+      setTimeout(() => {
+        state.loading = false
+      }, 10000)
     },
     setKeys(state, privateKeys) {
       state.privateKeys = privateKeys
@@ -169,7 +172,9 @@ export default new Vuex.Store({
         commit('loading', true, {
           root: true
         })
-        await NewBCX.init().then((res) => {
+        await NewBCX.init({
+          refresh: true,
+        }).then((res) => {
           commit('loading', false, {
             root: true
           })
@@ -178,6 +183,18 @@ export default new Vuex.Store({
         return e
       }
     },
+    async subscribeTo({}) {
+      try {
+        await NewBCX.subscribeToRpcConnectionStatus({
+          callback: (back) => {
+            console.info("subscribeToRpcConnectionStatusCallback index", back);
+          }
+        })
+      } catch (e) {
+
+      }
+    }
+
   },
   plugins: [createPersistedState()]
 })

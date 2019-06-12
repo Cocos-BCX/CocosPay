@@ -21,6 +21,7 @@ import './importElement'
 import 'vue2-simplert/dist/simplert.common.css'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 import './styles/global.scss'
+import i18n from './languages/index'
 // 路由守卫
 import './router/guard'
 // const router = createRouter()
@@ -38,13 +39,13 @@ Vue.use(VueClipboard)
 
 Vue.component('v-icon', Icon)
 
-const i18n = new VueI18n({
-  locale: store.state.curLng,
-  messages: {
-    'zh': require('./languages/zh'),
-    'en': require('./languages/en')
-  }
-})
+// const i18n = new VueI18n({
+//   locale: store.state.curLng,
+//   messages: {
+//     'zh': require('./languages/zh'),
+//     'en': require('./languages/en')
+//   }
+// })
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({

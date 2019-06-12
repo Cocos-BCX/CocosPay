@@ -58,7 +58,7 @@
   </header>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import vClickOutside from "v-click-outside";
 import Storage from "../../lib/storage";
 import bcx from "../utils/bcx";
@@ -85,6 +85,8 @@ export default {
     this.choose = Storage.get("choose_node");
   },
   methods: {
+    ...mapActions("wallet", ["getAccounts"]),
+    ...mapMutations(["setAccountType"]),
     onClickOutside() {
       this.showNetworkDropdown = false;
     },
@@ -97,6 +99,12 @@ export default {
             this.$kalert({
               message: this.$i18n.t("alert.modifySuccess")
             });
+            // NewBCX.init().then(() => {
+            //   this.getAccounts().then(account => {
+            //     // console.log(res.current_account.mode);
+            //     this.setAccountType(account.current_account.mode);
+            //   });
+            // });
             this.choose = network;
             Storage.set("choose_node", network);
           }
@@ -104,13 +112,19 @@ export default {
       } else {
         let Node = network;
         this.init(Node);
-        NewBCX.init({ refresh: true }).then(res => {
+        NewBCX.init({
+          refresh: true,
+          subscribeToRpcConnectionStatusCallback: back => {}
+        }).then(res => {
           if (res.code !== 1) {
             this.$kalert({
               message: this.$i18n.t(`error[${res.code}]`)
             });
             this.init(this.nodes[0]);
-            NewBCX.init({ refresh: true }).then(change => {
+            NewBCX.init({
+              refresh: true,
+              subscribeToRpcConnectionStatusCallback: back => {}
+            }).then(change => {
               NewBCX.switchAPINode({
                 url: this.nodes[0].ws
               }).then(change => {});

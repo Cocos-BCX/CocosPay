@@ -119,7 +119,7 @@ export default {
       commit,
       state,
       rootState
-    }) {
+    }, params) {
       commit('loading', true, {
         root: true
       })
@@ -133,6 +133,12 @@ export default {
             root: true
           })
           if (res.code !== 1) {
+            if (params && params.has_import) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).verify.walletPassword
+              })
+              return
+            }
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]
             })

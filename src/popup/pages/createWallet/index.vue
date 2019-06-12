@@ -67,7 +67,7 @@ export default {
     };
     return {
       wallet: null,
-      lang: "zh",
+      lang: "中文",
       formData: {
         password: "",
         repassword: ""
@@ -76,14 +76,14 @@ export default {
         password: [{ validator: validatePass, trigger: "blur" }],
         repassword: [{ validator: validatePass2, trigger: "blur" }]
       },
-      langs: [{ name: "中文", value: "zh" }, { name: "English", value: "en" }]
+      langs: [{ name: "中文", value: "ZH" }, { name: "English", value: "EN" }]
     };
   },
   computed: {
     ...mapState(["curLng"])
   },
   created() {
-    this.lang = this.curLng;
+    this.lang = this.$i18n.locale;
   },
   methods: {
     ...mapMutations(["setCurLng"]),
@@ -100,6 +100,9 @@ export default {
     changeLanguage() {
       this.setCurLng(this.lang);
       this.$i18n.locale = this.lang;
+      this.$kalert({
+        message: this.$i18n.t("alert.modifySuccess")
+      });
     }
   }
 };

@@ -2,7 +2,7 @@
   <section class="prompt-body">
     <div class="prompt-main" v-if="locked">
       <div class="signature-title">
-        <span class="title">{{$t('title.locked')}}</span>
+        <span class="title">{{languages.title.locked}}</span>
       </div>
       <!-- <div class="signature-info">
         <div class="info">
@@ -24,67 +24,67 @@
       </div>-->
 
       <section class="prompt-actions">
-        <el-button class="cancel-btn text-center" @click="denied">{{$t('button.reject')}}</el-button>
+        <el-button class="cancel-btn text-center" @click="denied">{{languages.button.reject}}</el-button>
         <el-button
           class="confirm-btn text-center"
           type="primary"
           @click="denied"
-        >{{$t('button.confirm')}}</el-button>
+        >{{languages.button.confirm}}</el-button>
       </section>
     </div>
     <div class="prompt-main" v-if="!locked && prompt.data.type === 'signature'">
       <div class="signature-title">
-        <span class="title">{{$t('title.signature')}}</span>
+        <span class="title">{{languages.title.signature}}</span>
         <span class="signature-user">{{cocosAccount.accounts}}</span>
       </div>
       <div class="signature-info">
         <div class="info">
-          <div class="info-label">{{$t('label.ptsite')}}</div>
+          <div class="info-label">{{languages.label.ptsite}}</div>
           <div class="info-content">{{prompt.data.domain}}</div>
         </div>
         <div class="info">
-          <div class="info-label">{{$t('label.ptaddress')}}</div>
+          <div class="info-label">{{languages.label.ptaddress}}</div>
           <div class="info-content">
             <span>{{prompt.data.payload.toAccount}}</span>
           </div>
         </div>
         <div class="info">
-          <div class="info-label">{{$t('label.ptamount')}}</div>
+          <div class="info-label">{{languages.label.ptamount}}</div>
           <div class="info-content">
-            <span>{{prompt.data.payload.amount}} {{prompt.data.payload.assetId}} ({{$t('title.test')}})</span>
+            <span>{{prompt.data.payload.amount}} {{prompt.data.payload.assetId}} ({{languages.title.test}})</span>
           </div>
         </div>
       </div>
-      <el-checkbox class="join-option" v-model="joinWhiteList">{{$t('message.joinWhiteList')}}</el-checkbox>
+      <el-checkbox class="join-option" v-model="joinWhiteList">{{languages.message.joinWhiteList}}</el-checkbox>
       <section class="prompt-actions">
-        <el-button class="cancel-btn text-center" @click="denied">{{$t('button.reject')}}</el-button>
+        <el-button class="cancel-btn text-center" @click="denied">{{languages.button.reject}}</el-button>
         <el-button
           class="confirm-btn text-center"
           type="primary"
-          @click="accepted"
-        >{{$t('button.confirm')}}</el-button>
+          @click.once="accepted"
+        >{{languages.button.confirm}}</el-button>
       </section>
     </div>
     <div class="prompt-main" v-if="!locked && prompt.data.type === 'callContract'">
       <div class="signature-title">
-        <span class="title">{{$t('title.signature')}}</span>
+        <span class="title">{{languages.title.signature}}</span>
         <span class="signature-user">{{cocosAccount.accounts}}</span>
       </div>
       <div class="signature-info">
         <div class="info">
-          <div class="info-label">{{$t('label.ptsite')}}</div>
+          <div class="info-label">{{languages.label.ptsite}}</div>
           <div class="info-content">{{prompt.data.domain}}</div>
         </div>
         <div class="info">
-          <div class="info-label">{{$t('label.contract')}}</div>
+          <div class="info-label">{{languages.label.contract}}</div>
           <div class="info-content">{{prompt.data.payload.nameOrId}}</div>
         </div>
         <div class="info">
-          <div class="info-label">{{$t('label.operation')}}</div>
+          <div class="info-label">{{languages.label.operation}}</div>
           <div class="info-content">{{prompt.data.payload.functionName}}</div>
         </div>
         <div class="info">
-          <div class="info-label">{{$t('label.param')}}</div>
+          <div class="info-label">{{languages.label.param}}</div>
           <div class="info-content">{{prompt.data.payload.valueList}}</div>
         </div>
         <!-- <div class="info">
@@ -103,14 +103,14 @@
       <el-checkbox
         class="join-option"
         v-model="joinContractWhiteList"
-      >{{$t('message.joinWhiteList')}}</el-checkbox>
+      >{{languages.message.joinWhiteList}}</el-checkbox>
       <section class="prompt-actions">
-        <el-button class="cancel-btn text-center" @click="denied">{{$t('button.reject')}}</el-button>
+        <el-button class="cancel-btn text-center" @click="denied">{{languages.button.reject}}</el-button>
         <el-button
           class="confirm-btn text-center"
           type="primary"
-          @click="contractAccept"
-        >{{$t('button.confirm')}}</el-button>
+          @click.once="contractAccept"
+        >{{languages.button.confirm}}</el-button>
       </section>
     </div>
   </section>
@@ -121,6 +121,8 @@ import { mapState, mapActions, mapMutations } from "vuex";
 import NotificationService from "../../../services/NotificationService";
 import utils from "../../../lib/utils";
 import IdGenerator from "../../../lib/IdGenerator";
+import I18n from '../../languages'
+import CommonJs from '../../config/common'
 export default {
   data() {
     return {
@@ -130,7 +132,8 @@ export default {
       data: {},
       joinWhiteList: false,
       locked: true,
-      joinContractWhiteList: false
+      joinContractWhiteList: false,
+      languages:{}
     };
   },
   computed: {
@@ -139,6 +142,7 @@ export default {
     ...mapState("trans", ["tranferInfo"])
   },
   created() {
+    this.languages = CommonJs.getI18nMessages(I18n)
     // this.data = this.prompt.data;
     // this.data = this.prompt.data.signedTransaction.raw_data.contract[0]
   },

@@ -5,8 +5,8 @@
       ref="drawer"
       class="drawer"
       @mask-click="closeDrawer"
-      :z-index="9"
-      :drawer-width="300"
+      :z-index="-10"
+      :drawer-width="0"
     >
       <div class="drawer-content">
         <!-- drawer-content -->
@@ -396,7 +396,8 @@ export default {
     //   return network && network.AccountDetailUrl;
     // }
   },
-  created() {
+  async created() {
+    this.subscribeTo();
     // this.loadAccount();
     this.nodeLists();
     this.loadData();
@@ -451,7 +452,7 @@ export default {
       "getAccounts",
       "setCurrentAccounts"
     ]),
-    ...mapActions(["nodeLists", "init"]),
+    ...mapActions(["nodeLists", "init", "subscribeTo"]),
     ...mapActions("trans", ["queryTranferList"]),
     loadData() {
       this.loadingBCXAccount().then(res => {
@@ -468,9 +469,9 @@ export default {
               this.setCocosCount(res.data.COCOS);
             }
           });
+
           this.getAccounts().then(res => {
             this.accounts = res.accounts;
-            // console.log(res.current_account.mode);
             this.setAccountType(res.current_account.mode);
           });
         }
@@ -654,7 +655,7 @@ export default {
       this.$refs.drawer.toggle(true);
     },
     closeDrawer() {
-      this.$refs.drawer.toggle(false);
+      // this.$refs.drawer.toggle(false);
     },
     refreshAccount() {
       this.loadData();

@@ -61,7 +61,7 @@ export default {
       "upgradeAccounts",
       "getAccounts"
     ]),
-    ...mapMutations(["upgradeCurrentAccount", "setAccount","setLoginNoAlert"]),
+    ...mapMutations(["upgradeCurrentAccount", "setAccount", "setLoginNoAlert"]),
     ...mapActions("account", ["unlockAccount", "loginBCXAccount"]),
     ...mapActions("wallet", ["getAccounts"]),
     ...mapMutations([

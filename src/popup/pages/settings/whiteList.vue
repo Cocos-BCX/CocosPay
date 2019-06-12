@@ -51,7 +51,6 @@ export default {
       minScrollbarLength: 40,
       maxScrollbarLength: 40
     });
-    console.log(this.contractWhiteList);
   },
   methods: {
     ...mapMutations("wallet", ["removeWhiteList", "removeContractWhiteList"]),

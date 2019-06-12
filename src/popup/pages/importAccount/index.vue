@@ -55,7 +55,8 @@ export default {
     return {
       formData: {
         privateKey: "",
-        password: ""
+        password: "",
+        has_import: false
       },
       formRules: {
         privateKey: [{ validator: privateKeyPass, trigger: "blur" }],
@@ -65,6 +66,11 @@ export default {
   },
   computed: {
     ...mapState(["accounts", "temporaryKeys"])
+  },
+  mounted() {
+    this.getAccounts().then(res => {
+      if(res.accounts && res.accounts.length) this.has_import = true;
+    })
   },
   methods: {
     ...mapMutations([
@@ -76,6 +82,9 @@ export default {
       "settemporaryKeys"
     ]),
     ...mapActions("account", ["setPrivateKeys", "logoutBCXAccount"]),
+    ...mapActions("wallet", [
+      "getAccounts",
+    ]),
     importAccount(formName) {
       // this.logoutBCXAccount();
       this.$refs[formName].validate(async valid => {
@@ -86,7 +95,7 @@ export default {
           //   password: this.formData.password
           // });
           this.settemporaryKeys(this.formData.password);
-          this.setPrivateKeys().then(res => {
+          this.setPrivateKeys({has_import:this.has_import}).then(res => {
             if (res.code === 1) {
               this.setKeys("");
               this.setAccount({

@@ -118,7 +118,7 @@ export default {
     };
     return {
       wallet: null,
-      lang: "zh",
+      lang: "中文",
       formData: {
         account: "",
         password: ""
@@ -133,14 +133,14 @@ export default {
       owner_private_key: "",
       active_private_key: "",
       accountKey: false,
-      langs: [{ name: "中文", value: "zh" }, { name: "English", value: "en" }]
+      langs: [{ name: "中文", value: "ZH" }, { name: "English", value: "EN" }]
     };
   },
   computed: {
     ...mapState(["curLng", "accounts", "passwords"])
   },
   created() {
-    this.lang = this.curLng;
+    this.lang = this.$i18n.locale;
     this.type = this.$route.params.type;
   },
   methods: {
@@ -197,7 +197,7 @@ export default {
                   });
                 }
               });
-            }, 1500);
+            }, 2000);
           } else {
             this.WalletBCXAccount().then(res => {
               if (res.code === 1) {
@@ -216,7 +216,7 @@ export default {
                       // this.$router.push({ name: "home" });
                     }
                   });
-                }, 1500);
+                }, 2000);
               }
               // this.$route.go(-1);
               // this.setLogin(true);
@@ -228,6 +228,9 @@ export default {
     changeLanguage() {
       this.setCurLng(this.lang);
       this.$i18n.locale = this.lang;
+      this.$kalert({
+        message: this.$i18n.t("alert.modifySuccess")
+      });
     }
   }
 };

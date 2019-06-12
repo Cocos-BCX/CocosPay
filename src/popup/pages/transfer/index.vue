@@ -111,14 +111,13 @@ export default {
     const amountValidator = (rule, value, callback) => {
       if (!/^(-?\d+)(\.\d+)?$/.test(value)) {
         callback(new Error(this.$i18n.t("verify.number")));
-      } else if (value * 1 > 0) {
-        callback();
       } else if (!/^(-?\d+)(\.\d{1,5})?$/.test(value)) {
-        this.$kalert({
-          message: this.$i18n.t("verify.minimum") + "5"
-        });
+        // this.$kalert({
+        //   message: this.$i18n.t("verify.minimum") + "5"
+        // });
+        callback(new Error(this.$i18n.t("verify.minimum") + "5"));
       } else {
-        callback(new Error(this.$i18n.t("verify.numberGtZero")));
+        callback();
       }
     };
     return {

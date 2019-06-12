@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   // placeholder
   placeholder: {
     account: '输入账户',
@@ -83,6 +83,7 @@ module.exports = {
     numberGtZero: '请输入大于0的数字',
     ownerKey: 'owner_key不能进行转账，请导入active_key',
     minimum: '最小精度为',
+    walletPassword: '请输入最初的钱包密码',
   },
   // title
   title: {
@@ -196,6 +197,7 @@ module.exports = {
     PrivateNet: '自定义网络'
   },
   error: {
+    '-11': '请先登录',
     0: '操作失败',
     101: '参数缺失',
     1011: '参数错误',

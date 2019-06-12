@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   // placeholder
   placeholder: {
     account: 'Enter account',
@@ -83,6 +83,7 @@ module.exports = {
     numberGtZero: 'Please enter a number greater than 0',
     ownerKey: 'Owner key cannot transfer,Please import active key',
     minimum: 'The minimum accuracy is',
+    walletPassword: 'Please enter the original wallet password',
   },
   // title
   title: {
@@ -195,6 +196,7 @@ module.exports = {
     PrivateNet: 'PrivateNet'
   },
   error: {
+    '-11': 'Please login first',
     0: 'failed',
     101: 'Parameter is missing',
     1011: 'Parameter error',

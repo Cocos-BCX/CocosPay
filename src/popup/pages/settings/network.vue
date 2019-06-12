@@ -33,10 +33,8 @@
 <script>
 import SettingNavigation from "../../components/setting-navigation";
 import { mapMutations, mapState } from "vuex";
-import { GetBCXWithState } from "../../utils/bcx";
 import PerfectScrollbar from "perfect-scrollbar";
 import Storage from "../../utils/storage";
-import BCX from "bcxjs-api";
 export default {
   components: {
     SettingNavigation
@@ -100,7 +98,7 @@ export default {
         this.$kalert({
           message: this.$i18n.t("error[101]")
         });
-        return
+        return;
       }
       this.formData.type = 2;
       let add_node = Storage.get("add_node") ? Storage.get("add_node") : [];
