@@ -124,6 +124,33 @@ export default {
         return e
       }
     },
+    //查询链上资产精度
+    async queryAsset({
+      commit
+    }, params) {
+      try {
+        commit('loading', true, {
+          root: true
+        })
+        let resData
+        await NewBCX.queryAssets({
+          assetId: params.assetId,
+        }).then(res => {
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res.data[0]
+        })
+        return resData
+      } catch (e) {
+
+      }
+    },
     //查询转账列表
     async queryTranferList({
       commit,

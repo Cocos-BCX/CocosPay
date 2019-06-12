@@ -99,12 +99,12 @@ export default {
             this.$kalert({
               message: this.$i18n.t("alert.modifySuccess")
             });
-            // NewBCX.init().then(() => {
-            //   this.getAccounts().then(account => {
-            //     // console.log(res.current_account.mode);
-            //     this.setAccountType(account.current_account.mode);
-            //   });
-            // });
+            NewBCX.init().then(() => {
+              this.getAccounts().then(account => {
+                // console.log(res.current_account.mode);
+                this.setAccountType(account.current_account.mode);
+              });
+            });
             this.choose = network;
             Storage.set("choose_node", network);
           }
@@ -127,7 +127,14 @@ export default {
             }).then(change => {
               NewBCX.switchAPINode({
                 url: this.nodes[0].ws
-              }).then(change => {});
+              }).then(change => {
+                NewBCX.init().then(() => {
+                  this.getAccounts().then(account => {
+                    // console.log(res.current_account.mode);
+                    this.setAccountType(account.current_account.mode);
+                  });
+                });
+              });
             });
           } else {
             this.$kalert({

@@ -60,7 +60,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.26.0",
-    "bcxjs-api": "^1.4.30",
+    "bcxjs-api": "^1.4.31",
     "bcxjs-cores": "^1.0.2",
     "buble": "^0.16.0",
     "buble-loader": "^0.4.1",

@@ -39,6 +39,7 @@ export default {
         await NewBCX.createAccountWithPassword({
           account: rootState.cocosAccount.accounts,
           password: rootState.cocosAccount.passwords,
+          autoLogin: true
         }).then((res) => {
           commit('loading', false, {
             root: true
@@ -124,7 +125,17 @@ export default {
         root: true
       })
       try {
-        let resData;
+        var resData
+        setTimeout(() => {
+          commit('loading', false, {
+            root: true
+          })
+          if (!resData) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[150]
+            })
+          }
+        }, 8000)
         await NewBCX.importPrivateKey({
           privateKey: rootState.privateKeys,
           password: rootState.temporaryKeys,
@@ -137,7 +148,10 @@ export default {
               Alert({
                 message: CommonJs.getI18nMessages(I18n).verify.walletPassword
               })
-              return
+              resData = {
+                code: 150
+              }
+              return resData
             }
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]

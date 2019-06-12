@@ -204,6 +204,12 @@ export default {
       white-space: nowrap;
       max-width: 160px;
     }
+    .coin {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 150px;
+    }
     .status-icon {
       position: absolute;
       top: 50%;

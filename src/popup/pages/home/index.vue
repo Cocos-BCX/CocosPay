@@ -103,7 +103,7 @@
                 </li>
                 <li @click="removePasswordShow = true">
                   <img class="icon-img" src="/images/delete-icon.png">
-                  {{$t('button.removeAccount')}}
+                  {{accountType === 'account' ? $t('button.removeAccount') : $t('button.deletedWallet')}}
                 </li>
               </ul>
             </div>
@@ -223,25 +223,36 @@
       :visible.sync="accountKey"
     >
       <div class="warm-tip">{{$t('message.savePrivateKey')}}</div>
-      <section v-if="active_private_key" class="privateKey-area">{{active_private_key}}</section>
-      <!-- <div class="warm-tip">{{$t('message.privateKeyOnly')}}</div> -->
-      <el-button
-        class="full-btn"
-        type="primary"
-        v-clipboard:copy="active_private_key"
-        v-clipboard:success="copySuccess"
-        v-clipboard:error="copyError"
-        v-if="active_private_key"
-      >{{$t('button.copy')}}active_key</el-button>
-      <section v-if="owner_private_key" class="privateKey-area">{{owner_private_key}}</section>
-      <el-button
-        class="full-btn"
-        type="primary"
-        v-clipboard:copy="owner_private_key"
-        v-clipboard:success="copySuccess"
-        v-clipboard:error="copyError"
-        v-if="owner_private_key"
-      >{{$t('button.copy')}}owner_key</el-button>
+      <section v-if="!privateKey">
+        <el-input
+          class="mt30"
+          :placeholder="accountType === 'account' ? $t('placeholder.password') : $t('placeholder.temporary')"
+          v-model="password"
+          type="password"
+        ></el-input>
+        <el-button class="mt30 full-btn" type="primary" @click="getLogin()">{{$t('button.confirm')}}</el-button>
+      </section>
+      <section v-if="privateKey">
+        <section v-if="active_private_key" class="privateKey-area">{{active_private_key}}</section>
+        <!-- <div class="warm-tip">{{$t('message.privateKeyOnly')}}</div> -->
+        <el-button
+          class="full-btn"
+          type="primary"
+          v-clipboard:copy="active_private_key"
+          v-clipboard:success="copySuccess"
+          v-clipboard:error="copyError"
+          v-if="active_private_key"
+        >{{$t('button.copy')}}active_key</el-button>
+        <section v-if="owner_private_key" class="privateKey-area">{{owner_private_key}}</section>
+        <el-button
+          class="full-btn"
+          type="primary"
+          v-clipboard:copy="owner_private_key"
+          v-clipboard:success="copySuccess"
+          v-clipboard:error="copyError"
+          v-if="owner_private_key"
+        >{{$t('button.copy')}}owner_key</el-button>
+      </section>
     </el-dialog>
     <el-dialog top="15vh" center :title="$t('title.editorAccount')" :visible.sync="nameVisible">
       <el-form :model="newAccountNameForm" :rules="newAccountNameRules">
@@ -372,7 +383,9 @@ export default {
       active_private_key: "",
       owner_private_key: "",
       is_lock: false,
-      timer: null
+      timer: null,
+      password: "",
+      privateKey: false
     };
   },
   computed: {
@@ -397,16 +410,9 @@ export default {
     // }
   },
   async created() {
-    this.subscribeTo();
-    // this.loadAccount();
-    this.nodeLists();
-    this.loadData();
+
   },
   mounted() {
-    // this.tokenScroller = new PerfectScrollbar("#tokenScroller", {
-    //   minScrollbarLength: 40,
-    //   maxScrollbarLength: 40
-    // });
     this.transactionsScroller = new PerfectScrollbar(
       "#perfect-scroll-wrapper",
       {
@@ -414,6 +420,15 @@ export default {
         maxScrollbarLength: 40
       }
     );
+    this.subscribeTo();
+    // this.loadAccount();
+    this.nodeLists();
+    this.loadData();
+    // this.tokenScroller = new PerfectScrollbar("#tokenScroller", {
+    //   minScrollbarLength: 40,
+    //   maxScrollbarLength: 40
+    // });
+
     // this.accountScroller = new PerfectScrollbar("#accountScroller", {
     //   minScrollbarLength: 40
     // });
@@ -445,7 +460,9 @@ export default {
       "UserMessage",
       "UserAccount",
       "OutPutKey",
-      "logoutBCXAccount"
+      "logoutBCXAccount",
+      "loginBCXAccount",
+      "unlockAccount"
     ]),
     ...mapActions("wallet", [
       "deleteWallet",
@@ -454,7 +471,12 @@ export default {
     ]),
     ...mapActions(["nodeLists", "init", "subscribeTo"]),
     ...mapActions("trans", ["queryTranferList"]),
+    scrollTopList() {
+      this.$el.querySelector("#perfect-scroll-wrapper").scrollTop = 0;
+      this.transactionsScroller.update();
+    },
     loadData() {
+      this.scrollTopList();
       this.loadingBCXAccount().then(res => {
         if (res && res.locked) {
           this.$router.replace({ name: "unlock" });
@@ -494,16 +516,54 @@ export default {
     },
     //倒出私钥
     OutPutKeys() {
+      this.accountKey = true;
+      this.password = "";
+    },
+    showPrivateKey() {
       this.OutPutKey().then(res => {
         if (res.code === 1) {
           this.active_private_key = res.data.active_private_keys[0];
           this.owner_private_key = res.data.owner_private_keys[0];
-          this.accountKey = true;
+          this.privateKey = true;
         }
       });
     },
+    getLogin() {
+      if (!this.password) {
+        this.$kalert({
+          message: this.$i18n.t("verify.passwordNull")
+        });
+        return;
+      }
+      this.setAccount({
+        account: this.cocosAccount.accounts,
+        password: this.password
+      });
+      if (this.accountType === "account") {
+        this.loginBCXAccount().then(res => {
+          this.setAccount({
+            account: this.cocosAccount.accounts,
+            password: ""
+          });
+          if (res.code === 1) {
+            this.showPrivateKey();
+          }
+        });
+      } else {
+        this.unlockAccount().then(res => {
+          this.setAccount({
+            account: this.cocosAccount.accounts,
+            password: ""
+          });
+          if (res.code === 1) {
+            this.showPrivateKey();
+          }
+        });
+      }
+    },
     closedAccountDialog() {
       this.accountKey = false;
+      this.privateKey = false;
     },
     closedDialog() {
       this.setCurrentCreateAccount({ privateKey: "", address: "", name: "" });

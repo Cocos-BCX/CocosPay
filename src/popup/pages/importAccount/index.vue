@@ -46,7 +46,7 @@ export default {
       }
     };
     const privateKeyPass = (rule, value, callback) => {
-      if (value === "") {
+      if (value === "" || value.length < 50) {
         callback(new Error(this.$i18n.t("alert.illegalPrivateKey")));
       } else {
         callback();
@@ -69,8 +69,8 @@ export default {
   },
   mounted() {
     this.getAccounts().then(res => {
-      if(res.accounts && res.accounts.length) this.has_import = true;
-    })
+      if (res.accounts && res.accounts.length) this.has_import = true;
+    });
   },
   methods: {
     ...mapMutations([
@@ -82,9 +82,7 @@ export default {
       "settemporaryKeys"
     ]),
     ...mapActions("account", ["setPrivateKeys", "logoutBCXAccount"]),
-    ...mapActions("wallet", [
-      "getAccounts",
-    ]),
+    ...mapActions("wallet", ["getAccounts"]),
     importAccount(formName) {
       // this.logoutBCXAccount();
       this.$refs[formName].validate(async valid => {
@@ -95,7 +93,7 @@ export default {
           //   password: this.formData.password
           // });
           this.settemporaryKeys(this.formData.password);
-          this.setPrivateKeys({has_import:this.has_import}).then(res => {
+          this.setPrivateKeys({ has_import: this.has_import }).then(res => {
             if (res.code === 1) {
               this.setKeys("");
               this.setAccount({

@@ -68,6 +68,10 @@
             <div class="label">{{$t('label.memo')}}</div>
             <div class="content">{{formData.memo}}</div>
           </div>
+          <div class="item">
+            <div class="label">{{$t('label.charge')}}</div>
+            <div class="content">{{fee}}({{$t('title.test')}})</div>
+          </div>
           <el-button class="full-btn" type="primary" @click="surePay">{{$t('button.surePay')}}</el-button>
         </div>
       </div>
@@ -104,18 +108,19 @@ export default {
     const tokenValidator = (rule, value, callback) => {
       if (value === "") {
         callback(new Error(this.$i18n.t("verify.tokenNull")));
+      } else if (value === this.cocosAccount.accounts) {
+        callback(new Error(this.$i18n.t("message.ownerError")));
       } else {
         callback();
       }
     };
     const amountValidator = (rule, value, callback) => {
-      if (!/^(-?\d+)(\.\d+)?$/.test(value)) {
+      if (value < 0 || value == 0) {
+        callback(new Error(this.$i18n.t("verify.noZero")));
+      } else if (!/^(-?\d+)(\.\d+)?$/.test(value)) {
         callback(new Error(this.$i18n.t("verify.number")));
       } else if (!/^(-?\d+)(\.\d{1,5})?$/.test(value)) {
-        // this.$kalert({
-        //   message: this.$i18n.t("verify.minimum") + "5"
-        // });
-        callback(new Error(this.$i18n.t("verify.minimum") + "5"));
+        callback(new Error(this.$i18n.t("verify.minimum") + this.precision));
       } else {
         callback();
       }
@@ -138,7 +143,9 @@ export default {
       },
       tokens: [],
       assetKey: this.$route.params.assetKey ? this.$route.params.assetKey : "",
-      coins: []
+      coins: [],
+      precision: "",
+      fee: ""
     };
   },
   computed: {
@@ -179,12 +186,21 @@ export default {
         }
       });
     }
+    this.changeCoin();
     // this.loadTokens()
   },
   methods: {
     ...mapMutations("trans", ["setAccount"]),
-    ...mapActions("trans", ["tranferBCX", "queryTranferRate"]),
+    ...mapActions("trans", ["tranferBCX", "queryTranferRate", "queryAsset"]),
     ...mapActions("account", ["UserAccount", "OutPutKey"]),
+    async changeCoin() {
+      await this.queryAsset({ assetId: "COCOS" }).then(res => {
+        this.precision = res.precision;
+      });
+      await this.queryTranferRate({ feeAssetId: "COCOS" }).then(res => {
+        this.fee = res.data.fee_amount.toFixed(this.precision);
+      });
+    },
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -196,8 +212,14 @@ export default {
                 });
                 return;
               } else if (
+                this.formData.token === "COCOS" &&
                 res.data.fee_amount + Number(this.formData.amount) <
-                this.cocosCount
+                  this.cocosCount
+              ) {
+                this.popup = true;
+              } else if (
+                this.formData.token !== "COCOS" &&
+                res.data.fee_amount < this.cocosCount
               ) {
                 this.popup = true;
               } else {
@@ -225,103 +247,10 @@ export default {
           });
           setTimeout(() => {
             this.$router.push({ name: "home" });
-          }, 400);
+          }, 100);
         }
       });
-    },
-    async transferTrx(amount) {
-      this.popup = false;
-      this.$store.commit("loading", true);
-      try {
-        const fromAccount = this.accounts.find(
-          ele => ele.address === this.formData.from
-        );
-        if (!fromAccount) {
-          this.$kalert({
-            message: this.$i18n.t("alert.sendFail")
-          });
-          return false;
-        }
-        const { result } = await InternalMessage.widthPayload(
-          InternalMessageTypes.SIGNSENDTRANSACTION,
-          { address: this.formData.from, transaction: transaction }
-        ).send();
-        let success = result;
-        this.$store.commit("loading", false);
-        if (success) {
-          this.formData.to = "";
-          this.formData.amount = 0;
-          this.$kalert({
-            message: this.$i18n.t("alert.sendSuccess")
-          });
-        } else {
-          this.$kalert({
-            message: this.$i18n.t("alert.sendFail")
-          });
-        }
-      } catch (e) {
-        this.$store.commit("loading", false);
-        this.$kalert({
-          message: this.$i18n.t("alert.sendFail")
-        });
-      }
     }
-    // async transferToken(amount) {
-    //   this.popup = false;
-    //   this.$store.commit("loading", true);
-    //   try {
-    //     const fromAccount = this.accounts.find(
-    //       ele => ele.address === this.formData.from
-    //     );
-    //     if (!fromAccount) {
-    //       this.$kalert({
-    //         message: this.$i18n.t("alert.sendFail")
-    //       });
-    //       return false;
-    //     }
-    //     const { result } = await InternalMessage.widthPayload(
-    //       InternalMessageTypes.SIGNSENDTRANSACTION,
-    //       { address: this.formData.from, transaction: transaction }
-    //     ).send();
-    //     let success = result;
-    //     this.$store.commit("loading", false);
-    //     if (success) {
-    //       this.formData.to = "";
-    //       this.formData.amount = 0;
-    //       this.$kalert({
-    //         message: this.$i18n.t("alert.sendSuccess")
-    //       });
-    //     } else {
-    //       this.$kalert({
-    //         message: this.$i18n.t("alert.sendFail")
-    //       });
-    //     }
-    //   } catch (err) {
-    //     this.$store.commit("loading", false);
-    //     this.$kalert({
-    //       message: this.$i18n.t("alert.sendFail")
-    //     });
-    //   }
-    // },
-    // // 加载tokens
-    // async loadTokens() {
-    //   this.$store.commit("loading", true);
-    //   if (accountData.asset) {
-    //     this.tokens = [
-    //       { key: "TRX", value: utils.getTokenAmount(accountData.balance) }
-    //     ].concat(accountData.asset);
-    //   } else {
-    //     this.tokens = [
-    //       { key: "TRX", value: utils.getTokenAmount(accountData.balance) }
-    //     ];
-    //   }
-    //   this.$store.commit("loading", false);
-    //   if (this.assetKey) {
-    //     this.formData.token = this.assetKey;
-    //   } else {
-    //     this.formData.token = this.tokens[0].key;
-    //   }
-    // }
   }
 };
 </script>
@@ -370,9 +299,12 @@ export default {
     .content {
       padding-left: 5px;
       flex: 1;
-      overflow: hidden;
       display: flex;
       align-items: center;
+      max-width: 270px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .memo-content {
       max-height: 50px;

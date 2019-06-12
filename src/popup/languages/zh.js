@@ -17,7 +17,8 @@ export default {
     importAccount: '导入账户',
     editAccountName: '修改账号名称',
     lookAccount: '查看账户详情',
-    removeAccount: '退出当前账号',
+    removeAccount: '退出账号',
+    deletedWallet: '退出钱包',
     exportPrivateKey: '导出账号私钥',
     recharge: '充值',
     transfer: '转账',
@@ -61,6 +62,7 @@ export default {
     rechargeOnly: '此地址支持转入COCOS及其token',
     verifyPassword: '需要先验证您的当前密码',
     lockSetting: '自动锁定设置',
+    ownerError: '账户名不能是自己',
     lockTip: '当您停止操作时，可以通过设置离开时间来自动锁定COCOSPay',
     changeLanguage: '选择语言',
     resourceTip: 'COCOS网络中的转账、交易、执行合约等操作会消耗资源（带宽和CPU），资源可通过冻结COCOS来获得',
@@ -84,6 +86,7 @@ export default {
     ownerKey: 'owner_key不能进行转账，请导入active_key',
     minimum: '最小精度为',
     walletPassword: '请输入最初的钱包密码',
+    noZero: '数量应该大于 0',
   },
   // title
   title: {
@@ -168,6 +171,7 @@ export default {
     pttype: '类型：',
     param: '参数',
     memo: '备注',
+    charge: '手续费',
   },
   // settings
   settings: {

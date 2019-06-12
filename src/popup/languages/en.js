@@ -17,6 +17,7 @@ export default {
     importAccount: 'ImportAccount',
     editAccountName: 'EditName',
     lookAccount: 'ViewAccount',
+    deletedWallet: 'Exit Wallet',
     removeAccount: 'Exit',
     exportPrivateKey: 'Export',
     recharge: 'Deposit',
@@ -61,6 +62,7 @@ export default {
     rechargeOnly: 'This address only supports COCOS and its token',
     verifyPassword: 'You need to verify your current password',
     lockSetting: 'Automatic lock setting',
+    ownerError: 'The account name is not you',
     lockTip: 'When you stop, you can automatically lock CocosPay by setting the departure time',
     changeLanguage: 'Select the language',
     resourceTip: 'Transfers, transactions, execution of contracts and other operations consume resources, which can be obtained by mortgaging COCOS',
@@ -84,6 +86,7 @@ export default {
     ownerKey: 'Owner key cannot transfer,Please import active key',
     minimum: 'The minimum accuracy is',
     walletPassword: 'Please enter the original wallet password',
+    noZero: 'The quantity should be greater than 0',
   },
   // title
   title: {
@@ -168,6 +171,7 @@ export default {
     pttype: 'Type：',
     param: 'parameters',
     memo: 'memo',
+    charge: 'fee',
   },
   // settings
   settings: {

@@ -82,7 +82,7 @@ export default {
   data() {
     return {
       orderDeatil: {},
-      memo:false
+      memo: false
     };
   },
   computed: {
@@ -93,7 +93,7 @@ export default {
     this.orderDeatil.memo = this.orderDeatil.raw_data.memo
       ? await NewBCX.decodeMemo(this.orderDeatil.raw_data.memo)
       : "";
-    if(this.orderDeatil.memo){
+    if (this.orderDeatil.memo) {
       this.memo = true;
     }
   },
@@ -151,6 +151,12 @@ export default {
     display: flex;
     font-size: 15px;
     align-items: center;
+    p {
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     button {
       height: 16px;
       width: 16px;

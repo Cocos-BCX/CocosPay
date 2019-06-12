@@ -224,15 +224,17 @@ export default {
         root: true
       })
       try {
+        var resData
         setTimeout(() => {
           commit('loading', false, {
             root: true
           })
-          // Alert({
-          //   message: CommonJs.getI18nMessages(I18n).error[150]
-          // })
-        }, 10000)
-        let resData
+          if (!resData) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[109]
+            })
+          }
+        }, 8000)
         await NewBCX.importPrivateKey({
           privateKey: rootState.privateKeys,
           password: rootState.cocosAccount.passwords
