@@ -132,7 +132,7 @@ export default {
     pledgeFail: '冻结失败',
     existAccount: '此账号已存在',
     illegalPrivateKey: '私钥不合法',
-    transferFail: '扣除手续费后可用余额不足'
+    transferFail: '扣除手续费后可用余额不足',
   },
   // confirm
   confirm: {

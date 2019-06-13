@@ -132,7 +132,7 @@ export default {
     pledgeFail: 'Freeze Fail',
     existAccount: 'Exist Account',
     illegalPrivateKey: 'Illegal PrivateKey',
-    transferFail: 'The available balance is insufficient after deducting the service charge'
+    transferFail: 'The available balance is insufficient after deducting the service charge',
   },
   // confirm
   confirm: {

@@ -202,7 +202,12 @@ export default {
   },
   methods: {
     ...mapMutations("trans", ["setAccount"]),
-    ...mapActions("trans", ["tranferBCX", "queryTranferRate", "queryAsset"]),
+    ...mapActions("trans", [
+      "tranferBCX",
+      "queryTranferRate",
+      "queryAsset",
+      "tranferBCXFree"
+    ]),
     ...mapActions("account", ["UserAccount", "OutPutKey"]),
     async changeCoin() {
       await this.queryAsset({ assetId: this.formData.token }).then(res => {
@@ -215,31 +220,40 @@ export default {
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.queryTranferRate({ feeAssetId: this.formData.token }).then(
-            res => {
-              if (this.owner) {
-                this.$kalert({
-                  message: this.$i18n.t("verify.ownerKey")
-                });
-                return;
-              } else if (
-                this.formData.token === "COCOS" &&
+          this.setAccount({
+            toAccount: this.formData.to,
+            coin: this.formData.token,
+            amount: this.formData.amount,
+            memo: this.formData.memo
+          });
+          this.tranferBCXFree().then(res => {
+            this.fee = res.data.fee_amount.toFixed(this.precision);
+            console.log(res);
+
+            if (this.owner) {
+              this.$kalert({
+                message: this.$i18n.t("verify.ownerKey")
+              });
+              return;
+            } else if (
+              (this.formData.token === "COCOS" &&
                 res.data.fee_amount + Number(this.formData.amount) <
-                  this.cocosCount
-              ) {
-                this.popup = true;
-              } else if (
-                this.formData.token !== "COCOS" &&
-                res.data.fee_amount < this.cocosCount
-              ) {
-                this.popup = true;
-              } else {
-                this.$kalert({
-                  message: this.$i18n.t("alert.transferFail")
-                });
-              }
+                  this.cocosCount) ||
+              res.data.fee_amount + Number(this.formData.amount) ===
+                this.cocosCount
+            ) {
+              this.popup = true;
+            } else if (
+              this.formData.token !== "COCOS" &&
+              res.data.fee_amount < this.cocosCount
+            ) {
+              this.popup = true;
+            } else {
+              this.$kalert({
+                message: this.$i18n.t("alert.transferFail")
+              });
             }
-          );
+          });
         }
       });
     },
@@ -256,9 +270,7 @@ export default {
           this.$kalert({
             message: this.$i18n.t("alert.tranferSuccess")
           });
-          setTimeout(() => {
-            this.$router.push({ name: "home" });
-          }, 100);
+          this.$router.push({ name: "home" });
         }
       });
     }
