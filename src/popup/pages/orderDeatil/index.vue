@@ -63,8 +63,8 @@
       </div>
 
       <div class="title mt20" v-if="memo">
-        <div class="key">{{$t('label.memo')}}:</div>
-        <div class="name">{{orderDeatil.memo.data.text}}</div>
+        <div class="key memo">{{$t('label.memo')}}:</div>
+        <div class="name memo">{{orderDeatil.memo.data.text}}</div>
       </div>
     </div>
   </div>
@@ -151,6 +151,13 @@ export default {
     display: flex;
     font-size: 15px;
     align-items: center;
+    &.memo {
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 6;
+      flex: 1;
+    }
     p {
       max-width: 200px;
       white-space: nowrap;

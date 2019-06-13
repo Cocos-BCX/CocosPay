@@ -89,12 +89,12 @@ export default {
     ...mapMutations(["setCurLng"]),
     createWallet(formName) {
       this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.$router.push({
-            name: "agreement",
-            params: { password: this.formData.password }
-          });
-        }
+        // if (valid) {
+        //   this.$router.push({
+        //     name: "agreement",
+        //     params: { password: this.formData.password }
+        //   });
+        // }
       });
     },
     changeLanguage() {

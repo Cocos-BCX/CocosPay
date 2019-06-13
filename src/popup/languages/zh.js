@@ -71,7 +71,7 @@ export default {
   // verify
   verify: {
     passwordNull: '密码不能为空',
-    accountType: '4-63位小写字母开头+数字',
+    accountType: '5-63位小写字母开头+数字',
     passwordType: '8-12位数字、字母和特殊符号任两种',
     passwordLength: '密码长度不能少于8位',
     passwordSure: '请再次输入密码',
@@ -84,8 +84,8 @@ export default {
     number: '请输入数字',
     numberGtZero: '请输入大于0的数字',
     ownerKey: 'owner_key不能进行转账，请导入active_key',
-    minimum: '最小精度为',
-    walletPassword: '请输入最初的钱包密码',
+    minimum: '小数点后最大位数为',
+    walletPassword: '请输入最初的临时密码',
     noZero: '数量应该大于 0',
   },
   // title
@@ -111,6 +111,7 @@ export default {
     signature: '签名请求',
     locked: '未登录或已锁定',
     test: '测试',
+    coin: '币种',
   },
   // alert
   alert: {
@@ -206,7 +207,7 @@ export default {
     101: '参数缺失',
     1011: '参数错误',
     102: '网络繁忙，请检查你的网络连接',
-    103: '请输入正确的账户名,小写字母开头,6位以上',
+    103: '请输入正确的账户名,小写字母开头,5位以上',
     104: '不存在',
     105: '密码错误',
     106: '账户已经处于解锁状态',
@@ -258,7 +259,7 @@ export default {
     157: '请求超时，请尝试解锁账户或登录账户',
     158: '导入的钱包核心资产错误',
     159: '账户已存在',
-    160: '你不是该资产的创建者',
+    160: '该私钥已经导入钱包',
     161: '订单不存在',
     162: '资产已存在',
     163: '钱包已经存在，请尝试导入私钥',

@@ -339,8 +339,8 @@ li {
 
 .token-title {
   position: relative;
-  height: 80px;
-  line-height: 80px;
+  height: 60px;
+  line-height: 60px;
   text-align: center;
   border-bottom: 1px dashed #e6e6e6;
 
@@ -398,6 +398,7 @@ li {
       align-items: center;
 
       span {
+        font-size: 13px;
         padding-left: 10px;
       }
     }

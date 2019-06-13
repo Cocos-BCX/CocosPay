@@ -5,25 +5,25 @@
       ref="drawer"
       class="drawer"
       @mask-click="closeDrawer"
-      :z-index="-10"
-      :drawer-width="0"
+      :z-index="10"
+      :drawer-width="310"
     >
-      <div class="drawer-content">
+      <div class="drawer-content" slot="drawer">
         <!-- drawer-content -->
         <div class="token-title">
-          <span class="token-user">{{currentAccount.name}}</span>
-          <span class="close-drawer">
+          <span class="token-user">{{$t('title.coin')}}</span>
+          <span class="close-drawer" @click="closeDrawer">
             <v-icon name="times" scale="1.4"></v-icon>
           </span>
         </div>
         <div class="assets" id="tokenScroller">
           <ul>
-            <li @click="jumpTransfer(item.key)" v-for="(item, index) in assets || []" :key="index">
+            <li v-for="(item, index) in accountList" :key="index">
               <div class="asset-name">
-                <img src="/icons/logo-smalaa.png" width="30" height="30" alt>
-                <span>{{item.key}}</span>
+                <img src="/icons/48px.png" width="30" height="30" alt>
+                <span>{{item[0]}}({{$t('title.test')}})</span>
               </div>
-              <span class="asset-value">{{item.value}}</span>
+              <span class="asset-value">{{item[1]}}</span>
             </li>
           </ul>
         </div>
@@ -33,10 +33,9 @@
         <section class="app-container">
           <div class="eos-info">
             <div class="more">
-              <span></span>
-              <!-- <span @click="openDrawer">
-                <img src="/images/stop-circle.png" alt>
-              </span>-->
+              <span>
+                <img @click="openDrawer" src="/images/stop-circle.png" alt>
+              </span>
             </div>
             <div
               class="account-container"
@@ -111,10 +110,8 @@
           <div class="eos-main">
             <img class="eos-logo" src="/icons/logo-middle.png">
             <h2 class="eos-style mt15">
-              {{$formatNumber(cocosCount, { maximumSignificantDigits: 7 }) || 0}} COCOS
-              <span
-                class="test-coin"
-              >({{$t('title.test')}})</span>
+              {{cocosCount || 0}} COCOS
+              <span class="test-coin">({{$t('title.test')}})</span>
             </h2>
             <div class="btn-group" style="justify-content: space-around;">
               <el-button class="gradual-button charge" @click="goRecharge">{{$t('button.recharge')}}</el-button>
@@ -385,7 +382,8 @@ export default {
       is_lock: false,
       timer: null,
       password: "",
-      privateKey: false
+      privateKey: false,
+      accountList: []
     };
   },
   computed: {
@@ -409,9 +407,7 @@ export default {
     //   return network && network.AccountDetailUrl;
     // }
   },
-  async created() {
-
-  },
+  async created() {},
   mounted() {
     this.transactionsScroller = new PerfectScrollbar(
       "#perfect-scroll-wrapper",
@@ -433,10 +429,10 @@ export default {
     //   minScrollbarLength: 40
     // });
     // fix drawer issue
-    // const drawerWrap = document.getElementsByClassName("drawer-wrap")[0];
-    // this.$nextTick(() => {
-    //   drawerWrap.style.left = "-300px";
-    // });
+    const drawerWrap = document.getElementsByClassName("drawer-wrap")[0];
+    this.$nextTick(() => {
+      drawerWrap.style.left = "-300px";
+    });
   },
   directives: {
     clickOutside: vClickOutside.directive
@@ -482,16 +478,22 @@ export default {
           this.$router.replace({ name: "unlock" });
         } else {
           this.transferList();
-          clearInterval(this.timer);
-          this.timer = setInterval(() => {
-            this.transferList();
-          }, 5000);
           this.UserAccount().then(res => {
             if (res.code === 1) {
+              this.accountList = Object.entries(res.data);
               this.setCocosCount(res.data.COCOS);
             }
           });
-
+          clearInterval(this.timer);
+          this.timer = setInterval(() => {
+            this.transferList();
+            this.UserAccount().then(res => {
+              if (res.code === 1) {
+                this.accountList = Object.entries(res.data);
+                this.setCocosCount(res.data.COCOS);
+              }
+            });
+          }, 10000);
           this.getAccounts().then(res => {
             this.accounts = res.accounts;
             this.setAccountType(res.current_account.mode);
@@ -502,6 +504,13 @@ export default {
         //     this.cocosCount = res.data.COCOS;
         //   }
         // });
+      });
+    },
+    listShow() {
+      this.UserAccount().then(res => {
+        if (res.code === 1) {
+          this.accountList = Object.entries(res.data);
+        }
       });
     },
     transferList() {
@@ -712,10 +721,11 @@ export default {
       this.formData.password = "";
     },
     openDrawer() {
+      this.listShow();
       this.$refs.drawer.toggle(true);
     },
     closeDrawer() {
-      // this.$refs.drawer.toggle(false);
+      this.$refs.drawer.toggle(false);
     },
     refreshAccount() {
       this.loadData();

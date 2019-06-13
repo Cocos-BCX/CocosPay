@@ -100,5 +100,13 @@
     "webpack-merge": "^4.1.0",
     "ws": "^3.2.0",
     "zip-webpack-plugin": "^2.0.0"
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8",
+    "iOS >= 6",
+    "Android > 4.1",
+    "Firefox > 20"
+  ]
 }

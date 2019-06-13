@@ -98,7 +98,7 @@ export default {
       }
     };
     const accountPass = (rule, value, callback) => {
-      let reg = /^[a-z]([a-z0-9\.-]){3,63}$/;
+      let reg = /^[a-z]([a-z0-9\.-]){4,63}$/;
       if (value === "") {
         callback(new Error(this.$i18n.t("verify.accountNull")));
       } else if (!reg.test(value)) {
@@ -215,6 +215,8 @@ export default {
                 // this.loading(false);
                 this.OutPutKey().then(key => {
                   if (key.code === 1) {
+                    this.setIsAccount(true);
+                    this.setLogin(true);
                     this.active_private_key = key.data.active_private_keys[0];
                     this.owner_private_key = key.data.owner_private_keys[0];
                     this.accountKey = true;

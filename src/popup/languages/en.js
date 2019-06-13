@@ -70,7 +70,7 @@ export default {
   },
   // verify
   verify: {
-    accountType: '4-63-bit lowercase letter beginning + number',
+    accountType: '5-63-bit lowercase letter beginning + number',
     passwordType: '8-12 digits, letters and special symbols',
     passwordNull: 'The password cannot be empty',
     passwordLength: 'The password should be no less than 8 bits long',
@@ -84,8 +84,8 @@ export default {
     number: 'Please enter the number',
     numberGtZero: 'Please enter a number greater than 0',
     ownerKey: 'Owner key cannot transfer,Please import active key',
-    minimum: 'The minimum accuracy is',
-    walletPassword: 'Please enter the original wallet password',
+    minimum: 'The maximum number of digits after the decimal point is',
+    walletPassword: 'Please enter the original temporary password',
     noZero: 'The quantity should be greater than 0',
   },
   // title
@@ -111,6 +111,7 @@ export default {
     signature: 'Request Signature',
     locked: 'Not logged in or locked',
     test: 'TEST',
+    coin: 'Coins',
   },
   // alert
   alert: {
@@ -205,7 +206,7 @@ export default {
     101: 'Parameter is missing',
     1011: 'Parameter error',
     102: 'The network is busy, please check your network connection',
-    103: 'Please enter the correct account name(Lowercase letters begin with 6 or more digits)',
+    103: 'Please enter the correct account name(Lowercase letters begin with 5 or more digits)',
     104: 'Not Found',
     105: 'wrong password',
     106: 'The account is already unlocked',
@@ -257,7 +258,7 @@ export default {
     157: 'Can not delete wallet, does not exist in index ',
     158: 'Imported Wallet core assets error',
     159: 'Account exists',
-    160: 'You are not the creator of the Asset',
+    160: 'The private key has been imported into the wallet',
     161: 'Orders do not exist',
     162: 'The asset already exists',
     163: 'The wallet already exists. Please try importing the private key',

@@ -144,7 +144,7 @@ export default {
             root: true
           })
           if (res.code !== 1) {
-            if (params && params.has_import) {
+            if (params && params.has_import && res.code !== 160) {
               Alert({
                 message: CommonJs.getI18nMessages(I18n).verify.walletPassword
               })
@@ -185,12 +185,8 @@ export default {
             root: true
           })
           if (res.code !== 1 && !rootState.loginNoAlert) {
-            // Alert({
-            //   message: CommonJs.getI18nMessages(I18n).error[res.code]
-            // })
-          } else {
-            commit('setIsAccount', false, {
-              root: true
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
             })
           }
           commit('setLoginNoAlert', false, {
@@ -327,14 +323,14 @@ export default {
       rootState
     }) {
       let resData;
-      // commit('loading', true, {
-      //   root: true
-      // })
+      commit('loading', true, {
+        root: true
+      })
       try {
         await NewBCX.getPrivateKey().then(res => {
-          // commit('loading', false, {
-          //   root: true
-          // })
+          commit('loading', false, {
+            root: true
+          })
           if (res.code !== 1) {
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]

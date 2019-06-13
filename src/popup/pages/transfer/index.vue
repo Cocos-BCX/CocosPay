@@ -17,7 +17,12 @@
         <el-input class="no-border" v-model="formData.to"></el-input>
       </el-form-item>
       <el-form-item :label="$t('label.tokenType') + $t('title.test')" prop="token">
-        <el-select class="no-border" v-model="formData.token" style="width: 100%;">
+        <el-select
+          class="no-border"
+          v-model="formData.token"
+          style="width: 100%;"
+          @change="changeCoin"
+        >
           <el-option
             v-for="(item, index) in coins"
             :value="item.coin"
@@ -119,7 +124,10 @@ export default {
         callback(new Error(this.$i18n.t("verify.noZero")));
       } else if (!/^(-?\d+)(\.\d+)?$/.test(value)) {
         callback(new Error(this.$i18n.t("verify.number")));
-      } else if (!/^(-?\d+)(\.\d{1,5})?$/.test(value)) {
+      } else if (
+        value.toString().split(".")[1] &&
+        value.toString().split(".")[1].length > this.precision
+      ) {
         callback(new Error(this.$i18n.t("verify.minimum") + this.precision));
       } else {
         callback();
@@ -181,7 +189,10 @@ export default {
     });
     if (this.accountType === "wallet") {
       this.OutPutKey().then(key => {
-        if (key.data.owner_private_keys && key.data.owner_private_keys.length) {
+        if (
+          !key.data.active_private_keys ||
+          !key.data.active_private_keys.length
+        ) {
           this.owner = true;
         }
       });
@@ -194,7 +205,7 @@ export default {
     ...mapActions("trans", ["tranferBCX", "queryTranferRate", "queryAsset"]),
     ...mapActions("account", ["UserAccount", "OutPutKey"]),
     async changeCoin() {
-      await this.queryAsset({ assetId: "COCOS" }).then(res => {
+      await this.queryAsset({ assetId: this.formData.token }).then(res => {
         this.precision = res.precision;
       });
       await this.queryTranferRate({ feeAssetId: "COCOS" }).then(res => {
@@ -317,10 +328,12 @@ export default {
       color: $primary-color;
       justify-content: flex-end;
       span {
-        font-size: 20px;
+        font-size: 16px;
         position: relative;
-        top: -2px;
         padding-right: 5px;
+      }
+      .test-coin {
+        font-size: 14px;
       }
     }
   }
