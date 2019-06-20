@@ -5,12 +5,14 @@ export default {
     password: '输入密码',
     temporary: '输入临时密码',
     oldPassword: '输入旧密码',
-    repassword: '确认密码'
+    repassword: '确认密码',
+    input: '请输入',
   },
   // button
   button: {
     create: '创建',
     agree: '同意',
+    back: '返回',
     accountLogin: '账户登录',
     keysLogin: '私钥登录',
     createAccount: '创建账户',
@@ -133,6 +135,7 @@ export default {
     existAccount: '此账号已存在',
     illegalPrivateKey: '私钥不合法',
     transferFail: '扣除手续费后可用余额不足',
+    setSuccess: '设置成功',
   },
   // confirm
   confirm: {
@@ -142,6 +145,7 @@ export default {
   label: {
     send: '发送方',
     receive: '接收方',
+    user: '授权人',
     hash: '交易HASH',
     blockHeight: '区块高度',
     tradeTime: '交易时间',
@@ -173,6 +177,7 @@ export default {
     param: '参数',
     memo: '备注',
     charge: '手续费',
+
   },
   // settings
   settings: {

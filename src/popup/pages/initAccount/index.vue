@@ -87,11 +87,16 @@ export default {
     ...mapState(["currentCreateAccount"])
   },
   mounted() {
-    this.nodeLists();
+    this.nodeLists().then(res => {
+      res.connect = true;
+      this.apiConfig(res).then(() => {
+        this.init();
+      });
+    });
   },
   methods: {
     ...mapMutations("wallet", ["addAccount"]),
-    ...mapActions(["nodeLists"]),
+    ...mapActions(["nodeLists", "apiConfig", "init"]),
     ...mapMutations([
       "setCurrentAccount",
       "setCurrentCreateAccount",
@@ -112,7 +117,6 @@ export default {
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(
         res => {}
       );
-      // this.logoutBCXAccount();
     },
     copyError() {
       this.$kalert({
@@ -121,10 +125,6 @@ export default {
     },
     createAccount() {
       this.register = true;
-      // this.$router.push({ name: "createAccount" });
-      // const account = utils.generateAccount()
-      // this.setCurrentCreateAccount({ privateKey: account.privateKey, address: account.address, name: createAccountName() })
-      // this.setCurrentCreateVisible(true)
     },
     accountRegister() {
       this.$router.push({

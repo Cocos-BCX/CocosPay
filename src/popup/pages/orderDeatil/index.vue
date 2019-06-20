@@ -1,73 +1,119 @@
 <template>
-  <div class="app-container">
-    <navigation :title="$t('title.sendDetail')"/>
-    <div class="eos-main">
-      <h2
-        class="eos-style cocos mt20"
-      >{{cocosAccount.accounts === orderDeatil.parse_operations.from ? '-' : '+'}}{{orderDeatil.parse_operations.amount}}({{$t('title.test')}})</h2>
-      <div class="des">{{$t('alert.tranferSuccess')}}</div>
-      <div class="translate-log-title mt40">
-        <div class="log-line"></div>
-        <!-- <div class="log-title">{{$t('title.history')}}</div>-->
-      </div>
-    </div>
-    <div class="running">
-      <div class="title mt20">
-        <div class="key">{{$t('label.send')}}:</div>
-        <div class="name">
-          <p>{{orderDeatil.parse_operations.from}}</p>
-          <button
-            v-clipboard:copy="orderDeatil.parse_operations.from"
-            v-clipboard:success="copySuccess"
-            v-clipboard:error="copyError"
-            type="button"
-            style="margin-left:10px"
-          ></button>
+  <section>
+    <div class="app-container">
+      <navigation :title="$t('title.sendDetail')"/>
+      <section class="eos-main" v-if="orderDeatil.type === 'transfer'">
+        <h2
+          class="eos-style cocos mt20"
+        >{{cocosAccount.accounts === orderDeatil.parse_operations.from ? '-' : '+'}}{{orderDeatil.parse_operations.amount}}({{$t('title.test')}})</h2>
+        <div class="des">{{$t('alert.tranferSuccess')}}</div>
+        <div class="translate-log-title mt40">
+          <div class="log-line"></div>
+          <!-- <div class="log-title">{{$t('title.history')}}</div>-->
         </div>
-      </div>
-
-      <div class="title mt20">
-        <div class="key">{{$t('label.receive')}}:</div>
-        <div class="name">
-          <p>{{orderDeatil.parse_operations.to}}</p>
-          <button
-            v-clipboard:copy="orderDeatil.parse_operations.to"
-            v-clipboard:success="copySuccess"
-            v-clipboard:error="copyError"
-            type="button"
-            style="margin-left:10px"
-          ></button>
+      </section>
+      <section class="running" v-if="orderDeatil.type === 'transfer'">
+        <div class="title mt20">
+          <div class="key">{{$t('label.send')}}:</div>
+          <div class="name">
+            <p>{{orderDeatil.parse_operations.from}}</p>
+            <button
+              v-clipboard:copy="orderDeatil.parse_operations.from"
+              v-clipboard:success="copySuccess"
+              v-clipboard:error="copyError"
+              type="button"
+              style="margin-left:10px"
+            ></button>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="eos-main">
-      <div class="translate-log-title mt10">
-        <div class="log-line"></div>
-        <!-- <div class="log-title">{{$t('title.history')}}</div>-->
-      </div>
-    </div>
-    <div class="running mt15">
-      <div class="title mt20">
-        <div class="key">{{$t('label.hash')}}:</div>
-        <div class="name">{{orderDeatil.id}}</div>
-      </div>
 
-      <div class="title mt20">
-        <div class="key">{{$t('label.blockHeight')}}:</div>
-        <div class="name">{{orderDeatil.block_num}}</div>
-      </div>
+        <div class="title mt20">
+          <div class="key">{{$t('label.receive')}}:</div>
+          <div class="name">
+            <p>{{orderDeatil.parse_operations.to}}</p>
+            <button
+              v-clipboard:copy="orderDeatil.parse_operations.to"
+              v-clipboard:success="copySuccess"
+              v-clipboard:error="copyError"
+              type="button"
+              style="margin-left:10px"
+            ></button>
+          </div>
+        </div>
+      </section>
+      <section class="eos-main" v-if="orderDeatil.type === 'call_contract_function'">
+        <h2 class="eos-style cocos mt20">-{{orderDeatil.parse_operations.fee}}({{$t('title.test')}})</h2>
+        <div class="des">{{$t('label.contract')}}{{$t('label.operation')}}</div>
+        <div class="translate-log-title mt40">
+          <div class="log-line"></div>
+          <!-- <div class="log-title">{{$t('title.history')}}</div>-->
+        </div>
+      </section>
+      <section class="running" v-if="orderDeatil.type === 'call_contract_function'">
+        <div class="title mt20">
+          <div class="key">{{$t('label.user')}}:</div>
+          <div class="name">
+            <p>{{orderDeatil.parse_operations.caller}}</p>
+            <button
+              v-clipboard:copy="orderDeatil.parse_operations.caller"
+              v-clipboard:success="copySuccess"
+              v-clipboard:error="copyError"
+              type="button"
+              style="margin-left:10px"
+            ></button>
+          </div>
+        </div>
 
-      <div class="title mt20">
-        <div class="key">{{$t('label.tradeTime')}}:</div>
-        <div class="name">{{orderDeatil.date}}</div>
-      </div>
+        <div class="title mt10">
+          <div class="key">{{$t('label.contract')}}:</div>
+          <div class="name">
+            <p>{{orderDeatil.parse_operations.contract_name}}</p>
+          </div>
+        </div>
 
-      <div class="title mt20" v-if="memo">
-        <div class="key memo">{{$t('label.memo')}}:</div>
-        <div class="name memo">{{orderDeatil.memo.data.text}}</div>
-      </div>
+        <div class="title mt10">
+          <div class="key">{{$t('label.operation')}}:</div>
+          <div class="name">
+            <p>{{orderDeatil.parse_operations.function_name}}</p>
+          </div>
+        </div>
+
+        <div class="title mt10">
+          <div class="key">{{$t('label.json')}}:</div>
+          <div class="name">
+            <p>{{JSON.stringify(orderDeatil.parse_operations.arg_list.change_values_json)}}</p>
+          </div>
+        </div>
+      </section>
+      <section class="eos-main">
+        <div class="translate-log-title mt10">
+          <div class="log-line"></div>
+          <!-- <div class="log-title">{{$t('title.history')}}</div>-->
+        </div>
+      </section>
+      <section class="running mt15">
+        <div class="title mt20">
+          <div class="key">{{$t('label.hash')}}:</div>
+          <div class="name">{{orderDeatil.id}}</div>
+        </div>
+
+        <div class="title mt20">
+          <div class="key">{{$t('label.blockHeight')}}:</div>
+          <div class="name">{{orderDeatil.block_num}}</div>
+        </div>
+
+        <div class="title mt20">
+          <div class="key">{{$t('label.tradeTime')}}:</div>
+          <div class="name">{{orderDeatil.date}}</div>
+        </div>
+
+        <div class="title mt20" v-if="memo">
+          <div class="key memo">{{$t('label.memo')}}:</div>
+          <div class="name memo">{{orderDeatil.memo.data.text}}</div>
+        </div>
+      </section>
     </div>
-  </div>
+  </section>
 </template>
 <script>
 import Navigation from "../../components/navigation";
@@ -90,11 +136,16 @@ export default {
   },
   async created() {
     this.orderDeatil = this.$route.params;
-    this.orderDeatil.memo = this.orderDeatil.raw_data.memo
-      ? await NewBCX.decodeMemo(this.orderDeatil.raw_data.memo)
-      : "";
     if (this.orderDeatil.memo) {
+      this.orderDeatil.memo = await NewBCX.decodeMemo(this.orderDeatil.memo);
       this.memo = true;
+    } else {
+      this.orderDeatil.memo = this.orderDeatil.raw_data.memo
+        ? await NewBCX.decodeMemo(this.orderDeatil.raw_data.memo)
+        : "";
+      if (this.orderDeatil.memo) {
+        this.memo = true;
+      }
     }
   },
   methods: {

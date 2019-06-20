@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import {
+  // import { Icon } from 'vue-awesome/components/Icon';
   Button,
   Form,
   FormItem,
@@ -10,18 +11,22 @@ import {
   Dialog,
   MessageBox,
   Tabs,
-  TabPane
+  TabPane,
+  Loading,
+  Icon
 } from 'element-ui'
 
-Vue.component(Button.name, Button)
-Vue.component(Form.name, Form)
-Vue.component(FormItem.name, FormItem)
-Vue.component(Input.name, Input)
-Vue.component(Checkbox.name, Checkbox)
-Vue.component(Select.name, Select)
-Vue.component(Option.name, Option)
-Vue.component(Dialog.name, Dialog)
-Vue.component(Tabs.name, Tabs)
-Vue.component(TabPane.name, TabPane)
+Vue.use(Button)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(Input)
+Vue.use(Checkbox)
+Vue.use(Select)
+Vue.use(Option)
+Vue.use(Dialog)
+Vue.use(Tabs)
+Vue.use(TabPane)
+Vue.use(Loading)
+Vue.use(Icon)
 
 Vue.prototype.$confirm = MessageBox.confirm

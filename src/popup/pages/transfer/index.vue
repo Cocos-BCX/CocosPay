@@ -218,6 +218,11 @@ export default {
       });
     },
     onSubmit(formName) {
+      if (this.formData.to === this.formData.from) {
+        this.$kalert({
+          message: this.$i18n.t("message.ownerError")
+        });
+      }
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.setAccount({
@@ -228,8 +233,6 @@ export default {
           });
           this.tranferBCXFree().then(res => {
             this.fee = res.data.fee_amount.toFixed(this.precision);
-            console.log(res);
-
             if (this.owner) {
               this.$kalert({
                 message: this.$i18n.t("verify.ownerKey")

@@ -114,6 +114,7 @@ export default class Background {
   }
 
   static signature(sendResponse, payload) {
+    console.log(payload);
     this.lockGuard(sendResponse, async () => {
       try {
         const store = this._getLocalData()

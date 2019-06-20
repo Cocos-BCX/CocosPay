@@ -5,12 +5,14 @@ export default {
     password: 'Enter password',
     temporary: 'Enter temporary password',
     oldPassword: 'Enter old password',
-    repassword: 'Confirm password'
+    repassword: 'Confirm password',
+    input: 'Enter',
   },
   // button
   button: {
     create: 'Create',
     agree: 'Agree',
+    back: 'Back',
     accountLogin: 'Account Login',
     keysLogin: 'Private Key Login',
     createAccount: 'CreateAccount',
@@ -133,6 +135,7 @@ export default {
     existAccount: 'Exist Account',
     illegalPrivateKey: 'Illegal PrivateKey',
     transferFail: 'The available balance is insufficient after deducting the service charge',
+    setSuccess: 'Set Up Success',
   },
   // confirm
   confirm: {
@@ -143,6 +146,7 @@ export default {
     send: 'The sender',
     receive: 'The received',
     hash: 'Trade HASH',
+    user: 'User',
     blockHeight: 'Block height',
     tradeTime: 'Trading time',
     ownerAccount: 'Payment account',

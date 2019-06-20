@@ -54,6 +54,18 @@
             <span>{{prompt.data.payload.amount}} {{prompt.data.payload.assetId}} ({{languages.title.test}})</span>
           </div>
         </div>
+        <div class="info">
+          <div class="info-label">{{languages.label.memo}}</div>
+          <div class="info-content">
+            <span>{{prompt.data.payload.memo}}</span>
+          </div>
+        </div>
+        <div class="info" v-if="fee">
+          <div class="info-label">{{languages.label.charge}}</div>
+          <div class="info-content">
+            <span>{{fee}} COCOS({{languages.title.test}})</span>
+          </div>
+        </div>
       </div>
       <el-checkbox class="join-option" v-model="joinWhiteList">{{languages.message.joinWhiteList}}</el-checkbox>
       <section class="prompt-actions">
@@ -86,6 +98,12 @@
         <div class="info">
           <div class="info-label">{{languages.label.param}}</div>
           <div class="info-content">{{prompt.data.payload.valueList}}</div>
+        </div>
+        <div class="info" v-if="fee">
+          <div class="info-label">{{languages.label.charge}}</div>
+          <div class="info-content">
+            <span>{{fee}} COCOS({{languages.title.test}})</span>
+          </div>
         </div>
         <!-- <div class="info">
           <div class="info-label">{{$t('label.ptaddress')}}</div>
@@ -133,7 +151,8 @@ export default {
       joinWhiteList: false,
       locked: true,
       joinContractWhiteList: false,
-      languages: {}
+      languages: {},
+      fee: ""
     };
   },
   computed: {
@@ -149,6 +168,25 @@ export default {
   mounted() {
     this.loadingBCXAccount().then(res => {
       this.locked = res && res.locked ? true : false;
+      if (!this.locked && this.prompt.data.type === "signature") {
+        this.setAccount({
+          toAccount: this.prompt.data.payload.toAccount,
+          coin: this.prompt.data.payload.assetId,
+          amount: this.prompt.data.payload.amount,
+          memo: this.prompt.data.payload.memo
+        });
+        this.tranferBCXFree().then(res => {
+          if (res.code === 1) {
+            this.fee = res.data.fee_amount;
+          }
+        });
+      } else if (!this.locked && this.prompt.data.type === "callContract") {
+        this.callContractFunctionFree(this.prompt.data.payload).then(res => {
+          if (res.code === 1) {
+            this.fee = res.data.fee_amount;
+          }
+        });
+      }
     });
     // this.$nextTick(() => {
     //   this.property = new PerfectScrollbar("#property");
@@ -160,9 +198,12 @@ export default {
     ...mapMutations("trans", ["setAccount"]),
     ...mapActions("trans", [
       "tranferBCX",
+      "tranferBCXFree",
       "queryTranferRate",
-      "callContractFunction"
+      "callContractFunction",
+      "callContractFunctionFree"
     ]),
+    ...mapActions(["decodeMemo"]),
     ...mapActions("account", ["loadingBCXAccount"]),
     denied() {
       this.prompt.responder(null);
@@ -190,12 +231,6 @@ export default {
         });
     },
     accepted() {
-      this.setAccount({
-        toAccount: this.prompt.data.payload.toAccount,
-        coin: this.prompt.data.payload.assetId,
-        amount: this.prompt.data.payload.amount,
-        memo: ""
-      });
       if (this.joinWhiteList) {
         // 加入白名单
         let white = {
@@ -225,7 +260,7 @@ export default {
     },
     getAmount() {
       let amount = 0;
-      let cname = "TRX";
+      let cname = "COCOS";
       if (this.data.type === "TransferContract") {
         amount = utils.getTokenAmount(this.data.parameter.value.amount || 0);
       } else if (this.data.type === "TransferAssetContract") {
@@ -250,15 +285,6 @@ export default {
           break;
         default:
           break;
-      }
-      // TransferContract
-      if (this.data.type === "TransferContract" && key === "amount") {
-        value = utils.getTokenAmount(value) + " TRX";
-      }
-      // TransferAssetContract
-      // TriggerSmartContract
-      if (this.data.type === "TriggerSmartContract" && key === "call_value") {
-        value = utils.getTokenAmount(value) + " TRX";
       }
 
       return key + " : " + value;

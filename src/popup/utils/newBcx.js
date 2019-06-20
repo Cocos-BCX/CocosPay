@@ -45,7 +45,7 @@ export default class NewBCX {
         chainId: 'b9e7cee4709ddaf08e3b7cba63b71c211c845e37c9bf2b865a7b2a592c8adb28',
         coreAsset: 'COCOS',
         faucetUrl: 'http://47.93.62.96:8041',
-        name: 'COCOS节点1',
+        name: 'COCOS Node 1',
         type: '0',
         ws: 'ws://47.93.62.96:8049',
         choose: true,

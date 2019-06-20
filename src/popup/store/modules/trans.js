@@ -128,12 +128,14 @@ export default {
         return e
       }
     },
+    //解析memo
     async decodeMemo({
       commit,
       state
     }, params) {
       return await NewBCX.decodeMemo(params)
     },
+    //合约调用
     async callContractFunction({
       commit,
       state
@@ -142,6 +144,33 @@ export default {
         commit('loading', true, {
           root: true
         })
+        let resData;
+        await NewBCX.callContractFunction(params).then((res) => {
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res;
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+    //合约手续费查询
+    async callContractFunctionFree({
+      commit,
+      state
+    }, params) {
+      try {
+        commit('loading', true, {
+          root: true
+        })
+        params.onlyGetFee = true
         let resData;
         await NewBCX.callContractFunction(params).then((res) => {
           commit('loading', false, {
@@ -212,7 +241,7 @@ export default {
           })
           if (res.code === 1) {
             res.data.map((item) => {
-              if (item.type === 'transfer') {
+              if (item.type === 'transfer' || item.type === 'call_contract_function') {
                 resData.push(item)
               }
             })

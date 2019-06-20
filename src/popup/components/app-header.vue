@@ -61,8 +61,6 @@
 import { mapState, mapMutations, mapActions } from "vuex";
 import vClickOutside from "v-click-outside";
 import Storage from "../../lib/storage";
-import bcx from "../utils/bcx";
-let NewBCX = bcx.getBCXWithState();
 import BCX from "bcxjs-api";
 export default {
   data() {
@@ -87,23 +85,18 @@ export default {
   methods: {
     ...mapActions("wallet", ["getAccounts"]),
     ...mapMutations(["setAccountType"]),
+    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode"]),
     onClickOutside() {
       this.showNetworkDropdown = false;
     },
     changeNetwork(network) {
       if (network.chainId === Storage.get("choose_node").chainId) {
-        NewBCX.switchAPINode({
+        this.switchAPINode({
           url: network.ws
         }).then(res => {
           if (res.code === 1) {
             this.$kalert({
               message: this.$i18n.t("alert.modifySuccess")
-            });
-            NewBCX.init().then(() => {
-              this.getAccounts().then(account => {
-                // console.log(res.current_account.mode);
-                this.setAccountType(account.current_account.mode);
-              });
             });
             this.choose = network;
             Storage.set("choose_node", network);
@@ -111,29 +104,18 @@ export default {
         });
       } else {
         let Node = network;
-        this.init(Node);
-        NewBCX.init({
-          refresh: true,
-          subscribeToRpcConnectionStatusCallback: back => {}
-        }).then(res => {
+        this.NewBCX(Node);
+        this.init().then(res => {
           if (res.code !== 1) {
             this.$kalert({
               message: this.$i18n.t(`error[${res.code}]`)
             });
-            this.init(this.nodes[0]);
-            NewBCX.init({
-              refresh: true,
-              subscribeToRpcConnectionStatusCallback: back => {}
-            }).then(change => {
-              NewBCX.switchAPINode({
+            // this.init(this.nodes[0]);
+            this.init().then(change => {
+              this.switchAPINode({
                 url: this.nodes[0].ws
               }).then(change => {
-                NewBCX.init().then(() => {
-                  this.getAccounts().then(account => {
-                    // console.log(res.current_account.mode);
-                    this.setAccountType(account.current_account.mode);
-                  });
-                });
+                this.apiConfig(this.nodes[0]);
               });
             });
           } else {
@@ -145,8 +127,8 @@ export default {
         });
       }
     },
-    init(Node) {
-      let NewBCX = new BCX({
+    NewBCX(Node) {
+      return new BCX({
         default_ws_node: Node.ws,
         ws_node_list: [
           {

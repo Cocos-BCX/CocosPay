@@ -293,9 +293,6 @@ export default {
       rootState
     }) {
       let resData;
-      commit('loading', true, {
-        root: true
-      })
       try {
         await NewBCX.queryAccountBalances({
           unit: '',

@@ -146,9 +146,12 @@
             </div> 
           </div>-->
           <div class="translate-container">
-            <div id="perfect-scroll-wrapper" class="translate-list">
+            <div id="perfect-scroll-wrapper" class="translate-list" v-loading="!tranfers.length">
               <action-item v-for="(item, index) in tranfers" :data="item" :key="index"/>
-              <p class="no-result text-center">{{$t('message.noMoreRecord')}}</p>
+              <p
+                class="no-result text-center"
+                v-if="tranfers.length > 5"
+              >{{$t('message.noMoreRecord')}}</p>
             </div>
           </div>
           <k-dialog
@@ -493,7 +496,7 @@ export default {
                 this.setCocosCount(res.data.COCOS);
               }
             });
-          }, 10000);
+          }, 5000);
           this.getAccounts().then(res => {
             this.accounts = res.accounts;
             this.setAccountType(res.current_account.mode);
