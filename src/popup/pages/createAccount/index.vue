@@ -1,7 +1,7 @@
 <template>
   <section class="app-container">
     <navigation :title="$t('title.createAccount')"/>
-    <section class="select-lang no-bg">
+    <!-- <section class="select-lang no-bg">
       <el-select class="language-select" v-model="lang" @change="changeLanguage">
         <el-option
           v-for="(item, index) in langs"
@@ -10,7 +10,7 @@
           :value="item.value"
         ></el-option>
       </el-select>
-    </section>
+    </section> -->
     <section class="logo">
       <img class="block-center" src="/icons/logo-big.png" alt>
     </section>
@@ -118,7 +118,6 @@ export default {
     };
     return {
       wallet: null,
-      lang: "中文",
       formData: {
         account: "",
         password: ""
@@ -133,7 +132,6 @@ export default {
       owner_private_key: "",
       active_private_key: "",
       accountKey: false,
-      langs: [{ name: "中文", value: "ZH" }, { name: "English", value: "EN" }]
     };
   },
   computed: {

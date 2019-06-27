@@ -19,3 +19,6 @@ release
 
 # pack
 package-lock.json
+
+# key
+key.pem

@@ -1,6 +1,6 @@
 <template>
   <section class="app-container">
-    <section class="select-lang no-bg">
+    <!-- <section class="select-lang no-bg">
       <el-select class="language-select" v-model="lang" @change="changeLanguage">
         <el-option
           v-for="(item, index) in langs"
@@ -9,7 +9,7 @@
           :value="item.value"
         ></el-option>
       </el-select>
-    </section>
+    </section>-->
     <section class="logo">
       <img class="block-center" src="/images/index-logo.png" alt>
     </section>
@@ -67,7 +67,7 @@ export default {
     };
     return {
       wallet: null,
-      lang: "中文",
+      // lang: "中文",
       formData: {
         password: "",
         repassword: ""
@@ -75,8 +75,8 @@ export default {
       formRules: {
         password: [{ validator: validatePass, trigger: "blur" }],
         repassword: [{ validator: validatePass2, trigger: "blur" }]
-      },
-      langs: [{ name: "中文", value: "ZH" }, { name: "English", value: "EN" }]
+      }
+      // langs: [{ name: "中文", value: "ZH" }, { name: "English", value: "EN" }]
     };
   },
   computed: {
@@ -96,14 +96,14 @@ export default {
         //   });
         // }
       });
-    },
-    changeLanguage() {
-      this.setCurLng(this.lang);
-      this.$i18n.locale = this.lang;
-      this.$kalert({
-        message: this.$i18n.t("alert.modifySuccess")
-      });
     }
+    // changeLanguage() {
+    //   this.setCurLng(this.lang);
+    //   this.$i18n.locale = this.lang;
+    //   this.$kalert({
+    //     message: this.$i18n.t("alert.modifySuccess")
+    //   });
+    // }
   }
 };
 </script>

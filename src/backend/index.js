@@ -53,8 +53,21 @@ export default class Background {
       case InternalMessageTypes.SETCURRENTNETWORK:
         Background.setCurrentNetwork(sendResponse, message)
         break
+      case InternalMessageTypes.CREATE_NH_ASSET_ORDER:
+        Background.creatNHAssetOrder(sendResponse, message.payload)
+        break
+      case InternalMessageTypes.FILL_NH_ASSET_ORDER:
+        Background.fillNHAssetOrder(sendResponse, message.payload)
+        break
+      case InternalMessageTypes.CANCEL_NH_ASSET_ORDER:
+        Background.cancelNHAssetOrder(sendResponse, message.payload)
+        break
       case InternalMessageTypes.CALL_CONTRACT:
         Background.callContract(sendResponse, message.payload)
+        Repeat.add(message.resolver)
+        break
+      case InternalMessageTypes.TRANSFER_NH_ASSET:
+        Background.transferNHAsset(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break
       case InternalMessageTypes.GET_ACCOUNT_INFO:
@@ -71,6 +84,9 @@ export default class Background {
         //   console.log(res);
         // })
         let info = await this.getBCX().getAccountInfo()
+        if (info.locked) {
+          this.openDialog(sendResponse, payload)
+        }
         sendResponse(info)
         return
       } catch (e) {
@@ -83,10 +99,10 @@ export default class Background {
     this.lockGuard(sendResponse, async () => {
       try {
         const store = this._getLocalData()
-        let contractWhiteList = store.wallet.contractWhiteList.some(ele => {
-          return ele.nameOrId === payload.payload.nameOrId && ele.functionName === payload.payload.functionName && ele.domain === payload.domain
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain
         })
-        if (contractWhiteList) {
+        if (whiteList) {
           await this.getBCX().callContractFunction({
             nameOrId: payload.payload.nameOrId,
             functionName: payload.payload.functionName,
@@ -114,12 +130,11 @@ export default class Background {
   }
 
   static signature(sendResponse, payload) {
-    console.log(payload);
     this.lockGuard(sendResponse, async () => {
       try {
         const store = this._getLocalData()
         let whiteList = store.wallet.whiteList.some(ele => {
-          return ele.domain === payload.domain && ele.account_name === payload.toAccount
+          return ele.domain === payload.domain
         })
         if (whiteList) {
           await this.getBCX().transferAsset({
@@ -141,6 +156,133 @@ export default class Background {
           this.openDialog(sendResponse, payload)
         }
       } catch (e) {
+        sendResponse(Error.maliciousEvent())
+      }
+    })
+  }
+
+  static transferNHAsset(sendResponse, payload) {
+    this.lockGuard(sendResponse, async () => {
+      try {
+        const store = this._getLocalData()
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain
+        })
+        if (whiteList) {
+          await this.getBCX().transferNHAsset({
+            toAccount: payload.payload.toAccount,
+            NHAssetIds: payload.payload.NHAssetIds,
+          }).then((res) => {
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+            sendResponse(res);
+            return
+          })
+        } else {
+          this.openDialog(sendResponse, payload)
+        }
+
+      } catch (e) {
+        console.log(e)
+        sendResponse(Error.maliciousEvent())
+      }
+    })
+  }
+
+  static creatNHAssetOrder(sendResponse, payload) {
+    this.lockGuard(sendResponse, async () => {
+      try {
+        const store = this._getLocalData()
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain
+        })
+        if (whiteList) {
+          await this.getBCX().creatNHAssetOrder({
+            otcAccount: payload.payload.otcAccount,
+            orderFee: payload.payload.orderFee,
+            NHAssetId: payload.payload.NHAssetId,
+            price: payload.payload.price,
+            priceAssetId: payload.payload.priceAssetId,
+            expiration: payload.payload.expiration,
+            memo: payload.payload.memo,
+          }).then((res) => {
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+            sendResponse(res);
+            return
+          })
+        } else {
+          this.openDialog(sendResponse, payload)
+        }
+
+      } catch (e) {
+        console.log(e)
+        sendResponse(Error.maliciousEvent())
+      }
+    })
+  }
+
+  static fillNHAssetOrder(sendResponse, payload) {
+    this.lockGuard(sendResponse, async () => {
+      try {
+        const store = this._getLocalData()
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain
+        })
+        if (whiteList) {
+          await this.getBCX().fillNHAssetOrder({
+            orderId: payload.payload.orderId,
+          }).then((res) => {
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+            sendResponse(res);
+            return
+          })
+        } else {
+          this.openDialog(sendResponse, payload)
+        }
+
+      } catch (e) {
+        console.log(e)
+        sendResponse(Error.maliciousEvent())
+      }
+    })
+  }
+
+  static cancelNHAssetOrder(sendResponse, payload) {
+    this.lockGuard(sendResponse, async () => {
+      try {
+        const store = this._getLocalData()
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain
+        })
+        if (whiteList) {
+          await this.getBCX().cancelNHAssetOrder({
+            orderId: payload.payload.orderId,
+          }).then((res) => {
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+            sendResponse(res);
+            return
+          })
+        } else {
+          this.openDialog(sendResponse, payload)
+        }
+
+      } catch (e) {
+        console.log(e)
         sendResponse(Error.maliciousEvent())
       }
     })

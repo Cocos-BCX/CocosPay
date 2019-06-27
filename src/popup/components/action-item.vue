@@ -1,12 +1,16 @@
 <template>
   <section v-if="data">
-    <div class="action" @click="goTxDetail" v-if="data.type === 'transfer'">
+    <section class="action" @click="goTxDetail" v-if="data.type === 'transfer'">
       <div class="action-left">
-        <img src="/icons/48px.png">
+        <img
+          v-if="cocosAccount.accounts === data.parse_operations.to"
+          src="/icons/receive_operation_icon.png"
+        >
+        <img v-else src="/icons/transfer_operation_icon.png">
       </div>
       <div class="action-main">
         <div class="action-memo">
-          <span>{{data.id}}</span>
+          <span>{{cocosAccount.accounts === data.parse_operations.to ? data.parse_operations.from : data.parse_operations.to}}</span>
         </div>
         <div>{{data.date}}</div>
         <!-- <div
@@ -15,22 +19,25 @@
       </div>
       <div class="action-right">
         <span class="action-eos">
-          <span v-if="cocosAccount.accounts === data.parse_operations.to">+</span>
-          <span v-else>-</span>
-          <span class="coin">
+          <span class="in" v-if="cocosAccount.accounts === data.parse_operations.to">+</span>
+          <span class="out" v-else>-</span>
+          <span
+            class="coin"
+            :class="cocosAccount.accounts === data.parse_operations.from ? 'out' : 'in'"
+          >
             {{data.parse_operations.amount}}
             <span class="test-coin">({{$t('title.test')}})</span>
           </span>
         </span>
       </div>
-    </div>
-    <div class="action" @click="goTxDetail" v-if="data.type === 'call_contract_function'">
+    </section>
+    <section class="action" @click="goTxDetail" v-if="data.type === 'call_contract_function'">
       <div class="action-left">
-        <img src="/icons/48px.png">
+        <img src="/icons/contract_icon.png">
       </div>
       <div class="action-main">
         <div class="action-memo">
-          <span>{{data.id}}</span>
+          <span>{{data.parse_operations.caller}}</span>
         </div>
         <div>{{data.date}}</div>
         <!-- <div
@@ -39,14 +46,42 @@
       </div>
       <div class="action-right">
         <span class="action-eos">
-          <span>-</span>
-          <span class="coin">
-            {{data.parse_operations.fee}}
+          <span class="coin contract">
+            {{data.parse_operations.contract_name}}
+            <!-- <span class="test-coin">({{$t('title.test')}})</span> -->
+          </span>
+        </span>
+      </div>
+    </section>
+    <section class="action" @click="goTxDetail" v-if="data.type === 'transfer_nh_asset'">
+      <div class="action-left">
+        <img
+          v-if="cocosAccount.accounts === data.parse_operations.to"
+          src="/icons/nh_asset_receive.png"
+        >
+        <img v-else src="/icons/nh_asset_transfer.png">
+      </div>
+      <div class="action-main">
+        <div class="action-memo">
+          <span>{{cocosAccount.accounts === data.parse_operations.to ? data.parse_operations.from : data.parse_operations.to}}</span>
+        </div>
+        <div>{{data.date}}</div>
+        <!-- <div
+        class="create-time"
+        >{{(data.raw_data.timestamp || data.raw_data.expiration) | moment('YYYY.MM.DD HH:mm:ss')}}</div>-->
+      </div>
+      <div class="action-right">
+        <span class="action-eos">
+          <span
+            class="coin"
+            :class="cocosAccount.accounts === data.parse_operations.from ? 'out' : 'in'"
+          >
+            {{data.parse_operations.nh_asset}}
             <span class="test-coin">({{$t('title.test')}})</span>
           </span>
         </span>
       </div>
-    </div>
+    </section>
   </section>
 </template>
 <script>
@@ -119,6 +154,12 @@ export default {
   &-memo {
     display: flex;
     align-items: center;
+    span {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      width: 120px;
+    }
   }
   &-right {
     position: absolute;
@@ -137,11 +178,26 @@ export default {
       white-space: nowrap;
       max-width: 160px;
     }
+    .in {
+      color: #2fc49f;
+    }
+    .out {
+      color: #4868dc;
+    }
     .coin {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       max-width: 150px;
+      &.in {
+        color: #2fc49f;
+      }
+      &.out {
+        color: #4868dc;
+      }
+      &.contract {
+        color: #4b4bd9;
+      }
     }
     .status-icon {
       position: absolute;

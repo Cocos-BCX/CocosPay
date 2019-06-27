@@ -4,25 +4,6 @@
       <div class="signature-title">
         <span class="title">{{languages.title.locked}}</span>
       </div>
-      <!-- <div class="signature-info">
-        <div class="info">
-          <div class="info-label">{{$t('label.ptsite')}}</div>
-          <div class="info-content">{{prompt.data.domain}}</div>
-        </div>
-        <div class="info">
-          <div class="info-label">{{$t('label.ptaddress')}}</div>
-          <div class="info-content">
-            <span>{{prompt.data.toAccount}}</span>
-          </div>
-        </div>
-        <div class="info">
-          <div class="info-label">{{$t('label.ptamount')}}</div>
-          <div class="info-content">
-            <span>{{prompt.data.amount}} {{prompt.data.assetId}}</span>
-          </div>
-        </div>
-      </div>-->
-
       <section class="prompt-actions">
         <el-button class="cancel-btn text-center" @click="denied">{{languages.button.reject}}</el-button>
         <el-button
@@ -32,12 +13,12 @@
         >{{languages.button.confirm}}</el-button>
       </section>
     </div>
-    <div class="prompt-main" v-if="!locked && prompt.data.type === 'signature'">
+    <div class="prompt-main" v-else>
       <div class="signature-title">
         <span class="title">{{languages.title.signature}}</span>
         <span class="signature-user">{{cocosAccount.accounts}}</span>
       </div>
-      <div class="signature-info">
+      <div class="signature-info" v-if="prompt.data.type === 'signature'">
         <div class="info">
           <div class="info-label">{{languages.label.ptsite}}</div>
           <div class="info-content">{{prompt.data.domain}}</div>
@@ -67,22 +48,7 @@
           </div>
         </div>
       </div>
-      <el-checkbox class="join-option" v-model="joinWhiteList">{{languages.message.joinWhiteList}}</el-checkbox>
-      <section class="prompt-actions">
-        <el-button class="cancel-btn text-center" @click="denied">{{languages.button.reject}}</el-button>
-        <el-button
-          class="confirm-btn text-center"
-          type="primary"
-          @click.once="accepted"
-        >{{languages.button.confirm}}</el-button>
-      </section>
-    </div>
-    <div class="prompt-main" v-if="!locked && prompt.data.type === 'callContract'">
-      <div class="signature-title">
-        <span class="title">{{languages.title.signature}}</span>
-        <span class="signature-user">{{cocosAccount.accounts}}</span>
-      </div>
-      <div class="signature-info">
+      <div class="signature-info" v-if="prompt.data.type === 'callContract'">
         <div class="info">
           <div class="info-label">{{languages.label.ptsite}}</div>
           <div class="info-content">{{prompt.data.domain}}</div>
@@ -105,29 +71,116 @@
             <span>{{fee}} COCOS({{languages.title.test}})</span>
           </div>
         </div>
-        <!-- <div class="info">
-          <div class="info-label">{{$t('label.ptaddress')}}</div>
-          <div class="info-content">
-            <span>{{prompt.data.payload.toAccount}}</span>
-          </div>
+      </div>
+      <div
+        class="signature-info"
+        v-if="prompt.data.type === 'fillNHAssetOrder' || prompt.data.type === 'cancelNHAssetOrder'"
+      >
+        <div class="info">
+          <div class="info-label">{{languages.label.ptsite}}</div>
+          <div class="info-content">{{prompt.data.domain}}</div>
         </div>
         <div class="info">
-          <div class="info-label">{{$t('label.ptamount')}}</div>
+          <div class="info-label">{{languages.label.orderID}}</div>
+          <div class="info-content">{{prompt.data.payload.orderId}}</div>
+        </div>
+        <div class="info" v-if="fee">
+          <div class="info-label">{{languages.label.charge}}</div>
           <div class="info-content">
-            <span>{{prompt.data.payload.amount}} {{prompt.data.payload.assetId}}</span>
+            <span>{{fee}} COCOS({{languages.title.test}})</span>
           </div>
-        </div>-->
+        </div>
       </div>
-      <el-checkbox
-        class="join-option"
-        v-model="joinContractWhiteList"
-      >{{languages.message.joinWhiteList}}</el-checkbox>
+      <div class="signature-info" v-if="prompt.data.type === 'transferNHAsset'">
+        <div class="info">
+          <div class="info-label">{{languages.label.ptsite}}</div>
+          <div class="info-content">{{prompt.data.domain}}</div>
+        </div>
+        <div class="info">
+          <div class="info-label">{{languages.label.ptaddress}}</div>
+          <div class="info-content">{{prompt.data.payload.toAccount}}</div>
+        </div>
+        <div class="info">
+          <div class="info-label">{{languages.label.nhId}}</div>
+          <div class="info-content">{{prompt.data.payload.NHAssetIds}}</div>
+        </div>
+        <div class="info" v-if="fee">
+          <div class="info-label">{{languages.label.charge}}</div>
+          <div class="info-content">
+            <span>{{fee}} COCOS({{languages.title.test}})</span>
+          </div>
+        </div>
+      </div>
+      <div class="signature-info" v-if="prompt.data.type === 'creatNHAssetOrder'">
+        <div class="info">
+          <div class="info-label">{{languages.label.ptsite}}</div>
+          <div class="info-content">{{prompt.data.domain}}</div>
+        </div>
+        <div class="info">
+          <div class="info-label">{{languages.label.nhId}}</div>
+          <div class="info-content">{{prompt.data.payload.NHAssetId}}</div>
+        </div>
+        <div class="info">
+          <div class="info-label">{{languages.label.orderPrice}}</div>
+          <div class="info-content">{{prompt.data.payload.price}}({{languages.title.test}})</div>
+        </div>
+        <div class="info">
+          <div class="info-label">{{languages.label.coin}}</div>
+          <div class="info-content">{{prompt.data.payload.priceAssetId}}({{languages.title.test}})</div>
+        </div>
+        <div class="info">
+          <div class="info-label">{{languages.label.orderTime}}</div>
+          <div class="info-content">{{prompt.data.payload.expiration}}</div>
+        </div>
+        <div class="info">
+          <div class="info-label">{{languages.label.memo}}</div>
+          <div class="info-content">{{prompt.data.payload.memo}}</div>
+        </div>
+        <div class="info" v-if="fee">
+          <div class="info-label">{{languages.label.charge}}</div>
+          <div class="info-content">
+            <span>{{fee}} COCOS({{languages.title.test}})</span>
+          </div>
+        </div>
+      </div>
+      <el-checkbox class="join-option" v-model="joinWhiteList">{{languages.message.joinWhiteList}}</el-checkbox>
       <section class="prompt-actions">
         <el-button class="cancel-btn text-center" @click="denied">{{languages.button.reject}}</el-button>
         <el-button
           class="confirm-btn text-center"
           type="primary"
+          @click.once="creatNHOrder"
+          v-if="prompt.data.type === 'creatNHAssetOrder'"
+        >{{languages.button.confirm}}</el-button>
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
+          v-if="prompt.data.type === 'fillNHAssetOrder'"
+          @click.once="fillNHAsset"
+        >{{languages.button.confirm}}</el-button>
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
+          v-if="prompt.data.type === 'cancelNHAssetOrder'"
+          @click.once="cancelNHAsset"
+        >{{languages.button.confirm}}</el-button>
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
+          v-if="prompt.data.type === 'callContract'"
           @click.once="contractAccept"
+        >{{languages.button.confirm}}</el-button>
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
+          v-if="prompt.data.type === 'signature'"
+          @click.once="accepted"
+        >{{languages.button.confirm}}</el-button>
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
+          v-if="prompt.data.type === 'transferNHAsset'"
+          @click.once="transferNH"
         >{{languages.button.confirm}}</el-button>
       </section>
     </div>
@@ -151,6 +204,7 @@ export default {
       joinWhiteList: false,
       locked: true,
       joinContractWhiteList: false,
+      joinNHAssetWhiteList: false,
       languages: {},
       fee: ""
     };
@@ -193,7 +247,11 @@ export default {
     // });
   },
   methods: {
-    ...mapMutations("wallet", ["addWhiteList", "addContractWhiteList"]),
+    ...mapMutations("wallet", [
+      "addWhiteList",
+      "addContractWhiteList",
+      "addNHOrderWhiteList"
+    ]),
     ...mapActions("wallet", ["pushPrompt"]),
     ...mapMutations("trans", ["setAccount"]),
     ...mapActions("trans", [
@@ -201,7 +259,11 @@ export default {
       "tranferBCXFree",
       "queryTranferRate",
       "callContractFunction",
-      "callContractFunctionFree"
+      "creatNHAssetOrder",
+      "callContractFunctionFree",
+      "fillNHAssetOrder",
+      "cancelNHAssetOrder",
+      "transferNHAsset"
     ]),
     ...mapActions(["decodeMemo"]),
     ...mapActions("account", ["loadingBCXAccount"]),
@@ -209,17 +271,32 @@ export default {
       this.prompt.responder(null);
       NotificationService.close();
     },
+    creatNHOrder() {
+      this.addWhite();
+      this.creatNHAssetOrder(this.prompt.data.payload)
+        .then(res => {
+          this.prompt.responder({ accepted: true, res: res });
+          NotificationService.close();
+        })
+        .catch(err => {
+          this.prompt.responder({ accepted: true, res: err });
+          NotificationService.close();
+        });
+    },
+    transferNH() {
+      this.addWhite();
+      this.transferNHAsset(this.prompt.data.payload)
+        .then(res => {
+          this.prompt.responder({ accepted: true, res: res });
+          NotificationService.close();
+        })
+        .catch(err => {
+          this.prompt.responder({ accepted: true, res: err });
+          NotificationService.close();
+        });
+    },
     contractAccept() {
-      if (this.joinContractWhiteList) {
-        let white = {
-          id: IdGenerator.numeric(24),
-          nameOrId: this.prompt.data.payload.nameOrId,
-          domain: this.prompt.domain,
-          functionName: this.prompt.data.payload.functionName,
-          createTime: this.$moment().format("x")
-        };
-        this.addContractWhiteList(white);
-      }
+      this.addWhite();
       this.callContractFunction(this.prompt.data.payload)
         .then(res => {
           this.prompt.responder({ accepted: true, res: res });
@@ -230,17 +307,32 @@ export default {
           NotificationService.close();
         });
     },
+    cancelNHAsset() {
+      this.addWhite();
+      this.cancelNHAssetOrder(this.prompt.data.payload)
+        .then(res => {
+          this.prompt.responder({ accepted: true, res: res });
+          NotificationService.close();
+        })
+        .catch(err => {
+          this.prompt.responder({ accepted: true, res: err });
+          NotificationService.close();
+        });
+    },
+    fillNHAsset() {
+      this.addWhite();
+      this.fillNHAssetOrder(this.prompt.data.payload)
+        .then(res => {
+          this.prompt.responder({ accepted: true, res: res });
+          NotificationService.close();
+        })
+        .catch(err => {
+          this.prompt.responder({ accepted: true, res: err });
+          NotificationService.close();
+        });
+    },
     accepted() {
-      if (this.joinWhiteList) {
-        // 加入白名单
-        let white = {
-          id: IdGenerator.numeric(24),
-          address: this.prompt.data.payload.toAccount,
-          domain: this.prompt.domain,
-          createTime: this.$moment().format("x")
-        };
-        this.addWhiteList(white);
-      }
+      this.addWhite();
       this.tranferBCX()
         .then(res => {
           this.prompt.responder({ accepted: true, res: res });
@@ -257,6 +349,18 @@ export default {
     },
     addressFromHex(address) {
       return utils.transformAddress(address);
+    },
+    addWhite() {
+      if (this.joinWhiteList) {
+        // 加入白名单
+        let white = {
+          id: IdGenerator.numeric(24),
+          domain: this.prompt.domain,
+          address: this.cocosAccount.accounts,
+          createTime: this.$moment().format("x")
+        };
+        this.addWhiteList(white);
+      }
     },
     getAmount() {
       let amount = 0;
@@ -286,7 +390,6 @@ export default {
         default:
           break;
       }
-
       return key + " : " + value;
     }
   }

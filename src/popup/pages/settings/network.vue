@@ -2,12 +2,12 @@
   <section>
     <setting-navigation :title="$t('settings.network')"/>
     <section class="app-container bg-gray pt20" id="network">
-      <section v-if="!edit && editNode.length">
+      <section v-if="!edit && editNode.length" class="networks">
         <section class="list-title">
           <section class="title">{{$t('label.customNet')}}</section>
           <i @click="addNode()" class="el-icon-circle-plus"></i>
         </section>
-        <section class="editNode" v-for="(item,index) in editNode" :key="index">
+        <section class="editNode" id="editNode" v-for="(item,index) in editNode" :key="index">
           <section class="content">
             <span class="domain">Name: {{item.name}}</span>
             <span class="address">Ws: {{item.ws}}</span>
@@ -60,7 +60,7 @@
               style="margin-right: 20px;"
               @click="resetBack()"
             >{{$t('button.back')}}</el-button>
-            <el-button type="primary" @click="saveNetwork()">{{$t('button.save')}}</el-button>
+            <el-button type="primary" @click="saveNetwork()">{{$t('button.sure')}}</el-button>
           </section>
         </el-form>
       </section>
@@ -103,18 +103,16 @@ export default {
   computed: {
     ...mapState(["currentNetwork", "networks"])
   },
-  created() {
-    // this.loadNetwork();
-  },
   destroyed() {
     this.edit = false;
   },
   mounted() {
-    this.ps = new PerfectScrollbar("#network", {
+    this.editNode = Storage.get("add_node") || [];
+    console.log(this.editNode);
+    this.network = new PerfectScrollbar("#network", {
       minScrollbarLength: 40,
       maxScrollbarLength: 40
     });
-    this.editNode = Storage.get("add_node") || [];
     this.choose = Storage.get("choose_node").ws;
   },
   methods: {
@@ -198,9 +196,16 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "../../theme/v1/variable";
+
 .app-container {
   position: relative;
 }
+
+.networks {
+  height: 540px;
+  position: relative;
+}
+
 .list-title {
   display: flex;
   align-items: center;

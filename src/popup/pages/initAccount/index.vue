@@ -2,7 +2,17 @@
   <section>
     <logo-header/>
     <section class="app-container">
-      <div class="text-center mt30">
+      <section class="select-lang no-bg">
+        <el-select class="language-select" v-model="lang" @change="changeLanguage">
+          <el-option
+            v-for="(item, index) in langs"
+            :key="index"
+            :label="item.name"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </section>
+      <div class="text-center">
         <img @click="logout()" src="/images/new-account.png">
       </div>
       <el-button
@@ -80,19 +90,24 @@ export default {
   data() {
     return {
       currentCreateVisible: false,
-      register: false
+      register: false,
+      lang: "中文",
+      langs: [{ name: "中文", value: "ZH" }, { name: "English", value: "EN" }]
     };
   },
   computed: {
-    ...mapState(["currentCreateAccount"])
+    ...mapState(["currentCreateAccount", "curLng"])
   },
   mounted() {
     this.nodeLists().then(res => {
-      res.connect = true;
-      this.apiConfig(res).then(() => {
+      if (!Array.isArray(res)) return;
+      res[0].connect = true;
+      this.apiConfig(res[0]).then(() => {
         this.init();
       });
     });
+    this.lang = this.curLng === "ZH" ? "中文" : "English";
+    this.$i18n.locale = this.curLng;
   },
   methods: {
     ...mapMutations("wallet", ["addAccount"]),
@@ -100,7 +115,8 @@ export default {
     ...mapMutations([
       "setCurrentAccount",
       "setCurrentCreateAccount",
-      "setCurrentCreateVisible"
+      "setCurrentCreateVisible",
+      "setCurLng"
     ]),
     ...mapActions("wallet", ["deleteWallet"]),
     ...mapActions("account", ["logoutBCXAccount"]),
@@ -121,6 +137,13 @@ export default {
     copyError() {
       this.$kalert({
         message: this.$i18n.t("alert.copyFail")
+      });
+    },
+    changeLanguage() {
+      this.setCurLng(this.lang);
+      this.$i18n.locale = this.lang;
+      this.$kalert({
+        message: this.$i18n.t("alert.modifySuccess")
       });
     },
     createAccount() {
@@ -169,5 +192,11 @@ export default {
   border-radius: 8px;
   padding: 10px;
   margin: 10px 0;
+}
+.select-lang {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 50px;
 }
 </style>

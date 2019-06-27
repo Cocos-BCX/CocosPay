@@ -469,7 +469,7 @@ export default {
       "setCurrentAccounts"
     ]),
     ...mapActions(["nodeLists", "init", "subscribeTo"]),
-    ...mapActions("trans", ["queryTranferList"]),
+    ...mapActions("trans", ["queryTranferList","transferNHAsset"]),
     scrollTopList() {
       this.$el.querySelector("#perfect-scroll-wrapper").scrollTop = 0;
       this.transactionsScroller.update();
@@ -481,6 +481,7 @@ export default {
           this.$router.replace({ name: "unlock" });
         } else {
           this.transferList();
+          this.transferNHAsset()
           this.UserAccount().then(res => {
             if (res.code === 1) {
               this.accountList = Object.entries(res.data);

@@ -148,7 +148,11 @@ export default {
     hash: 'Trade HASH',
     user: 'User',
     blockHeight: 'Block height',
-    tradeTime: 'Trading time',
+    tradeTime: 'Trading time：',
+    orderTime: 'Selling time：',
+    orderPrice: 'Price：',
+    coin: 'Coin：',
+    orderID: 'Order ID：',
     ownerAccount: 'Payment account',
     toAddress: 'Receive address',
     tokenType: 'Change Token',
@@ -177,6 +181,8 @@ export default {
     param: 'parameters',
     memo: 'memo',
     charge: 'fee',
+    nhTitle: 'NH Asset transfers',
+    nhId: 'NH Asset ID',
   },
   // settings
   settings: {

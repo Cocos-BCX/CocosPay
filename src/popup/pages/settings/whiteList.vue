@@ -6,20 +6,10 @@
         <section class="item" v-for="(item, index) in whiteList" :data="item" :key="index">
           <section class="content">
             <span class="domain">{{item.domain}}</span>
-            <span class="address">{{addressFromHex(item.address)}}</span>
+            <span class="address">{{item.address}}</span>
             <small>{{item.createTime * 1 | moment('YYYY.MM.DD HH:mm')}}</small>
           </section>
           <span class="remove" @click="removeWhiteList(item)">X</span>
-        </section>
-      </section>
-      <section v-if="contractWhiteList.length > 0">
-        <section class="item" v-for="(item, index) in contractWhiteList" :data="item" :key="index">
-          <section class="content">
-            <span class="domain">{{item.domain}}</span>
-            <span class="address">{{item.nameOrId}}</span>
-            <small>{{item.createTime * 1 | moment('YYYY.MM.DD HH:mm')}}</small>
-          </section>
-          <span class="remove" @click="removeContractWhiteList(item)">X</span>
         </section>
       </section>
       <p

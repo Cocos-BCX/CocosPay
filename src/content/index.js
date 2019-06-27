@@ -43,6 +43,22 @@ class BcxWeb {
     this.BCX.callContractFunction = callContractFunction
   }
 
+  static setCreatNHAssetOrder(creatNHAssetOrder) {
+    this.BCX.creatNHAssetOrder = creatNHAssetOrder
+  }
+
+  static setFillNHAssetOrder(fillNHAssetOrder) {
+    this.BCX.fillNHAssetOrder = fillNHAssetOrder
+  }
+
+  static setCancelNHAssetOrder(cancelNHAssetOrder) {
+    this.BCX.cancelNHAssetOrder = cancelNHAssetOrder
+  }
+
+  static setTransferNHAsset(transferNHAsset) {
+    this.BCX.transferNHAsset = transferNHAsset
+  }
+
   static setGetAccountInfo(getAccountInfo) {
     this.BCX.getAccountInfo = getAccountInfo
   }
@@ -56,6 +72,11 @@ class BcxWeb {
     _send(MessageTypes.CALL_CONTRACT, message)
   }
 
+  static creatNHAssetOrder(message) {
+    message.payload.domain = utils.strippedHost()
+    _send(MessageTypes.CREATE_NH_ASSET_ORDER, message)
+  }
+
   static getAccountInfo(message) {
     // console.log(message);
     // message.payload.domain = utils.strippedHost()
@@ -65,6 +86,21 @@ class BcxWeb {
   static tranferCount(message) {
     message.payload.domain = utils.strippedHost()
     _send(MessageTypes.SIGNATURE, message)
+  }
+
+  static fillNHAssetOrder(message) {
+    message.payload.domain = utils.strippedHost()
+    _send(MessageTypes.FILL_NH_ASSET_ORDER, message)
+  }
+
+  static cancelNHAssetOrder(message) {
+    message.payload.domain = utils.strippedHost()
+    _send(MessageTypes.CANCEL_NH_ASSET_ORDER, message)
+  }
+
+  static transferNHAsset(message) {
+    message.payload.domain = utils.strippedHost()
+    _send(MessageTypes.TRANSFER_NH_ASSET, message)
   }
 }
 
@@ -108,12 +144,35 @@ function tranferCount(message) {
   // _send(MessageTypes.SIGNATURE, message)
 }
 
+function creatNHAssetOrder(message) {
+  return new Promise((resolve, reject) => {
+   resolve(_send(MessageTypes.CREATE_NH_ASSET_ORDER, message))
+  })
+}
+
 function callContractFunction(message) {
   return new Promise((resolve, reject) => {
     resolve(_send(MessageTypes.CALL_CONTRACT, message))
   })
 }
 
+function fillNHAssetOrder(message) {
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.FILL_NH_ASSET_ORDER, message))
+  })
+}
+
+function cancelNHAssetOrder(message) {
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.CANCEL_NH_ASSET_ORDER, message))
+  })
+}
+
+function transferNHAsset(message) {
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.TRANSFER_NH_ASSET, message))
+  })
+}
 
 let bcxWeb = newBcx.GetNewBCX()
 export default class Content {
@@ -161,15 +220,19 @@ export default class Content {
   initCOCOSWeb(message) {
     // console.log('CocosPay init initCOCOSWeb')
     const payload = message.payload
-    if (payload.account_name) {
-      BcxWeb.setBCX(bcxWeb)
-      BcxWeb.setAddress(payload.account_name)
-      BcxWeb.setTransferAsset(tranferCount)
-      BcxWeb.setCallContractFunction(callContractFunction)
-      BcxWeb.setGetAccountInfo(getAccountInfo)
-      BcxWeb.BCX.account_name = payload.account_name
-      window.BcxWeb = BcxWeb.BCX
-    }
+    // if (payload.account_name) {
+    BcxWeb.setBCX(bcxWeb)
+    BcxWeb.setAddress(payload.account_name)
+    BcxWeb.setTransferAsset(tranferCount)
+    BcxWeb.setCallContractFunction(callContractFunction)
+    BcxWeb.setGetAccountInfo(getAccountInfo)
+    BcxWeb.setCreatNHAssetOrder(creatNHAssetOrder)
+    BcxWeb.setFillNHAssetOrder(fillNHAssetOrder)
+    BcxWeb.setCancelNHAssetOrder(cancelNHAssetOrder)
+    BcxWeb.setTransferNHAsset(transferNHAsset)
+    BcxWeb.BCX.account_name = payload.account_name
+    window.BcxWeb = BcxWeb.BCX
+    // }
     eventQueue.forEach(({
       resolve,
       reject,

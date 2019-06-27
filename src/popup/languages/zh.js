@@ -148,7 +148,11 @@ export default {
     user: '授权人',
     hash: '交易HASH',
     blockHeight: '区块高度',
-    tradeTime: '交易时间',
+    tradeTime: '交易时间：',
+    orderTime: '挂单时间：',
+    orderPrice: '挂单价格：',
+    coin: '代币：',
+    orderID: '订单ID：',
     ownerAccount: '付款账号',
     toAddress: '收款地址',
     tokenType: '选择Token',
@@ -177,7 +181,8 @@ export default {
     param: '参数',
     memo: '备注',
     charge: '手续费',
-
+    nhTitle: 'NH资产转移',
+    nhId: 'NH资产ID',
   },
   // settings
   settings: {

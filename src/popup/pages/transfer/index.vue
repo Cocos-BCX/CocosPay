@@ -106,6 +106,8 @@ export default {
     const toValidator = (rule, value, callback) => {
       if (value === "") {
         callback(new Error(this.$i18n.t("verify.toAddressNull")));
+      } else if (value === this.cocosAccount.accounts) {
+        callback(new Error(this.$i18n.t("message.ownerError")));
       } else {
         callback();
       }
@@ -218,11 +220,6 @@ export default {
       });
     },
     onSubmit(formName) {
-      if (this.formData.to === this.formData.from) {
-        this.$kalert({
-          message: this.$i18n.t("message.ownerError")
-        });
-      }
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.setAccount({

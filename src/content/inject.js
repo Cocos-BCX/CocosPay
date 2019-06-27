@@ -116,6 +116,18 @@ class Inject {
       case MessageTypes.GET_ACCOUNT_INFO:
         this.getAccountInfo(nonSyncMessage)
         break
+      case MessageTypes.CREATE_NH_ASSET_ORDER:
+        this.creatNHAssetOrder(nonSyncMessage)
+        break
+      case MessageTypes.FILL_NH_ASSET_ORDER:
+        this.fillNHAssetOrder(nonSyncMessage)
+        break
+      case MessageTypes.CANCEL_NH_ASSET_ORDER:
+        this.cancelNHAssetOrder(nonSyncMessage)
+        break
+      case MessageTypes.TRANSFER_NH_ASSET:
+        this.transferNHAsset(nonSyncMessage)
+        break
       default:
         stream.send(nonSyncMessage.error(Error.maliciousEvent()), MessageTypes.INJECTED)
     }
@@ -140,9 +152,33 @@ class Inject {
         this.respond(message, res)
       })
   }
+  creatNHAssetOrder(message) {
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.CREATE_NH_ASSET_ORDER, message, message.resolver)
+      .send().then(res => {
+        this.respond(message, res)
+      })
+  }
   getAccountInfo(message) {
     message.payload = {}
     InternalMessage.widthPayloadAndResolver(InternalMessageTypes.GET_ACCOUNT_INFO, message, message.resolver)
+      .send().then(res => {
+        this.respond(message, res)
+      })
+  }
+  fillNHAssetOrder(message) {
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.FILL_NH_ASSET_ORDER, message, message.resolver)
+      .send().then(res => {
+        this.respond(message, res)
+      })
+  }
+  transferNHAsset(message){
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.TRANSFER_NH_ASSET, message, message.resolver)
+      .send().then(res => {
+        this.respond(message, res)
+      })
+  }
+  cancelNHAssetOrder(message) {
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.CANCEL_NH_ASSET_ORDER, message, message.resolver)
       .send().then(res => {
         this.respond(message, res)
       })

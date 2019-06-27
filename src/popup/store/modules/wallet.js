@@ -16,6 +16,7 @@ export default {
     accounts: [],
     whiteList: [],
     contractWhiteList: [],
+    NHOrderWhiteList: [],
     prompt: null,
   },
 
@@ -53,6 +54,14 @@ export default {
     },
     addContractWhiteList(state, white) {
       state.contractWhiteList = [...state.contractWhiteList, white]
+    },
+    addNHOrderWhiteList(state, white) {
+      state.NHOrderWhiteList = [...state.NHOrderWhiteList, white]
+    },
+    removeNHOrderWhiteList(state, white) {
+      state.NHOrderWhiteList = state.NHOrderWhiteList.filter(ele => {
+        return ele.id !== white.id
+      })
     },
     removeWhiteList(state, white) {
       state.whiteList = state.whiteList.filter(ele => {
@@ -146,7 +155,6 @@ export default {
         })
         return resData
       } catch (e) {
-        console.log(e)
         return e
       }
     },
