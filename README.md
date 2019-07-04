@@ -10,9 +10,9 @@ Node.js version 8.9.3 or higher.
 
 Install local dependencies by using 
 
-npm install
+npm install bcxjs-api --registry=http://39.105.4.131:8080/ -S
 
-npm install bcxjs-api --registry=http://39.105.4.131:8080/ -S. 
+npm install 
 
 Build with development 
 npm run dev 
