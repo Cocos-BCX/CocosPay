@@ -419,6 +419,8 @@ export default {
         maxScrollbarLength: 40
       }
     );
+    console.log(this.transactionsScroller);
+
     this.subscribeTo();
     // this.loadAccount();
     this.nodeLists();
@@ -469,7 +471,7 @@ export default {
       "setCurrentAccounts"
     ]),
     ...mapActions(["nodeLists", "init", "subscribeTo"]),
-    ...mapActions("trans", ["queryTranferList","transferNHAsset"]),
+    ...mapActions("trans", ["queryTranferList", "transferNHAsset"]),
     scrollTopList() {
       this.$el.querySelector("#perfect-scroll-wrapper").scrollTop = 0;
       this.transactionsScroller.update();
@@ -481,7 +483,7 @@ export default {
           this.$router.replace({ name: "unlock" });
         } else {
           this.transferList();
-          this.transferNHAsset()
+          this.transferNHAsset();
           this.UserAccount().then(res => {
             if (res.code === 1) {
               this.accountList = Object.entries(res.data);

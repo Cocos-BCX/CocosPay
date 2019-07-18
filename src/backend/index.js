@@ -100,7 +100,7 @@ export default class Background {
       try {
         const store = this._getLocalData()
         let whiteList = store.wallet.whiteList.some(ele => {
-          return ele.domain === payload.domain
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
         })
         if (whiteList) {
           await this.getBCX().callContractFunction({
@@ -134,7 +134,7 @@ export default class Background {
       try {
         const store = this._getLocalData()
         let whiteList = store.wallet.whiteList.some(ele => {
-          return ele.domain === payload.domain
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
         })
         if (whiteList) {
           await this.getBCX().transferAsset({
@@ -166,7 +166,7 @@ export default class Background {
       try {
         const store = this._getLocalData()
         let whiteList = store.wallet.whiteList.some(ele => {
-          return ele.domain === payload.domain
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
         })
         if (whiteList) {
           await this.getBCX().transferNHAsset({
@@ -197,7 +197,7 @@ export default class Background {
       try {
         const store = this._getLocalData()
         let whiteList = store.wallet.whiteList.some(ele => {
-          return ele.domain === payload.domain
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
         })
         if (whiteList) {
           await this.getBCX().creatNHAssetOrder({
@@ -233,7 +233,7 @@ export default class Background {
       try {
         const store = this._getLocalData()
         let whiteList = store.wallet.whiteList.some(ele => {
-          return ele.domain === payload.domain
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
         })
         if (whiteList) {
           await this.getBCX().fillNHAssetOrder({
@@ -263,7 +263,7 @@ export default class Background {
       try {
         const store = this._getLocalData()
         let whiteList = store.wallet.whiteList.some(ele => {
-          return ele.domain === payload.domain
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
         })
         if (whiteList) {
           await this.getBCX().cancelNHAssetOrder({

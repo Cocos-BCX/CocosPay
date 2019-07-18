@@ -145,7 +145,7 @@ export default {
   label: {
     send: 'The sender',
     receive: 'The received',
-    hash: 'Trade HASH',
+    hash: 'Trade ID',
     user: 'User',
     blockHeight: 'Block height',
     tradeTime: 'Trading time：',

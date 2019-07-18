@@ -146,7 +146,7 @@ export default {
     send: '发送方',
     receive: '接收方',
     user: '授权人',
-    hash: '交易HASH',
+    hash: '交易ID',
     blockHeight: '区块高度',
     tradeTime: '交易时间：',
     orderTime: '挂单时间：',

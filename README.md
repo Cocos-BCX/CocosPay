@@ -1,39 +1,35 @@
 ## CocosPay:
 
-CocosPay is a Browser Extension for Cocos-BCX.
+CocosPay 是一款Goole扩展程序， 该项目是基于Cocos-BCX公链的生态钱包.
 
-## Preparation:
+## 准备工作:
 
-Node.js version 8.9.3 or higher.
+安装8.9.3 或 以上版本的Node.js .
 
-## Build:
 
-Install local dependencies by using 
 
+## 生成插件程序包:
+
+###### 按顺序执行下面命令
+
+```
 npm install
+```
 
-npm install bcxjs-api@v1.3.12 --registry=http://39.105.4.131:8080/ -S. 
-
-Build with development 
-npm run dev 
-
-Build for Publishing 
+```
 npm run build
+```
 
-Uncompressed build will be found in `./build`
+运行结束项目中会生成一个 build 目录;
 
-## Start:
 
-It's useful for dapp or web.
-Install and log in the CocosPay,
-CocosPay will inject a BcxWeb object into current document.
-Note that you can use like this:
+## 安装插件:
+打开Goole浏览器,进入更多工具 ---> 扩展程序 ---> 加载已解压的扩展程序
 
-        if (window.BcxWeb && window.BcxWeb) {
-          bcx = window.BcxWeb
-        }
+选择之前生成的build文件。
 
-## Example
 
-How to use for dapp?  
+## 配合Dapp使用插件
+
 Here is a dapp sample. [cocos-dice](https://github.com/Cocos-BCX/cocos-dice)
+

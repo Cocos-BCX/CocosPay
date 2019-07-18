@@ -1,7 +1,7 @@
 <template>
   <section class="app-container">
     <navigation :title="$t('title.sendDetail')"/>
-    <div id="perfect-scroll-wrapper">
+    <div id="perfect-scroll-detail">
       <section class="eos-main" v-if="orderDeatil.type === 'transfer'">
         <h2
           class="eos-style cocos mt20"
@@ -200,13 +200,10 @@ export default {
     }
   },
   mounted() {
-    this.transactionsScroller = new PerfectScrollbar(
-      "#perfect-scroll-wrapper",
-      {
-        minScrollbarLength: 40,
-        maxScrollbarLength: 40
-      }
-    );
+    this.transactionsScroller = new PerfectScrollbar("#perfect-scroll-detail", {
+      minScrollbarLength: 40,
+      maxScrollbarLength: 40
+    });
   },
   methods: {
     copySuccess() {
