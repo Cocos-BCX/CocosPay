@@ -1,6 +1,6 @@
 ## CocosPay:
 
-CocosPay 是一款Goole扩展程序， 该项目是基于Cocos-BCX公链的生态钱包.
+CocosPay 是一款Google扩展程序， 该项目是基于Cocos-BCX公链的生态钱包.
 
 ## 准备工作:
 
@@ -24,7 +24,7 @@ npm run build
 
 
 ## 安装插件:
-打开Goole浏览器,进入更多工具 ---> 扩展程序 ---> 加载已解压的扩展程序
+打开Google浏览器,进入更多工具 ---> 扩展程序 ---> 加载已解压的扩展程序
 
 选择之前生成的build文件。
 
