@@ -21,7 +21,7 @@ npm run build
 you'll find a folder named `build` after running above commands
 
 ## Install extensions:
-Open Chrome, select `More tools` --> `Extensions` --> `Load unpacked`
+Open Chrome, select `More tools` --> `Extensions` --> `Load unpacked`  
 Select file `build` that built before.
 
 
