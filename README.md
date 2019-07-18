@@ -21,9 +21,7 @@ npm run build
 you'll find a folder named `build` after running above commands
 
 ## Install extensions:
-打开Google浏览器,进入更多工具 ---> 扩展程序 ---> 加载已解压的扩展程序
-Open Chrome, select `More tools` --> `Extensions` --> 
-选择之前生成的build文件。
+Open Chrome, select `More tools` --> `Extensions` --> `Load unpacked`
 Select file `build` that built before.
 
 
