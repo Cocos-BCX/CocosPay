@@ -124,7 +124,7 @@ export default {
       if (state.prompt) state.prompt.responder && state.prompt.responder(null)
       commit('pushPrompt', prompt)
     },
-    // 钱包模式注册
+    // createAccountWithWallet
     async WalletBCXAccount({
       commit,
       state,
@@ -159,7 +159,7 @@ export default {
       }
     },
 
-    // 查看钱包账户
+    // get wallet account
     async getAccounts({
       commit
     }) {
@@ -169,7 +169,7 @@ export default {
         return e
       }
     },
-    // 切换钱包账户
+    // switch wallet account
     async setCurrentAccounts({
       commit
     }, account) {
@@ -194,7 +194,7 @@ export default {
         return e
       }
     },
-    // 删除钱包
+    // deleteWallet
     async deleteWallet({
       commit
     }) {
@@ -222,7 +222,7 @@ export default {
         return e
       }
     },
-    // 私钥登录
+    // importPrivateKey
     async importPrivateKey({
       commit,
       state,
@@ -274,7 +274,7 @@ export default {
         return e
       }
     },
-    // 查询账户状态
+    // getAccountInfo
     async loadingBCXAccount({
       commit
     }) {
@@ -291,7 +291,7 @@ export default {
         return e
       }
     },
-    // 恢复钱包
+    // restoreWallet
     async RestoreWallet({
       commit,
       state,
@@ -320,7 +320,7 @@ export default {
         return e
       }
     },
-    // 导出私钥
+    // getPrivateKey
     async OutWalletPutKey({
       commit
     }) {

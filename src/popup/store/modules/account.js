@@ -25,7 +25,7 @@ export default {
     assets: [],
   },
   actions: {
-    //注册账户
+    //createAccountWithPassword
     async loadBCXAccount({
       commit,
       state,
@@ -56,7 +56,7 @@ export default {
         return e
       }
     },
-    //退出登陆
+    //logout
     async logoutBCXAccount({
       commit,
     }) {
@@ -85,7 +85,7 @@ export default {
         return e
       }
     },
-    //修改密码
+    //changePassword
     async changePassword({
       commit,
       state,
@@ -115,7 +115,7 @@ export default {
         return e
       }
     },
-    //私钥登录
+    //login with private key
     async setPrivateKeys({
       commit,
       state,
@@ -199,7 +199,7 @@ export default {
         return e
       }
     },
-    //登陆账户
+    //login
     async loginBCXAccount({
       commit,
       state,
@@ -234,7 +234,7 @@ export default {
         return e
       }
     },
-    //查询账户状态
+    // get account status
     async loadingBCXAccount({
       commit
     }) {
@@ -257,7 +257,7 @@ export default {
         return e
       }
     },
-    //查询账户信息
+    //get account info
     async UserMessage({
       commit,
       state,
@@ -286,7 +286,7 @@ export default {
         return e
       }
     },
-    //查询账户资产
+    //queryAccountBalances
     async UserAccount({
       commit,
       state,
@@ -313,7 +313,7 @@ export default {
         return e
       }
     },
-    //导出私钥
+    // getPrivateKey
     async OutPutKey({
       commit,
       state,

@@ -30,7 +30,7 @@ export default {
     }
   },
   actions: {
-    //代币转账
+    // transfer Asset
     async tranferBCX({
       commit,
       state,
@@ -65,7 +65,7 @@ export default {
         return e
       }
     },
-    //获取转账手续费
+    //get transfer asset fee
     async tranferBCXFree({
       commit,
       state,
@@ -100,7 +100,7 @@ export default {
         return e
       }
     },
-    // 查询手续费
+    // queryTransactionBaseFee
     async queryTranferRate({
       commit
     }, params) {
@@ -128,14 +128,14 @@ export default {
         return e
       }
     },
-    //解析memo
+    //decodeMemo
     async decodeMemo({
       commit,
       state
     }, params) {
       return await NewBCX.decodeMemo(params)
     },
-    //合约调用
+    //callContractFunction
     async callContractFunction({
       commit,
       state
@@ -162,7 +162,7 @@ export default {
         return e
       }
     },
-    //购买NH资产
+    // buy NHAsset
     async fillNHAssetOrder({
       commit,
       state
@@ -183,7 +183,7 @@ export default {
         return e
       }
     },
-    //取消NH资产订单
+    //cancelNHAssetOrder
     async cancelNHAssetOrder({
       commit,
       state
@@ -204,7 +204,7 @@ export default {
         return e
       }
     },
-    //创建NH订单
+    //creatNHAssetOrder
     async creatNHAssetOrder({
       commit,
       state
@@ -225,7 +225,7 @@ export default {
         return e
       }
     },
-    //转移NH资产
+    //transferNHAsset
     async transferNHAsset({
       commit,
       state
@@ -249,7 +249,7 @@ export default {
         return e
       }
     },
-    //合约手续费查询
+    //callContractFunctionFree
     async callContractFunctionFree({
       commit,
       state
@@ -276,7 +276,7 @@ export default {
         return e
       }
     },
-    //查询链上资产精度
+    // queryAsset
     async queryAsset({
       commit
     }, params) {
@@ -303,7 +303,7 @@ export default {
 
       }
     },
-    //查询转账列表
+    //queryTranferList
     async queryTranferList({
       commit,
       state,
