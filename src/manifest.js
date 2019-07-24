@@ -26,7 +26,7 @@ module.exports = {
   }],
   content_security_policy: "script-src 'self' 'unsafe-eval'; object-src 'self'",
   web_accessible_resources: ['js/cocospay.js', 'js/content.js']
-  // "externally_connectable": {
-  //   "matches": ["*://127.0.0.1:9000/*"]
-  // }
+  "externally_connectable": {
+    "matches": ["*://127.0.0.1:9000/*"]
+  }
 }
