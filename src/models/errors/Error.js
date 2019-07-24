@@ -8,6 +8,7 @@ export default class Error {
     this.code = code
     this.isError = true
   }
+  
   // 锁定的log
   static locked() {
     return new Error(
