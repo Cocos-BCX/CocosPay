@@ -8,12 +8,14 @@ export default class Error {
     this.code = code
     this.isError = true
   }
+  // 锁定的log
   static locked() {
     return new Error(
       ErrorTypes.LOCKED,
       "The user's CocosPay is locked. They have been notified and should unlock before continuing."
     )
   }
+  // Malicious event discarded.
   static maliciousEvent() {
     return new Error(
       ErrorTypes.MALICIOUS,
@@ -21,6 +23,7 @@ export default class Error {
       ErrorCodes.FORBIDDEN
     )
   }
+  // The user closed the prompt without any action.
   static promptClosedWithoutAction() {
     return new Error(
       ErrorTypes.PROMPT_CLOSED,
