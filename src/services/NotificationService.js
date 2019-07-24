@@ -2,6 +2,7 @@ import Error from '../models/errors/Error'
 import {
   apis
 } from '../lib/BrowserApis'
+
 import InternalMessage from '../messages/InternalMessage'
 import * as InternalMessageTypes from '../messages/InternalMessageTypes'
 let openWindow = null
@@ -45,7 +46,7 @@ export default class NotificationService {
         return null
       }
     }
-    // await InternalMessage.widthPayload(InternalMessageTypes.SET_PROMPT, JSON.stringify(notification)).send()
+   
     await new Promise((resolve) => setTimeout(resolve, 600))
     let popup = await getPopup()
 
