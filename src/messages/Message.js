@@ -1,5 +1,6 @@
 import * as MessageTypes from './MessageTypes'
 
+
 export default class Message {
   constructor (type = '', payload = '', resolver = '') {
     this.type = type
