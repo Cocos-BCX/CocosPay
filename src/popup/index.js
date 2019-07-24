@@ -1,3 +1,4 @@
+// author cocos-bcx team
 import Vue from 'vue'
 import router from './router'
 import VueI18n from 'vue-i18n'
