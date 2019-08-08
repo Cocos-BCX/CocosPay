@@ -1,4 +1,4 @@
-[English](https://github.com/Cocos-BCX/CocosPay)
+[English](https://github.com/Cocos-BCX/CocosPay/blob/master/README.md)
 
 ## CocosPay:
 
