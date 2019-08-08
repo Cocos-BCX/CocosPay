@@ -1,3 +1,5 @@
+[English](https://github.com/Cocos-BCX/CocosPay)
+
 ## CocosPay:
 
 CocosPay 是一款Google扩展程序， 该项目是基于Cocos-BCX公链的生态钱包.
