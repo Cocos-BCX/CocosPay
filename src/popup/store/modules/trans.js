@@ -225,6 +225,27 @@ export default {
         return e
       }
     },
+
+     // registerCreator
+     async registerCreator() {
+      try {
+        let resData;
+        await NewBCX.registerCreator().then(res => {
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          console.log("registerCreatorrrr",res);
+          resData = res;
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+
+
     //transferNHAsset
     async transferNHAsset({
       commit,

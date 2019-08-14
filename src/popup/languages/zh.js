@@ -88,7 +88,7 @@ export default {
     ownerKey: 'owner_key不能进行转账，请导入active_key',
     minimum: '小数点后最大位数为',
     walletPassword: '请输入最初的临时密码',
-    noZero: '数量应该大于 0',
+    noZero: '数量应该大于 0'
   },
   // title
   title: {
@@ -114,6 +114,7 @@ export default {
     locked: '未登录或已锁定',
     test: '测试',
     coin: '币种',
+    registerCreator: '注册开发者'
   },
   // alert
   alert: {
@@ -135,7 +136,7 @@ export default {
     existAccount: '此账号已存在',
     illegalPrivateKey: '私钥不合法',
     transferFail: '扣除手续费后可用余额不足',
-    setSuccess: '设置成功',
+    setSuccess: '设置成功'
   },
   // confirm
   confirm: {
@@ -183,6 +184,7 @@ export default {
     charge: '手续费',
     nhTitle: 'NH资产转移',
     nhId: 'NH资产ID',
+    worldView: '世界观名称'
   },
   // settings
   settings: {

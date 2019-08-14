@@ -59,6 +59,10 @@ class BcxWeb {
     this.BCX.transferNHAsset = transferNHAsset
   }
 
+  static setRegisterCreator(registerCreator) {
+    this.BCX.registerCreator = registerCreator
+  }
+
   static setGetAccountInfo(getAccountInfo) {
     this.BCX.getAccountInfo = getAccountInfo
   }
@@ -174,7 +178,15 @@ function transferNHAsset(message) {
   })
 }
 
+function registerCreator(message) {
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.REGISTER_CREATOR, message))
+  })
+}
+
 let bcxWeb = newBcx.GetNewBCX()
+
+
 export default class Content {
   constructor() {
     // Injecting an encrypted stream into the web application
@@ -230,6 +242,7 @@ export default class Content {
     BcxWeb.setFillNHAssetOrder(fillNHAssetOrder)
     BcxWeb.setCancelNHAssetOrder(cancelNHAssetOrder)
     BcxWeb.setTransferNHAsset(transferNHAsset)
+    BcxWeb.setRegisterCreator(registerCreator)
     BcxWeb.BCX.account_name = payload.account_name
     window.BcxWeb = BcxWeb.BCX
     // }

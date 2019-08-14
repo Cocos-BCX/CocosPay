@@ -68,7 +68,6 @@ class Inject {
     })
   }
 
-  //main.js中添加一个监听，监听来自background.js的消息
   /**
    * handler message by message type
    * @param sendResponse
@@ -128,6 +127,9 @@ class Inject {
       case MessageTypes.TRANSFER_NH_ASSET:
         this.transferNHAsset(nonSyncMessage)
         break
+      case MessageTypes.REGISTER_CREATOR:
+        this.registerCreator(nonSyncMessage)
+        break
       default:
         stream.send(nonSyncMessage.error(Error.maliciousEvent()), MessageTypes.INJECTED)
     }
@@ -177,6 +179,14 @@ class Inject {
         this.respond(message, res)
       })
   }
+
+  registerCreator(message){
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.REGISTER_CREATOR, message, message.resolver)
+      .send().then(res => {
+        this.respond(message, res)
+      })
+  }
+
   cancelNHAssetOrder(message) {
     InternalMessage.widthPayloadAndResolver(InternalMessageTypes.CANCEL_NH_ASSET_ORDER, message, message.resolver)
       .send().then(res => {
@@ -206,6 +216,7 @@ class Inject {
         node
       }), MessageTypes.INJECTED)
       isReady = true
+      console.log('init CocosPay Success')
     } catch (e) {
       console.log('init CocosPay Fail')
     }

@@ -1,5 +1,6 @@
 <template>
   <section class="prompt-body">
+    <!-- 锁定状态下的弹窗 -->
     <div class="prompt-main" v-if="locked">
       <div class="signature-title">
         <span class="title">{{languages.title.locked}}</span>
@@ -13,11 +14,18 @@
         >{{languages.button.confirm}}</el-button>
       </section>
     </div>
+    <!-- 非锁定状态下的弹窗 -->
     <div class="prompt-main" v-else>
       <div class="signature-title">
-        <span class="title">{{languages.title.signature}}</span>
+         <div class="title" v-if="prompt.data.type === 'signature'">
+          <span>{{languages.title.signature}}</span>
+        </div>
+          <div class="title" v-else-if="prompt.data.type === 'registerCreator'">
+          <span>{{languages.title.registerCreator}}</span>
+        </div>
         <span class="signature-user">{{cocosAccount.accounts}}</span>
       </div>
+
       <div class="signature-info" v-if="prompt.data.type === 'signature'">
         <div class="info">
           <div class="info-label">{{languages.label.ptsite}}</div>
@@ -143,9 +151,25 @@
           </div>
         </div>
       </div>
+
+      <!-- 注册开发者 -->
+      <div class="signature-info" v-if="prompt.data.type === 'registerCreator'">
+        <div class="info">
+          <div class="info-label">{{languages.label.ptsite}}</div>
+          <div class="info-content">{{prompt.data.domain}}</div>
+        </div>
+      </div>
+
       <el-checkbox class="join-option" v-model="joinWhiteList">{{languages.message.joinWhiteList}}</el-checkbox>
       <section class="prompt-actions">
         <el-button class="cancel-btn text-center" @click="denied">{{languages.button.reject}}</el-button>
+        <!-- 注册开发者 -->
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
+          @click.once="registCreator"
+          v-if="prompt.data.type === 'registerCreator'"
+        >{{languages.button.confirm}}</el-button>
         <el-button
           class="confirm-btn text-center"
           type="primary"
@@ -260,6 +284,8 @@ export default {
       "queryTranferRate",
       "callContractFunction",
       "creatNHAssetOrder",
+      // 创建世界观
+      "registerCreator",
       "callContractFunctionFree",
       "fillNHAssetOrder",
       "cancelNHAssetOrder",
@@ -271,6 +297,20 @@ export default {
       this.prompt.responder(null);
       NotificationService.close();
     },
+
+    registCreator() {
+      this.addWhite();
+      this.registerCreator()
+        .then(res => {
+          this.prompt.responder({ accepted: true, res: res });
+          NotificationService.close();
+        })
+        .catch(err => {
+          this.prompt.responder({ accepted: true, res: err });
+          NotificationService.close();
+        });
+    },
+
     creatNHOrder() {
       this.addWhite();
       this.creatNHAssetOrder(this.prompt.data.payload)
@@ -396,6 +436,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+// 引入样式文件
 @import "../../styles/prompt";
 .join-option {
   position: absolute;
