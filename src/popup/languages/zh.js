@@ -185,7 +185,7 @@ export default {
     charge: '手续费',
     nhTitle: 'NH资产转移',
     nhId: 'NH资产ID',
-    worldView: '世界观名称'
+    worldView: '世界观名称:'
   },
   // settings
   settings: {

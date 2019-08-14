@@ -114,6 +114,8 @@ export default {
     locked: 'Not logged in or locked',
     test: 'TEST',
     coin: 'Coins',
+    registerCreator: 'Register as a Developer',
+    creatWorldView: 'Create a Multiverse'
   },
   // alert
   alert: {
@@ -183,6 +185,7 @@ export default {
     charge: 'fee',
     nhTitle: 'NH Asset transfers',
     nhId: 'NH Asset ID',
+    worldView: 'Multiverse Name:'
   },
   // settings
   settings: {
