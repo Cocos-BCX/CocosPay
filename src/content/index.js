@@ -63,6 +63,10 @@ class BcxWeb {
     this.BCX.registerCreator = registerCreator
   }
 
+  static setCreatWorldView(creatWorldView) {
+    this.BCX.creatWorldView = creatWorldView
+  }
+
   static setGetAccountInfo(getAccountInfo) {
     this.BCX.getAccountInfo = getAccountInfo
   }
@@ -184,6 +188,12 @@ function registerCreator(message) {
   })
 }
 
+function creatWorldView(message) {
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.CREATE_WORLDVIEW, message))
+  })
+}
+
 let bcxWeb = newBcx.GetNewBCX()
 
 
@@ -243,6 +253,7 @@ export default class Content {
     BcxWeb.setCancelNHAssetOrder(cancelNHAssetOrder)
     BcxWeb.setTransferNHAsset(transferNHAsset)
     BcxWeb.setRegisterCreator(registerCreator)
+    BcxWeb.setCreatWorldView(creatWorldView)
     BcxWeb.BCX.account_name = payload.account_name
     window.BcxWeb = BcxWeb.BCX
     // }

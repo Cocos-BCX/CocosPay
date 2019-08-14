@@ -70,6 +70,10 @@ export default class Background {
         Background.regsiterCreator(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break
+      case InternalMessageTypes.CREATE_WORLDVIEW:
+        Background.creatWorldView(sendResponse, message.payload)
+        Repeat.add(message.resolver)
+        break
       case InternalMessageTypes.TRANSFER_NH_ASSET:
         Background.transferNHAsset(sendResponse, message.payload)
         Repeat.add(message.resolver)
@@ -189,6 +193,35 @@ export default class Background {
           this.openDialog(sendResponse, payload)
         }
 
+      } catch (e) {
+        console.log(e)
+        sendResponse(Error.maliciousEvent())
+      }
+    })
+  }
+
+  static creatWorldView(sendResponse, payload) {
+    this.lockGuard(sendResponse, async () => {
+      try {
+        const store = this._getLocalData()
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
+        })
+        if (whiteList) {
+          await this.getBCX().creatWorldView({
+            worldView: payload.payload.worldView
+          }).then((res) => {
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+            sendResponse(res);
+            return
+          })
+        } else {
+          this.openDialog(sendResponse, payload)
+        }
       } catch (e) {
         console.log(e)
         sendResponse(Error.maliciousEvent())

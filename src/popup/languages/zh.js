@@ -114,7 +114,8 @@ export default {
     locked: '未登录或已锁定',
     test: '测试',
     coin: '币种',
-    registerCreator: '注册开发者'
+    registerCreator: '注册开发者',
+    creatWorldView: '创建世界观'
   },
   // alert
   alert: {

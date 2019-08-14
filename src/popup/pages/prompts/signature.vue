@@ -17,11 +17,14 @@
     <!-- 非锁定状态下的弹窗 -->
     <div class="prompt-main" v-else>
       <div class="signature-title">
-         <div class="title" v-if="prompt.data.type === 'signature'">
+        <div class="title" v-if="prompt.data.type === 'signature'">
           <span>{{languages.title.signature}}</span>
         </div>
-          <div class="title" v-else-if="prompt.data.type === 'registerCreator'">
+        <div class="title" v-else-if="prompt.data.type === 'registerCreator'">
           <span>{{languages.title.registerCreator}}</span>
+        </div>
+        <div class="title" v-else-if="prompt.data.type === 'creatWorldView'">
+          <span>{{languages.title.creatWorldView}}</span>
         </div>
         <span class="signature-user">{{cocosAccount.accounts}}</span>
       </div>
@@ -152,8 +155,19 @@
         </div>
       </div>
 
-      <!-- 注册开发者 -->
       <div class="signature-info" v-if="prompt.data.type === 'registerCreator'">
+        <div class="info">
+          <div class="info-label">{{languages.label.ptsite}}</div>
+          <div class="info-content">{{prompt.data.domain}}</div>
+        </div>
+      </div>
+
+      <div class="signature-info" v-if="prompt.data.type === 'creatWorldView'">
+        <div class="info">
+          <div class="info-label">{{languages.label.worldView}}</div>
+          <div class="info-content">{{prompt.data.payload.worldView}}</div>
+        </div>
+
         <div class="info">
           <div class="info-label">{{languages.label.ptsite}}</div>
           <div class="info-content">{{prompt.data.domain}}</div>
@@ -163,13 +177,21 @@
       <el-checkbox class="join-option" v-model="joinWhiteList">{{languages.message.joinWhiteList}}</el-checkbox>
       <section class="prompt-actions">
         <el-button class="cancel-btn text-center" @click="denied">{{languages.button.reject}}</el-button>
-        <!-- 注册开发者 -->
+
         <el-button
           class="confirm-btn text-center"
           type="primary"
           @click.once="registCreator"
           v-if="prompt.data.type === 'registerCreator'"
         >{{languages.button.confirm}}</el-button>
+
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
+          @click.once="creatWorldView"
+          v-if="prompt.data.type === 'creatWorldView'"
+        >{{languages.button.confirm}}</el-button>
+
         <el-button
           class="confirm-btn text-center"
           type="primary"
@@ -260,6 +282,7 @@ export default {
         });
       } else if (!this.locked && this.prompt.data.type === "callContract") {
         this.callContractFunctionFree(this.prompt.data.payload).then(res => {
+          console.log(this)
           if (res.code === 1) {
             this.fee = res.data.fee_amount;
           }
@@ -284,8 +307,8 @@ export default {
       "queryTranferRate",
       "callContractFunction",
       "creatNHAssetOrder",
-      // 创建世界观
       "registerCreator",
+      "creatWorldView",
       "callContractFunctionFree",
       "fillNHAssetOrder",
       "cancelNHAssetOrder",
@@ -301,6 +324,19 @@ export default {
     registCreator() {
       this.addWhite();
       this.registerCreator()
+        .then(res => {
+          this.prompt.responder({ accepted: true, res: res });
+          NotificationService.close();
+        })
+        .catch(err => {
+          this.prompt.responder({ accepted: true, res: err });
+          NotificationService.close();
+        });
+    },
+
+    creatWorldView() {
+      this.addWhite();
+      this.creatWorldView(this.prompt.data.payload)
         .then(res => {
           this.prompt.responder({ accepted: true, res: res });
           NotificationService.close();

@@ -130,6 +130,9 @@ class Inject {
       case MessageTypes.REGISTER_CREATOR:
         this.registerCreator(nonSyncMessage)
         break
+      case MessageTypes.CREATE_WORLDVIEW:
+        this.creatWorldView(nonSyncMessage)
+        break
       default:
         stream.send(nonSyncMessage.error(Error.maliciousEvent()), MessageTypes.INJECTED)
     }
@@ -182,6 +185,13 @@ class Inject {
 
   registerCreator(message){
     InternalMessage.widthPayloadAndResolver(InternalMessageTypes.REGISTER_CREATOR, message, message.resolver)
+      .send().then(res => {
+        this.respond(message, res)
+      })
+  }
+
+  creatWorldView(message){
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.CREATE_WORLDVIEW, message, message.resolver)
       .send().then(res => {
         this.respond(message, res)
       })

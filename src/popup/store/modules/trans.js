@@ -245,6 +245,27 @@ export default {
       }
     },
 
+    //creatWorldView
+    async creatWorldView({
+      commit,
+      state
+    }, params) {
+      try {
+        let resData;
+        await NewBCX.creatWorldView(params).then(res => {
+          console.log("creatWorldView---trans",res);
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res;
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
 
     //transferNHAsset
     async transferNHAsset({
