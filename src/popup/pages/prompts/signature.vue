@@ -188,7 +188,7 @@
         <el-button
           class="confirm-btn text-center"
           type="primary"
-          @click.once="creatWorldView"
+          @click.once="createWorldView"
           v-if="prompt.data.type === 'creatWorldView'"
         >{{languages.button.confirm}}</el-button>
 
@@ -334,7 +334,7 @@ export default {
         });
     },
 
-    creatWorldView() {
+    createWorldView() {
       this.addWhite();
       this.creatWorldView(this.prompt.data.payload)
         .then(res => {
