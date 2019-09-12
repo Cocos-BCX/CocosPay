@@ -23,7 +23,7 @@ export default new Vuex.Store({
   },
   state: {
     loading: false,
-    curLng: 'ZH',
+    curLng: window.localStorage.getItem("lang_type") || "ZH",
     currentNetwork: {
       id: 1,
       name: 'TestNet',

@@ -92,7 +92,7 @@ export default {
       currentCreateVisible: false,
       register: false,
       lang: "中文",
-      langs: [{ name: "中文", value: "ZH" }, { name: "English", value: "EN" }]
+      langs: [{ name: "中文", value: "ZH" }, { name: "English", value: "EN" }, { name: "Français", value: "FR" }]
     };
   },
   computed: {

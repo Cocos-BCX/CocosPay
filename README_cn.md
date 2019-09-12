@@ -1,4 +1,4 @@
-[English](https://github.com/Cocos-BCX/CocosPay/blob/master/README.md)
+[English](https://github.com/CocosBCX/CocosPay/blob/master/README.md)
 
 ## CocosPay:
 
@@ -33,5 +33,5 @@ npm run build
 
 ## 配合Dapp使用插件
 
-Here is a dapp sample. [cocos-dice](https://github.com/Cocos-BCX/cocos-dice)
+Here is a dapp sample. [cocos-dice](https://github.com/CocosBCX/cocos-dice)
 

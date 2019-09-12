@@ -1,6 +1,6 @@
 <template>
   <section>
-    <setting-navigation :showSetting="false" :title="$t('settings.language')"/>
+    <setting-navigation :showSetting="false" :title="$t('settings.language')" />
     <section class="app-container">
       <section class="setting-tip">{{$t('message.changeLanguage')}}</section>
       <el-select class="mt20" v-model="lang" style="width: 100%;" @change="changeLanguage">
@@ -25,7 +25,11 @@ export default {
   data() {
     return {
       lang: "中文",
-      langs: [{ name: "中文", value: "ZH" }, { name: "English", value: "EN" }]
+      langs: [
+        { name: "中文", value: "ZH" },
+        { name: "English", value: "EN" },
+        { name: "Français", value: "FR" }
+      ]
     };
   },
   computed: {
@@ -34,12 +38,15 @@ export default {
   created() {
     // this.lang = this.curLng;
     this.lang = this.$i18n.locale;
+    console.log(this.$i18n.locale);
   },
   methods: {
     ...mapMutations(["setCurLng"]),
     changeLanguage() {
       this.setCurLng(this.lang);
       this.$i18n.locale = this.lang;
+      console.log(this.$i18n.locale);
+      window.localStorage.setItem("lang_type", this.lang);
       this.$kalert({
         message: this.$i18n.t("alert.modifySuccess")
       });

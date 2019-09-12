@@ -1,6 +1,6 @@
 <template>
   <section>
-    <app-header @refresh="refreshAccount"/>
+    <app-header @refresh="refreshAccount" />
     <vue-drawer-layout
       ref="drawer"
       class="drawer"
@@ -20,7 +20,7 @@
           <ul>
             <li v-for="(item, index) in accountList" :key="index">
               <div class="asset-name">
-                <img src="/icons/48px.png" width="30" height="30" alt>
+                <img src="/icons/48px.png" width="30" height="30" alt />
                 <span>{{item[0]}}({{$t('title.test')}})</span>
               </div>
               <span class="asset-value">{{item[1]}}</span>
@@ -34,7 +34,7 @@
           <div class="eos-info">
             <div class="more">
               <span>
-                <img @click="openDrawer" src="/images/stop-circle.png" alt>
+                <img @click="openDrawer" src="/images/stop-circle.png" alt />
               </span>
             </div>
             <div
@@ -44,7 +44,7 @@
             >
               <div class="account">
                 <div class="current-account">{{ cocosAccount.accounts }}</div>
-                <v-icon class="account-arrow" v-if="accountType === 'wallet'" name="angle-down"/>
+                <v-icon class="account-arrow" v-if="accountType === 'wallet'" name="angle-down" />
               </div>
               <ul
                 class="account-list"
@@ -57,7 +57,7 @@
                   :key="index"
                 >
                   <div class="selected" v-if="item === cocosAccount.accounts">
-                    <v-icon class="account-arrow" name="check"/>
+                    <v-icon class="account-arrow" name="check" />
                   </div>
                   <div class="account-item">
                     <div class="account-name">{{item}}</div>
@@ -76,7 +76,7 @@
               @click="moreExpand = !moreExpand"
             >
               <span class="more-btn">
-                <img src="/images/list-ul.png" alt>
+                <img src="/images/list-ul.png" alt />
               </span>
               <ul class="more-list" v-show="moreExpand">
                 <!-- <li @click="nameVisible = true">
@@ -88,7 +88,7 @@
                     :href="`${accountDetail}/${cocosAccount.accounts}/${accountDetailTail}`"
                     target="_blank"
                   >
-                    <img class="icon-img" src="/images/look-icon.png">
+                    <img class="icon-img" src="/images/look-icon.png" />
                     {{$t('button.lookAccount')}}
                   </a>
                 </li>
@@ -97,18 +97,18 @@
                   {{$t('button.importAccount')}}
                 </li>-->
                 <li @click="OutPutKeys()">
-                  <img class="icon-img" src="/images/export-icon.png">
+                  <img class="icon-img" src="/images/export-icon.png" />
                   {{$t('button.exportPrivateKey')}}
                 </li>
                 <li @click="removePasswordShow = true">
-                  <img class="icon-img" src="/images/delete-icon.png">
+                  <img class="icon-img" src="/images/delete-icon.png" />
                   {{accountType === 'account' ? $t('button.removeAccount') : $t('button.deletedWallet')}}
                 </li>
               </ul>
             </div>
           </div>
           <div class="eos-main">
-            <img class="eos-logo" src="/icons/logo-middle.png">
+            <img class="eos-logo" src="/icons/logo-middle.png" />
             <h2 class="eos-style mt15">
               {{cocosCount || 0}} COCOS
               <span class="test-coin">({{$t('title.test')}})</span>
@@ -147,7 +147,7 @@
           </div>-->
           <div class="translate-container">
             <div id="perfect-scroll-wrapper" class="translate-list" v-loading="!tranfers.length">
-              <action-item v-for="(item, index) in tranfers" :data="item" :key="index"/>
+              <action-item v-for="(item, index) in tranfers" :data="item" :key="index" />
               <p
                 class="no-result text-center"
                 v-if="tranfers.length > 5"
@@ -412,6 +412,7 @@ export default {
   },
   async created() {},
   mounted() {
+    this.$i18n.locale = window.localStorage.getItem("lang_type")||"ZH";
     this.transactionsScroller = new PerfectScrollbar(
       "#perfect-scroll-wrapper",
       {
@@ -420,6 +421,7 @@ export default {
       }
     );
     console.log(this.transactionsScroller);
+    console.log(this.$i18n.locale);
 
     this.subscribeTo();
     // this.loadAccount();
