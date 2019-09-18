@@ -17,7 +17,7 @@ module.exports = {
     path: path.join(__dirname, '..', 'build'),
     publicPath: '/',
     filename: 'js/[name].js',
-    chunkFilename: 'js/[id].[name].js?[hash]',
+    chunkFilename: 'js/[id].[name].js',
     library: '[name]'
   },
   resolve: {
@@ -60,7 +60,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [path.join(__dirname, '..', 'src'), path.join(__dirname, '..', 'test')],
+        include: [path.join(__dirname, '..', 'src'), path.join(__dirname, '..', 'test'), /EncryptedStream|LocalStream|AES/],
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
