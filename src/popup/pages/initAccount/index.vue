@@ -106,7 +106,7 @@ export default {
         this.init();
       });
     });
-    this.lang = this.curLng === "ZH" ? "中文" : "English";
+    this.lang = this.curLng === "ZH" ? "中文" :this.curLng === "EN"? "English":'Français';
     this.$i18n.locale = this.curLng;
   },
   methods: {
