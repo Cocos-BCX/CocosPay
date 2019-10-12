@@ -82,6 +82,14 @@ export default class Background {
         Background.getAccountInfo(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break
+      case InternalMessageTypes.CREATE_NH_ASSET:
+        Background.creatNHAsset(sendResponse, message.payload)
+        Repeat.add(message.resolver)
+        break
+      case InternalMessageTypes.DELETE_NH_ASSET:
+        Background.deleteNHAsset(sendResponse, message.payload)
+        Repeat.add(message.resolver)
+        break
     }
   }
 
@@ -229,6 +237,76 @@ export default class Background {
     })
   }
 
+  static creatNHAsset(sendResponse, payload) {
+    this.lockGuard(sendResponse, async () => {
+      try {
+        const store = this._getLocalData()
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
+        })
+        if (whiteList) {
+          await this.getBCX().creatNHAsset({
+            // worldView: payload.payload.worldView
+            assetId: payload.payload.assetId,
+            worldView: payload.payload.worldView,
+            nhData: payload.payload.nhData,
+            nhAccount: payload.payload.nhAccount,
+            nhNum: payload.payload.nhNum,
+            type: payload.payload.type,
+            nhAssets: payload.payload.nhAssets,
+          }).then((res) => {
+            console.log('========creatNHAsset=========')
+            console.log(res)
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+            sendResponse(res);
+            return
+          })
+        } else {
+          this.openDialog(sendResponse, payload)
+        }
+      } catch (e) {
+        console.log(e)
+        sendResponse(Error.maliciousEvent())
+      }
+    })
+  }
+
+
+  static deleteNHAsset(sendResponse, payload) {
+    this.lockGuard(sendResponse, async () => {
+      try {
+        const store = this._getLocalData()
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
+        })
+        if (whiteList) {
+          await this.getBCX().deleteNHAsset({
+            // worldView: payload.payload.worldView
+            itemIds: payload.payload.itemIds,
+
+          }).then((res) => {
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+            sendResponse(res);
+            return
+          })
+        } else {
+          this.openDialog(sendResponse, payload)
+        }
+      } catch (e) {
+        console.log(e)
+        sendResponse(Error.maliciousEvent())
+      }
+    })
+  }
+
   static creatNHAssetOrder(sendResponse, payload) {
     this.lockGuard(sendResponse, async () => {
       try {
@@ -274,7 +352,7 @@ export default class Background {
         })
         if (whiteList) {
           await this.getBCX().registerCreator().then((res) => {
-            console.log("registerCreatorssss",res)
+            console.log("registerCreatorssss", res)
             if (res.code !== 1) {
               Alert({
                 message: CommonJs.getI18nMessages(I18n).error[res.code]

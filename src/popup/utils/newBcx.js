@@ -1,4 +1,5 @@
-import BCX from 'bcxjs-api'
+// import BCX from 'bcxjs-api'
+import BCX from 'bcx-api'
 import Storage from './storage'
 let bcxNodes = []
 export default class NewBCX {

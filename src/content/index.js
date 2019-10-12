@@ -67,6 +67,14 @@ class BcxWeb {
     this.BCX.creatWorldView = creatWorldView
   }
 
+  static setCreatNHAsset(creatNHAsset) {
+    this.BCX.creatNHAsset = creatNHAsset
+  }
+
+  static setDeleteNHAsset(deleteNHAsset) {
+    this.BCX.deleteNHAsset = deleteNHAsset
+  }
+
   static setGetAccountInfo(getAccountInfo) {
     this.BCX.getAccountInfo = getAccountInfo
   }
@@ -154,7 +162,7 @@ function tranferCount(message) {
 
 function creatNHAssetOrder(message) {
   return new Promise((resolve, reject) => {
-   resolve(_send(MessageTypes.CREATE_NH_ASSET_ORDER, message))
+    resolve(_send(MessageTypes.CREATE_NH_ASSET_ORDER, message))
   })
 }
 
@@ -191,6 +199,18 @@ function registerCreator(message) {
 function creatWorldView(message) {
   return new Promise((resolve, reject) => {
     resolve(_send(MessageTypes.CREATE_WORLDVIEW, message))
+  })
+}
+
+function creatNHAsset(message) {
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.CREATE_NH_ASSET, message))
+  })
+}
+
+function deleteNHAsset(message) {
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.DELETE_NH_ASSET, message))
   })
 }
 
@@ -254,6 +274,8 @@ export default class Content {
     BcxWeb.setTransferNHAsset(transferNHAsset)
     BcxWeb.setRegisterCreator(registerCreator)
     BcxWeb.setCreatWorldView(creatWorldView)
+    BcxWeb.setCreatNHAsset(creatNHAsset)
+    BcxWeb.setDeleteNHAsset(deleteNHAsset)
     BcxWeb.BCX.account_name = payload.account_name
     window.BcxWeb = BcxWeb.BCX
     // }
