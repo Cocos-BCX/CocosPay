@@ -61,7 +61,8 @@
 import { mapState, mapMutations, mapActions } from "vuex";
 import vClickOutside from "v-click-outside";
 import Storage from "../../lib/storage";
-import BCX from "bcxjs-api";
+// import BCX from "bcxjs-api";
+import BCX from "bcx-api";
 export default {
   data() {
     return {

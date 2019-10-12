@@ -170,7 +170,6 @@ export default {
       try {
         let resData;
         await NewBCX.fillNHAssetOrder(params).then(res => {
-          console.log(res);
           if (res.code !== 1) {
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -191,7 +190,6 @@ export default {
       try {
         let resData;
         await NewBCX.cancelNHAssetOrder(params).then(res => {
-          console.log(res);
           if (res.code !== 1) {
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -212,7 +210,6 @@ export default {
       try {
         let resData;
         await NewBCX.creatNHAssetOrder(params).then(res => {
-          console.log(res);
           if (res.code !== 1) {
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -226,8 +223,8 @@ export default {
       }
     },
 
-     // registerCreator
-     async registerCreator() {
+    // registerCreator
+    async registerCreator() {
       try {
         let resData;
         await NewBCX.registerCreator().then(res => {
@@ -236,7 +233,7 @@ export default {
               message: CommonJs.getI18nMessages(I18n).error[res.code]
             })
           }
-          console.log("registerCreatorrrr",res);
+          console.log("registerCreatorrrr", res);
           resData = res;
         })
         return resData
@@ -253,7 +250,54 @@ export default {
       try {
         let resData;
         await NewBCX.creatWorldView(params).then(res => {
-          console.log("creatWorldView---trans",res);
+          console.log("creatWorldView---trans", res);
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res;
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+
+    //creatNHAsset
+    async creatNHAsset({
+      commit,
+      state
+    }, params) {
+      try {
+        let resData;
+        await NewBCX.creatNHAsset(params).then(res => {
+          console.log("creatNHAsset", res);
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res;
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+
+    //deleteNHAsset
+    async deleteNHAsset({
+      commit,
+      state
+    }, params) {
+      try {
+        let resData;
+        // let NHAssetIds = '4.2.57326'
+
+        await NewBCX.deleteNHAsset({
+          NHAssetIds: params.NHAssetIds
+        }).then(res => {
           if (res.code !== 1) {
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -278,7 +322,6 @@ export default {
           toAccount: params.toAccount,
           NHAssetIds: params.NHAssetIds
         }).then(res => {
-          console.log(res);
           if (res.code !== 1) {
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]

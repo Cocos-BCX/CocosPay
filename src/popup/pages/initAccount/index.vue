@@ -1,6 +1,6 @@
 <template>
   <section>
-    <logo-header/>
+    <logo-header />
     <section class="app-container">
       <section class="select-lang no-bg">
         <el-select class="language-select" v-model="lang" @change="changeLanguage">
@@ -13,7 +13,7 @@
         </el-select>
       </section>
       <div class="text-center">
-        <img @click="logout()" src="/images/new-account.png">
+        <img @click="logout()" src="/images/new-account.png" />
       </div>
       <el-button
         class="full-btn mt30"
@@ -22,7 +22,7 @@
       >{{$t('button.createAccount')}}</el-button>
       <section class="small-tip text-center mt10">{{$t('message.recommendNew')}}</section>
       <div class="text-center mt15">
-        <img src="/images/import-account.png" @click="deleteWallet">
+        <img src="/images/import-account.png" @click="deleteWallet" />
       </div>
       <el-button
         class="full-btn mt30"
@@ -92,7 +92,11 @@ export default {
       currentCreateVisible: false,
       register: false,
       lang: "中文",
-      langs: [{ name: "中文", value: "ZH" }, { name: "English", value: "EN" }, { name: "Français", value: "FR" }]
+      langs: [
+        { name: "中文", value: "ZH" },
+        { name: "English", value: "EN" },
+        { name: "Français", value: "FR" }
+      ]
     };
   },
   computed: {
@@ -106,7 +110,12 @@ export default {
         this.init();
       });
     });
-    this.lang = this.curLng === "ZH" ? "中文" :this.curLng === "EN"? "English":'Français';
+    this.lang =
+      this.curLng === "ZH"
+        ? "中文"
+        : this.curLng === "EN"
+        ? "English"
+        : "Français";
     this.$i18n.locale = this.curLng;
   },
   methods: {
@@ -142,6 +151,7 @@ export default {
     changeLanguage() {
       this.setCurLng(this.lang);
       this.$i18n.locale = this.lang;
+      window.localStorage.setItem("lang_type", this.lang);
       this.$kalert({
         message: this.$i18n.t("alert.modifySuccess")
       });

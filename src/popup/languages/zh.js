@@ -115,7 +115,9 @@ export default {
     test: '测试',
     coin: '币种',
     registerCreator: '注册开发者',
-    creatWorldView: '创建世界观'
+    creatWorldView: '创建世界观',
+    creatNHAsset: 'NH资产创建',
+    deleteNHAsset: 'NH资产删除'
   },
   // alert
   alert: {
@@ -185,7 +187,16 @@ export default {
     charge: '手续费',
     nhTitle: 'NH资产转移',
     nhId: 'NH资产ID',
-    worldView: '世界观名称:'
+    worldView: '世界观名称:',
+    id: '资产id:',
+    world: '世界观:',
+    nhData: 'NH资产数据data:',
+    nhUser: 'NH资产拥有者:',
+    nhNum: 'NH资产数量:',
+    type: 'Type:',
+    nhAssets: '批量创建不同资:',
+    itemlds:'itemlds:'
+
   },
   // settings
   settings: {
