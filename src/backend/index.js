@@ -246,17 +246,14 @@ export default class Background {
         })
         if (whiteList) {
           await this.getBCX().creatNHAsset({
-            // worldView: payload.payload.worldView
             assetId: payload.payload.assetId,
             worldView: payload.payload.worldView,
-            nhData: payload.payload.nhData,
-            nhAccount: payload.payload.nhAccount,
-            nhNum: payload.payload.nhNum,
+            baseDescribe: payload.payload.baseDescribe,
+            ownerAccount:payload.payload.ownerAccount,
+            NHAssetsCount: payload.payload.NHAssetsCount,
             type: payload.payload.type,
-            nhAssets: payload.payload.nhAssets,
+            NHAssets: payload.payload.nhAssets,
           }).then((res) => {
-            console.log('========creatNHAsset=========')
-            console.log(res)
             if (res.code !== 1) {
               Alert({
                 message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -285,9 +282,7 @@ export default class Background {
         })
         if (whiteList) {
           await this.getBCX().deleteNHAsset({
-            // worldView: payload.payload.worldView
-            itemIds: payload.payload.itemIds,
-
+            NHAssetIds: payload.payload.NHAssetIds,
           }).then((res) => {
             if (res.code !== 1) {
               Alert({
