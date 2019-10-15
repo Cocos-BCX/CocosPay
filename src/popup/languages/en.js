@@ -116,8 +116,8 @@ export default {
     coin: 'Coins',
     registerCreator: 'Register as a Developer',
     creatWorldView: 'Create a Multiverse',
-    creatNHAsset: 'NH资产创建',
-    deleteNHAsset: 'NH资产删除'
+    creatNHAsset: 'NH Asset Creation',
+    deleteNHAsset: 'NH Asset Deletion'
   },
   // alert
   alert: {
@@ -188,11 +188,11 @@ export default {
     nhTitle: 'NH Asset transfers',
     nhId: 'NH Asset ID',
     worldView: 'Multiverse Name:',
-    id: '资产id',
-    world: '世界观',
-    nhData: 'NH资产数据data',
-    nhUser: 'NH资产拥有者',
-    nhNum: 'NH资产数量',
+    id: 'Asset ID',
+    world: 'Multiverse',
+    nhData: 'data',
+    nhUser: 'Owner',
+    nhNum: 'Amount',
   },
   // settings
   settings: {

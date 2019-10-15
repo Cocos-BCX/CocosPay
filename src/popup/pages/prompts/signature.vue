@@ -146,7 +146,7 @@
           <div class="info-content">{{prompt.data.payload.priceAssetId}}({{languages.title.test}})</div>
         </div>
         <div class="info">
-          <div class="info-label">{{languages.label.orderTime}} S </div>
+          <div class="info-label">{{languages.label.orderTime}}</div>
           <div class="info-content">{{prompt.data.payload.expiration}}</div>
         </div>
         <div class="info">
@@ -326,11 +326,14 @@ export default {
     ...mapState("trans", ["tranferInfo"])
   },
   created() {
+    I18n.locale = window.localStorage.getItem("lang_type") || "EN";
+
     this.languages = CommonJs.getI18nMessages(I18n);
     // this.data = this.prompt.data;
     // this.data = this.prompt.data.signedTransaction.raw_data.contract[0]
   },
   mounted() {
+    this.$i18n.locale = window.localStorage.getItem("lang_type")||"ZH";
     this.loadingBCXAccount().then(res => {
       this.locked = res && res.locked ? true : false;
       if (!this.locked && this.prompt.data.type === "signature") {
