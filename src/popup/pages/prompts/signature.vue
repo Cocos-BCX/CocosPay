@@ -146,7 +146,7 @@
           <div class="info-content">{{prompt.data.payload.priceAssetId}}({{languages.title.test}})</div>
         </div>
         <div class="info">
-          <div class="info-label">{{languages.label.orderTime}}</div>
+          <div class="info-label">{{languages.label.orderTime}} S </div>
           <div class="info-content">{{prompt.data.payload.expiration}}</div>
         </div>
         <div class="info">
