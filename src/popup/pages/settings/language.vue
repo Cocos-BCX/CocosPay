@@ -38,7 +38,6 @@ export default {
   created() {
     // this.lang = this.curLng;
     this.lang = this.$i18n.locale;
-    console.log(this.$i18n.locale);
   },
   methods: {
     ...mapMutations(["setCurLng"]),

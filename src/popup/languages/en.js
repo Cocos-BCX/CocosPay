@@ -186,13 +186,17 @@ export default {
     memo: 'memo',
     charge: 'fee',
     nhTitle: 'NH Asset transfers',
-    nhId: 'NH Asset ID',
+    nhId: 'Coin: ',
     worldView: 'Multiverse Name:',
-    id: 'Asset ID',
-    world: 'Multiverse',
-    nhData: 'data',
-    nhUser: 'Owner',
-    nhNum: 'Amount',
+    id: 'Asset ID:',
+    world: 'Multiverse:',
+    nhData: 'data:',
+    nhUser: 'Owner:',
+    nhNum: 'Amount:',
+    type: 'Type:',
+    nhAssets: 'Create NH Assets in Batch:',
+    itemlds: 'itemlds:'
+
   },
   // settings
   settings: {

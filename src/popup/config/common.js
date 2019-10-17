@@ -4,6 +4,8 @@ const getI18nMessages = (i18n) => {
     return i18n['messages']['ZH']
   } else if (i18n.locale === 'EN') {
     return i18n['messages']['EN']
+  } else if (i18n.locale === 'FR') {
+    return i18n['messages']['FR']
   }
 }
 export default {

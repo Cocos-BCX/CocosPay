@@ -106,9 +106,14 @@ main {
   align-items: center;
   .title{
     font-size: 30px;
+    width: 280px;
   }
   .signature-user{
     color: $primary-color;
+    width: 220px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+white-space: nowrap;
   }
 }
 .prompt-container{

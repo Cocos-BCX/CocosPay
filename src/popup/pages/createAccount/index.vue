@@ -1,6 +1,6 @@
 <template>
   <section class="app-container">
-    <navigation :title="$t('title.createAccount')"/>
+    <navigation :title="$t('title.createAccount')" />
     <!-- <section class="select-lang no-bg">
       <el-select class="language-select" v-model="lang" @change="changeLanguage">
         <el-option
@@ -10,9 +10,9 @@
           :value="item.value"
         ></el-option>
       </el-select>
-    </section> -->
+    </section>-->
     <section class="logo">
-      <img class="block-center" src="/icons/logo-big.png" alt>
+      <img class="block-center" src="/icons/logo-big.png" alt />
     </section>
     <h2 class="text-center index-title">CocosPay</h2>
     <el-form ref="form" :model="formData" :rules="formRules" class="mt20" v-if="!accountKey">
@@ -131,7 +131,7 @@ export default {
       },
       owner_private_key: "",
       active_private_key: "",
-      accountKey: false,
+      accountKey: false
     };
   },
   computed: {

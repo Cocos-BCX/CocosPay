@@ -199,7 +199,13 @@
         <div class="info">
           <div class="info-label">{{languages.label.nhUser}}</div>
           <!-- <div class="info-content">{{prompt.data.payload.nhAccount}}</div> -->
-          <div class="info-content">{{prompt.data.payload.ownerAccount}}</div>
+          <div
+            class="info-content"
+            style="{ width: 220px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+white-space: nowrap;}"
+          >{{prompt.data.payload.ownerAccount}}</div>
         </div>
 
         <div class="info">
@@ -326,14 +332,14 @@ export default {
     ...mapState("trans", ["tranferInfo"])
   },
   created() {
-    I18n.locale = window.localStorage.getItem("lang_type") || "EN";
+    I18n.locale = window.localStorage.getItem("lang_type") || "ZH";
 
     this.languages = CommonJs.getI18nMessages(I18n);
     // this.data = this.prompt.data;
     // this.data = this.prompt.data.signedTransaction.raw_data.contract[0]
   },
   mounted() {
-    this.$i18n.locale = window.localStorage.getItem("lang_type")||"ZH";
+    this.$i18n.locale = window.localStorage.getItem("lang_type") || "ZH";
     this.loadingBCXAccount().then(res => {
       this.locked = res && res.locked ? true : false;
       if (!this.locked && this.prompt.data.type === "signature") {

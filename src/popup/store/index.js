@@ -13,6 +13,9 @@ import axios from "axios";
 import bcx from '../utils/bcx'
 import async from '../../lib/mapTransaction/index';
 let NewBCX = bcx.getBCXWithState();
+let sysLang = (navigator.language || navigator.userLanguage).substr(0, 2);
+sysLang = sysLang === "ZH" ? 'ZH' : 'EN'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -23,7 +26,7 @@ export default new Vuex.Store({
   },
   state: {
     loading: false,
-    curLng: window.localStorage.getItem("lang_type") || "ZH",
+    curLng: window.localStorage.getItem("lang_type") || sysLang,
     currentNetwork: {
       id: 1,
       name: 'TestNet',
