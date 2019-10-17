@@ -186,13 +186,17 @@ export default {
     memo: 'Mémo',
     charge: 'Frais',
     nhTitle: 'Transferts d\'actif NH',
-    nhId: 'ID d\'actif NH',
+    nhId: 'Coin:',
     worldView: 'Nom du multivers:',
-    id: '资产id',
-    world: '世界观',
-    nhData: 'NH资产数据data',
-    nhUser: 'NH资产拥有者',
-    nhNum: 'NH资产数量',
+    id: '资产id:',
+    world: '世界观:',
+    nhData: 'NH资产数据data:',
+    nhUser: 'NH资产拥有者:',
+    nhNum: 'NH资产数量:',
+    type: 'Type:',
+    nhAssets: '批量创建不同资:',
+    itemlds: 'itemlds:'
+
   },
   // settings
   settings: {

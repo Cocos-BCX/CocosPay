@@ -188,7 +188,7 @@ export default {
     nhTitle: 'NH资产转移',
     nhId: 'NH资产ID',
     worldView: '世界观名称:',
-    id: '资产id:',
+    id: '通行资产:',
     world: '世界观:',
     nhData: 'NH资产数据data:',
     nhUser: 'NH资产拥有者:',
