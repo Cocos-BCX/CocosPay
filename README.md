@@ -1,4 +1,4 @@
-  [中文](https://github.com/CocosBCX/CocosPay/blob/master/README_cn.md)
+  [中文](https://github.com/Cocos-BCX/CocosPay/blob/master/README_cn.md)
 
 ## CocosPay:
 
@@ -27,5 +27,5 @@ Select file `build` that built before.
 
 ## Using Cocospay on DApp
 
-Here is a dapp sample. [cocos-dice](https://github.com/CocosBCX/cocos-dice-sample) 
+Here is a dapp sample. [cocos-dice](https://github.com/Cocos-BCX/cocos-dice-sample) 
 
