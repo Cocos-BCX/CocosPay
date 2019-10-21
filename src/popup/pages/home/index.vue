@@ -242,7 +242,7 @@
           v-clipboard:success="copySuccess"
           v-clipboard:error="copyError"
           v-if="active_private_key"
-        >{{$t('button.copy')}}active_key</el-button>
+        >{{$t('button.copy')}} active_key</el-button>
         <section v-if="owner_private_key" class="privateKey-area">{{owner_private_key}}</section>
         <el-button
           class="full-btn"
@@ -251,7 +251,7 @@
           v-clipboard:success="copySuccess"
           v-clipboard:error="copyError"
           v-if="owner_private_key"
-        >{{$t('button.copy')}}owner_key</el-button>
+        >{{$t('button.copy')}} owner_key</el-button>
       </section>
     </el-dialog>
     <el-dialog top="15vh" center :title="$t('title.editorAccount')" :visible.sync="nameVisible">

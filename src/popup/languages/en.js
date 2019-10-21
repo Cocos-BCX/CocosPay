@@ -235,7 +235,7 @@ export default {
     105: 'wrong password',
     106: 'The account is already unlocked',
     107: 'Please import the private key',
-    108: 'User name or password error',
+    108: 'Password error',
     109: 'Please enter the correct private key',
     110: 'The private key has no account information',
     111: 'Please login first',
