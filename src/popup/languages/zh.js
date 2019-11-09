@@ -117,7 +117,8 @@ export default {
     registerCreator: '注册开发者',
     creatWorldView: '创建世界观',
     creatNHAsset: 'NH资产创建',
-    deleteNHAsset: 'NH资产删除'
+    deleteNHAsset: 'NH资产删除',
+    publishVotes: '投票'
   },
   // alert
   alert: {
@@ -195,8 +196,10 @@ export default {
     nhNum: 'NH资产数量:',
     type: 'Type:',
     nhAssets: '批量创建不同资:',
-    itemlds:'itemlds:'
-
+    itemlds: 'itemlds:',
+    tpType: '投票类型:',
+    tpId: '账号ID:',
+    tpNum: '投票票数:'
   },
   // settings
   settings: {

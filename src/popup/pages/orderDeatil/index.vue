@@ -137,7 +137,7 @@
         <div class="title mt20">
           <div class="key">{{$t('label.charge')}}:</div>
           <div class="name">
-            <p>{{orderDeatil.parse_operations.fee}}({{$t('title.test')}})</p>
+            <p>{{(orderDeatil.parse_operations.fees[0]).indexOf('GAS')==='-1'?orderDeatil.parse_operations.fees[0]:0}}({{$t('title.test')}})</p>
           </div>
         </div>
 
@@ -198,6 +198,8 @@ export default {
         this.memo = true;
       }
     }
+    console.log(this.orderDeatil );
+    
   },
   mounted() {
     this.transactionsScroller = new PerfectScrollbar("#perfect-scroll-detail", {

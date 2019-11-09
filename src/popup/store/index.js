@@ -197,7 +197,7 @@ export default new Vuex.Store({
     }, Node) {
       try {
         await NewBCX.apiConfig({
-          default_ws_node: Node.ws,
+          default_ws_node:  'ws://123.57.19.148:9049',
           ws_node_list: [{
             url: Node.ws,
             name: Node.name

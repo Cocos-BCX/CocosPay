@@ -1,5 +1,8 @@
-// import BCX from 'bcxjs-api'
+// import BCX from 'bcx-api'
 import BCX from 'bcx-api'
+
+// import '../../lib/bcx.min'
+
 import Storage from './storage'
 let bcxNodes = []
 export default class NewBCX {
@@ -43,12 +46,14 @@ export default class NewBCX {
 
     if (!nodes || nodes.length < 1) {
       nodes = [{
-        chainId: 'b9e7cee4709ddaf08e3b7cba63b71c211c845e37c9bf2b865a7b2a592c8adb28',
+        // chainId: 'b9e7cee4709ddaf08e3b7cba63b71c211c845e37c9bf2b865a7b2a592c8adb28',
+        chainId: '9e0ef9444fc780fa91aaef2e63c18532634ad67dcc436a4b4915d3adeef62c62',
         coreAsset: 'COCOS',
         faucetUrl: 'http://47.93.62.96:8041',
         name: 'COCOS Node 1',
         type: '0',
-        ws: 'ws://47.93.62.96:8049',
+        ws: 'ws://123.57.19.148:9049',
+        // ws: 'ws://47.93.62.96:8049',
         choose: true,
       }, ]
     }
@@ -74,7 +79,8 @@ export default class NewBCX {
     }
 
     let NewBCX = new BCX({
-      default_ws_node: Node.ws,
+      // default_ws_node: Node.ws,
+      default_ws_node: 'ws://123.57.19.148:9049',
       ws_node_list: [{
         url: Node.ws,
         name: Node.name,
@@ -84,7 +90,8 @@ export default class NewBCX {
         // chain_id: '53b98adf376459cc29e5672075ed0c0b1672ea7dce42b0b1fe5e021c02bda640',
         // chain_id: '9fc429a48b47447afa5e6618fde46d1a5f7b2266f00ce60866f9fdd92236e137',
         // chain_id: 'b9e7cee4709ddaf08e3b7cba63b71c211c845e37c9bf2b865a7b2a592c8adb28'
-        chain_id: Node.chainId,
+        // chain_id: Node.chainId,
+        chain_id: "9e0ef9444fc780fa91aaef2e63c18532634ad67dcc436a4b4915d3adeef62c62"
       }, ],
       faucet_url: faucetUrl,
       auto_reconnect: false,

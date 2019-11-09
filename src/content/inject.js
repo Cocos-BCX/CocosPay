@@ -139,6 +139,9 @@ class Inject {
       case MessageTypes.DELETE_NH_ASSET:
         this.deleteNHAsset(nonSyncMessage)
         break
+      case MessageTypes.PUBLISH_VOTES:
+        this.publishVotes(nonSyncMessage)
+        break
       default:
         stream.send(nonSyncMessage.error(Error.maliciousEvent()), MessageTypes.INJECTED)
     }
@@ -223,6 +226,12 @@ class Inject {
       })
   }
   deleteNHAsset(message) {
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.DELETE_NH_ASSET, message, message.resolver)
+      .send().then(res => {
+        this.respond(message, res)
+      })
+  }
+  publishVotes(message) {
     InternalMessage.widthPayloadAndResolver(InternalMessageTypes.DELETE_NH_ASSET, message, message.resolver)
       .send().then(res => {
         this.respond(message, res)

@@ -32,6 +32,9 @@
         <div class="title" v-else-if="prompt.data.type === 'deleteNHAsset'">
           <span>{{languages.title.deleteNHAsset}}</span>
         </div>
+        <div class="title" v-else-if="prompt.data.type === 'publishVotes'">
+          <span>{{languages.title.publishVotes}}</span>
+        </div>
         <span class="signature-user">{{cocosAccount.accounts}}</span>
       </div>
 
@@ -231,7 +234,21 @@ white-space: nowrap;}"
           <div class="info-content">{{prompt.data.payload.NHAssetIds}}</div>
         </div>
       </div>
+      <div class="signature-info" v-if="prompt.data.type === 'publishVotes'">
+        <div class="info">
+          <div class="info-label">{{languages.label.tpType}}</div>
+          <div class="info-content">{{prompt.data.payload.type}}</div>
+        </div>
 
+        <div class="info">
+          <div class="info-label">{{languages.label.tpId}}</div>
+          <div class="info-content">{{prompt.data.payload.vote_ids}}</div>
+        </div>
+        <div class="info">
+          <div class="info-label">{{languages.label.tpNum}}</div>
+          <div class="info-content">{{prompt.data.payload.votes}}</div>
+        </div>
+      </div>
       <el-checkbox class="join-option" v-model="joinWhiteList">{{languages.message.joinWhiteList}}</el-checkbox>
       <section class="prompt-actions">
         <el-button class="cancel-btn text-center" @click="denied">{{languages.button.reject}}</el-button>
@@ -262,6 +279,12 @@ white-space: nowrap;}"
           type="primary"
           @click.once="deleteaNHAsset"
           v-if="prompt.data.type === 'deleteNHAsset'"
+        >{{languages.button.confirm}}</el-button>
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
+          @click.once="publishaVotes"
+          v-if="prompt.data.type === 'publishVotes'"
         >{{languages.button.confirm}}</el-button>
         <el-button
           class="confirm-btn text-center"
@@ -384,6 +407,7 @@ export default {
       "creatWorldView",
       "creatNHAsset",
       "deleteNHAsset",
+      "publishVotes",
       "callContractFunctionFree",
       "fillNHAssetOrder",
       "cancelNHAssetOrder",
@@ -440,6 +464,19 @@ export default {
     deleteaNHAsset() {
       this.addWhite();
       this.deleteNHAsset(this.prompt.data.payload)
+        .then(res => {
+          this.prompt.responder({ accepted: true, res: res });
+          NotificationService.close();
+        })
+        .catch(err => {
+          this.prompt.responder({ accepted: true, res: err });
+          NotificationService.close();
+        });
+    },
+
+    publishaVotes() {
+      this.addWhite();
+      this.publishVotes(this.prompt.data.payload)
         .then(res => {
           this.prompt.responder({ accepted: true, res: res });
           NotificationService.close();

@@ -73,10 +73,10 @@
             <div class="label">{{$t('label.memo')}}</div>
             <div class="content">{{formData.memo}}</div>
           </div>
-          <div class="item">
+          <!-- <div class="item fee">
             <div class="label">{{$t('label.charge')}}</div>
             <div class="content">{{fee}}({{$t('title.test')}})</div>
-          </div>
+          </div> -->
           <el-button class="full-btn" type="primary" @click="surePay">{{$t('button.surePay')}}</el-button>
         </div>
       </div>
@@ -229,7 +229,9 @@ export default {
             memo: this.formData.memo
           });
           this.tranferBCXFree().then(res => {
-            this.fee = res.data.fee_amount.toFixed(this.precision);
+            console.log(res);
+            
+            this.fee = res.data[0].fees[0].amount.toFixed(this.precision);
             if (this.owner) {
               this.$kalert({
                 message: this.$i18n.t("verify.ownerKey")
@@ -237,21 +239,22 @@ export default {
               return;
             } else if (
               (this.formData.token === "COCOS" &&
-                res.data.fee_amount + Number(this.formData.amount) <
+                res.data[0].fees[0].amount+ Number(this.formData.amount) <
                   this.cocosCount) ||
-              res.data.fee_amount + Number(this.formData.amount) ===
+              res.data[0].fees[0].amount + Number(this.formData.amount) ===
                 this.cocosCount
             ) {
               this.popup = true;
             } else if (
               this.formData.token !== "COCOS" &&
-              res.data.fee_amount < this.cocosCount
+              res.data[0].fees[0].amount < this.cocosCount
             ) {
               this.popup = true;
             } else {
-              this.$kalert({
-                message: this.$i18n.t("alert.transferFail")
-              });
+              // this.$kalert({
+              //   message: this.$i18n.t("alert.transferFail")
+              // });
+               this.popup = true;
             }
           });
         }

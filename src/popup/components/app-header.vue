@@ -61,8 +61,9 @@
 import { mapState, mapMutations, mapActions } from "vuex";
 import vClickOutside from "v-click-outside";
 import Storage from "../../lib/storage";
-// import BCX from "bcxjs-api";
 import BCX from "bcx-api";
+
+// import '../../lib/bcx.min.js'
 export default {
   data() {
     return {
@@ -130,7 +131,7 @@ export default {
     },
     NewBCX(Node) {
       return new BCX({
-        default_ws_node: Node.ws,
+        default_ws_node: 'ws://123.57.19.148:9049',
         ws_node_list: [
           {
             url: Node.ws,
