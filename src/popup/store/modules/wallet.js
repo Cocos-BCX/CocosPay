@@ -134,11 +134,15 @@ export default {
         root: true
       })
       try {
+        console.log(13213213);
+        
         let resData
         await NewBCX.createAccountWithWallet({
           account: rootState.cocosAccount.accounts,
           password: rootState.cocosAccount.passwords
         }).then(res => {
+          console.log(res);
+          
           commit('loading', false, {
             root: true
           })
@@ -155,6 +159,8 @@ export default {
         })
         return resData
       } catch (e) {
+        console.log('eeeee');
+        
         return e
       }
     },

@@ -23,6 +23,8 @@ export default {
 
   mutations: {
     setAccount(state, tranferInfo) {
+      console.log(state,tranferInfo);
+      
       state.tranferInfo = tranferInfo;
     },
     setTranferList(state, tranferList) {
@@ -467,6 +469,7 @@ export default {
       } catch (e) {
         return e
       }
-    },
+    },                        
   }
 }
+

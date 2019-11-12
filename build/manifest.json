@@ -1,6 +1,6 @@
 {
   "name": "CocosPay",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "CocosPay Chrome Extension",
   "author": "chain@cocosbcx.io",
   "manifest_version": 2,
@@ -10,10 +10,7 @@
     "128": "icons/128px.png"
   },
   "permissions": [
-    "activeTab",
-    "tabs",
-    "unlimitedStorage",
-    "storage"
+    "activeTab"
   ],
   "browser_action": {
     "default_title": "CocosPay",

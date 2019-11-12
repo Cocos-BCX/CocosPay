@@ -118,7 +118,7 @@ export default {
     creatWorldView: 'Create a Multiverse',
     creatNHAsset: 'NH Asset Creation',
     deleteNHAsset: 'NH Asset Deletion',
-    publishVotes: 'Vote'
+    publishVotes: 'voting / withdrawal '
   },
   // alert
   alert: {
@@ -197,9 +197,9 @@ export default {
     type: 'Type:',
     nhAssets: 'Create NH Assets in Batch:',
     itemlds: 'itemlds:',
-    tpType: '投票类型:',
-    tpId: '账号ID:',
-    tpNum: '投票票数:'
+    tpType: 'TYPE:',
+    tpId: 'ID:',
+    tpNum: 'poll:'
   },
   // settings
   settings: {

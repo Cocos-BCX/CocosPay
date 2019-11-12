@@ -160,6 +160,7 @@ export default new Vuex.Store({
           .get("http://backend.test.cjfan.net/getParams")
           .then(response => {
             nodes = response.data.data;
+            console.log(nodes);
             Storage.set("node", nodes);
           })
           .catch(function (error) {
@@ -197,7 +198,7 @@ export default new Vuex.Store({
     }, Node) {
       try {
         await NewBCX.apiConfig({
-          default_ws_node:  'ws://123.57.19.148:9049',
+          default_ws_node: 'ws://test.cocosbcx.net',
           ws_node_list: [{
             url: Node.ws,
             name: Node.name

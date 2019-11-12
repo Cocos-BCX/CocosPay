@@ -1,6 +1,6 @@
 <template>
   <section class="app-container transfers">
-    <navigation :title="$t('title.transfer')"/>
+    <navigation :title="$t('title.transfer')" />
     <el-form class="mt20" ref="form" :model="formData" :rules="formRules" label-position="top">
       <el-form-item :label="$t('label.ownerAccount')" prop="from">
         <!-- <el-select class="no-border" v-model="formData.from" style="width: 100%;">
@@ -76,7 +76,7 @@
           <!-- <div class="item fee">
             <div class="label">{{$t('label.charge')}}</div>
             <div class="content">{{fee}}({{$t('title.test')}})</div>
-          </div> -->
+          </div>-->
           <el-button class="full-btn" type="primary" @click="surePay">{{$t('button.surePay')}}</el-button>
         </div>
       </div>
@@ -222,42 +222,45 @@ export default {
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.setAccount({
-            toAccount: this.formData.to,
-            coin: this.formData.token,
-            amount: this.formData.amount,
-            memo: this.formData.memo
-          });
-          this.tranferBCXFree().then(res => {
-            console.log(res);
-            
-            this.fee = res.data[0].fees[0].amount.toFixed(this.precision);
-            if (this.owner) {
-              this.$kalert({
-                message: this.$i18n.t("verify.ownerKey")
-              });
-              return;
-            } else if (
-              (this.formData.token === "COCOS" &&
-                res.data[0].fees[0].amount+ Number(this.formData.amount) <
-                  this.cocosCount) ||
-              res.data[0].fees[0].amount + Number(this.formData.amount) ===
-                this.cocosCount
-            ) {
-              this.popup = true;
-            } else if (
-              this.formData.token !== "COCOS" &&
-              res.data[0].fees[0].amount < this.cocosCount
-            ) {
-              this.popup = true;
-            } else {
-              // this.$kalert({
-              //   message: this.$i18n.t("alert.transferFail")
-              // });
-               this.popup = true;
-            }
-          });
+          this.popup = true;
         }
+        // if (valid) {
+        //   this.setAccount({
+        //     toAccount: this.formData.to,
+        //     coin: this.formData.token,
+        //     amount: this.formData.amount,
+        //     memo: this.formData.memo
+        //   });
+        //   this.tranferBCXFree().then(res => {
+        //     console.log(res);
+
+        //     this.fee = res.data[0].fees[0].amount.toFixed(this.precision);
+        //     if (this.owner) {
+        //       this.$kalert({
+        //         message: this.$i18n.t("verify.ownerKey")
+        //       });
+        //       return;
+        //     } else if (
+        //       (this.formData.token === "COCOS" &&
+        //         res.data[0].fees[0].amount + Number(this.formData.amount) <
+        //           this.cocosCount) ||
+        //       res.data[0].fees[0].amount + Number(this.formData.amount) ===
+        //         this.cocosCount
+        //     ) {
+        //       this.popup = true;
+        //     } else if (
+        //       this.formData.token !== "COCOS" &&
+        //       res.data[0].fees[0].amount < this.cocosCount
+        //     ) {
+        //       this.popup = true;
+        //     } else {
+        //       // this.$kalert({
+        //       //   message: this.$i18n.t("alert.transferFail")
+        //       // });
+        //       this.popup = true;
+        //     }
+        //   });
+        // }
       });
     },
     surePay() {

@@ -131,7 +131,7 @@ export default {
     },
     NewBCX(Node) {
       return new BCX({
-        default_ws_node: 'ws://123.57.19.148:9049',
+        default_ws_node: 'ws://test.cocosbcx.net',
         ws_node_list: [
           {
             url: Node.ws,
