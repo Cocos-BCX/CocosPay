@@ -90,6 +90,10 @@ export default class Background {
         Background.deleteNHAsset(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break
+      case InternalMessageTypes.DELETE_NH_ASSET:
+        Background.publishVotes(sendResponse, message.payload)
+        Repeat.add(message.resolver)
+        break
     }
   }
 
@@ -123,8 +127,8 @@ export default class Background {
             nameOrId: payload.payload.nameOrId,
             functionName: payload.payload.functionName,
             valueList: payload.payload.valueList,
-            runtime: payload.payload.runtime,
-            onlyGetFee: payload.payload.onlyGetFee,
+            // runtime: payload.payload.runtime,
+            // onlyGetFee: payload.payload.onlyGetFee,
           }).then((res) => {
             if (res.code !== 1) {
               Alert({
@@ -153,6 +157,8 @@ export default class Background {
           return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
         })
         if (whiteList) {
+
+
           await this.getBCX().transferAsset({
             fromAccount: payload.payload.fromAccount,
             toAccount: payload.payload.toAccount,
@@ -189,6 +195,7 @@ export default class Background {
             toAccount: payload.payload.toAccount,
             NHAssetIds: payload.payload.NHAssetIds,
           }).then((res) => {
+            console.log(res)
             if (res.code !== 1) {
               Alert({
                 message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -249,7 +256,7 @@ export default class Background {
             assetId: payload.payload.assetId,
             worldView: payload.payload.worldView,
             baseDescribe: payload.payload.baseDescribe,
-            ownerAccount:payload.payload.ownerAccount,
+            ownerAccount: payload.payload.ownerAccount,
             NHAssetsCount: payload.payload.NHAssetsCount,
             type: payload.payload.type,
             NHAssets: payload.payload.nhAssets,
@@ -283,6 +290,43 @@ export default class Background {
         if (whiteList) {
           await this.getBCX().deleteNHAsset({
             NHAssetIds: payload.payload.NHAssetIds,
+          }).then((res) => {
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+            sendResponse(res);
+            return
+          })
+        } else {
+          this.openDialog(sendResponse, payload)
+        }
+      } catch (e) {
+        console.log(e)
+        sendResponse(Error.maliciousEvent())
+      }
+    })
+  }
+  static publishVotes(sendResponse, payload) {
+    this.lockGuard(sendResponse, async () => {
+      try {
+        const store = this._getLocalData()
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
+        })
+        console.log('----------');
+        
+        if (whiteList) {
+          console.log(payload);
+          console.log(payload.payload.type);
+          console.log(payload.payload.vote_ids);
+          console.log(payload.payload.votes);
+          
+          await this.getBCX().publishVotes({
+            type: payload.payload.type,
+            vote_ids:payload.payload.vote_ids,
+            votes:payload.payload.votes
           }).then((res) => {
             if (res.code !== 1) {
               Alert({

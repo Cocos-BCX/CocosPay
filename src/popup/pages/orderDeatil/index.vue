@@ -1,6 +1,6 @@
 <template>
   <section class="app-container">
-    <navigation :title="$t('title.sendDetail')"/>
+    <navigation :title="$t('title.sendDetail')" />
     <div id="perfect-scroll-detail">
       <section class="eos-main" v-if="orderDeatil.type === 'transfer'">
         <h2
@@ -137,7 +137,7 @@
         <div class="title mt20">
           <div class="key">{{$t('label.charge')}}:</div>
           <div class="name">
-            <p>{{orderDeatil.parse_operations.fee}}({{$t('title.test')}})</p>
+            <p>{{(orderDeatil.parse_operations.fees[0]?orderDeatil.parse_operations.fees[0]:'0').indexOf('GAS')===-1?orderDeatil.parse_operations.fees[0]:0}}({{$t('title.test')}})</p>
           </div>
         </div>
 
@@ -187,6 +187,8 @@ export default {
   },
   async created() {
     this.orderDeatil = this.$route.params;
+    console.log(this.orderDeatil);
+
     if (this.orderDeatil.memo) {
       this.orderDeatil.memo = await NewBCX.decodeMemo(this.orderDeatil.memo);
       this.memo = true;
@@ -198,6 +200,7 @@ export default {
         this.memo = true;
       }
     }
+    console.log(this.orderDeatil);
   },
   mounted() {
     this.transactionsScroller = new PerfectScrollbar("#perfect-scroll-detail", {

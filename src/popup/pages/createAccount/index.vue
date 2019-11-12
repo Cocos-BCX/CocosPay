@@ -174,6 +174,7 @@ export default {
     },
     createWallet(formName) {
       this.$refs[formName].validate(valid => {
+        
         if (valid) {
           this.setAccount(this.formData);
           if (this.type === "account") {

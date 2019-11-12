@@ -15,3 +15,4 @@ export const REGISTER_CREATOR = 'registerCreator'
 export const CREATE_WORLDVIEW = 'creatWorldView'
 export const CREATE_NH_ASSET = 'creatNHAsset'
 export const DELETE_NH_ASSET = 'deleteNHAsset'
+export const PUBLISH_VOTES = 'publishVotes'//cc

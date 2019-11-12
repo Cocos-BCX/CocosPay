@@ -74,6 +74,9 @@ class BcxWeb {
   static setDeleteNHAsset(deleteNHAsset) {
     this.BCX.deleteNHAsset = deleteNHAsset
   }
+  static setpublishVotes(publishVotes) {
+    this.BCX.publishVotes = publishVotes
+  }
 
   static setGetAccountInfo(getAccountInfo) {
     this.BCX.getAccountInfo = getAccountInfo
@@ -213,7 +216,11 @@ function deleteNHAsset(message) {
     resolve(_send(MessageTypes.DELETE_NH_ASSET, message))
   })
 }
-
+function publishVotes(message) {
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.PUBLISH_VOTES, message))
+  })
+}
 let bcxWeb = newBcx.GetNewBCX()
 
 
@@ -276,6 +283,7 @@ export default class Content {
     BcxWeb.setCreatWorldView(creatWorldView)
     BcxWeb.setCreatNHAsset(creatNHAsset)
     BcxWeb.setDeleteNHAsset(deleteNHAsset)
+    BcxWeb.setpublishVotes(publishVotes)
     BcxWeb.BCX.account_name = payload.account_name
     window.BcxWeb = BcxWeb.BCX
     // }

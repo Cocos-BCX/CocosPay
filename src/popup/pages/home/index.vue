@@ -395,6 +395,7 @@ export default {
     ...mapState("wallet", ["pwdhash"]),
     ...mapState("trans", ["tranferList"]),
     ...mapState(["cocosAccount", "cocosCount"]),
+
     currentCreateVisible: {
       get() {
         return this.$store.state.currentCreateVisible;
@@ -412,7 +413,7 @@ export default {
   },
   async created() {},
   mounted() {
-    this.$i18n.locale = window.localStorage.getItem("lang_type")||"ZH";
+    this.$i18n.locale = window.localStorage.getItem("lang_type") || "EN";
     this.transactionsScroller = new PerfectScrollbar(
       "#perfect-scroll-wrapper",
       {
@@ -420,9 +421,12 @@ export default {
         maxScrollbarLength: 40
       }
     );
-    console.log(this.transactionsScroller);
     console.log(this.$i18n.locale);
-
+    let isDelete = window.localStorage.getItem("delAccount");
+    if (!isDelete) {
+      this.removeCurrentAccount();
+      window.localStorage.setItem("delAccount", "sure");
+    }
     this.subscribeTo();
     // this.loadAccount();
     this.nodeLists();
@@ -626,6 +630,7 @@ export default {
     },
     removeCurrentAccount(formName) {
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
+      window.localStorage.setItem("delAccount", "sure");
         this.setLogin(false);
         this.setIsAccount(false);
         this.setAccount({

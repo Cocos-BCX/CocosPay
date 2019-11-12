@@ -1,5 +1,8 @@
-// import BCX from 'bcxjs-api'
+// import BCX from 'bcx-api'
 import BCX from 'bcx-api'
+
+// import '../../lib/bcx.min'
+
 import Storage from './storage'
 let bcxNodes = []
 export default class NewBCX {
@@ -40,15 +43,16 @@ export default class NewBCX {
 
   static GetNewBCX() {
     let nodes = Storage.get('node')
+    console.log('hhh', nodes);
 
     if (!nodes || nodes.length < 1) {
       nodes = [{
-        chainId: 'b9e7cee4709ddaf08e3b7cba63b71c211c845e37c9bf2b865a7b2a592c8adb28',
+        chainId: "c1ac4bb7bd7d94874a1cb98b39a8a582421d03d022dfa4be8c70567076e03ad0",
         coreAsset: 'COCOS',
-        faucetUrl: 'http://47.93.62.96:8041',
-        name: 'COCOS Node 1',
+        faucetUrl: 'http://test-faucet.cocosbcx.net',
+        name: 'Cocos - China - Beijing',
         type: '0',
-        ws: 'ws://47.93.62.96:8049',
+        ws: 'ws://test.cocosbcx.net',
         choose: true,
       }, ]
     }
@@ -57,7 +61,8 @@ export default class NewBCX {
     nodes.map(item => {
       choose && choose.ws === item.ws ? (Node = item) : (Node = nodes[0])
     })
-
+    console.log('------',Node);
+    
     // if (bcxNodes.length < 1) {
     //   _ininBcxNodes()
     // }
@@ -81,9 +86,6 @@ export default class NewBCX {
       }, ],
       networks: [{
         core_asset: 'COCOS',
-        // chain_id: '53b98adf376459cc29e5672075ed0c0b1672ea7dce42b0b1fe5e021c02bda640',
-        // chain_id: '9fc429a48b47447afa5e6618fde46d1a5f7b2266f00ce60866f9fdd92236e137',
-        // chain_id: 'b9e7cee4709ddaf08e3b7cba63b71c211c845e37c9bf2b865a7b2a592c8adb28'
         chain_id: Node.chainId,
       }, ],
       faucet_url: faucetUrl,
@@ -92,5 +94,6 @@ export default class NewBCX {
     })
     Storage.set('choose_node', Node)
     return NewBCX
+
   }
 }
