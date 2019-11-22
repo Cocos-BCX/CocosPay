@@ -330,11 +330,13 @@ export default {
     let accountDetail = "";
     let accountDetailTail = "";
     if ("developmentNewTest" === process.env.NODE_ENV) {
-      accountDetail = "https://explorer.cocosbcx.io/address";
+     accountDetail = "https://www.cocosabc.com/account"
+      // accountDetail = "https://explorer.cocosbcx.io/address";
       // accountDetail = "http://easywallet.pro/terminal/#/account";
       // accountDetailTail = "lastOperation";
     } else {
-      accountDetail = "https://explorer.cocosbcx.io/address";
+      // accountDetail = "https://explorer.cocosbcx.io/address";
+      accountDetail = "https://www.cocosabc.com/account"
     }
 
     return {
@@ -421,12 +423,12 @@ export default {
         maxScrollbarLength: 40
       }
     );
-    console.log(this.$i18n.locale);
-    let isDelete = window.localStorage.getItem("delAccount");
-    if (!isDelete) {
-      this.removeCurrentAccount();
-      window.localStorage.setItem("delAccount", "sure");
-    }
+    // console.log(this.$i18n.locale);
+    // let isDelete = window.localStorage.getItem("delAccount");
+    // if (!isDelete) {
+    //   this.removeCurrentAccount();
+    //   window.localStorage.setItem("delAccount", "sure");
+    // }
     this.subscribeTo();
     // this.loadAccount();
     this.nodeLists();

@@ -157,7 +157,7 @@ export default new Vuex.Store({
       try {
         let nodes = [];
         await axios
-          .get("http://backend.test.cjfan.net/getParams")
+          .get("http://backend.test.cocosbcx.net/getParams")
           .then(response => {
             nodes = response.data.data;
             console.log(nodes);

@@ -11,6 +11,8 @@
     created() {
       let prompt =
         window.data || apis.extension.getBackgroundPage().notification || null;
+        console.log('***********prompt***********')
+        console.log(prompt)
       prompt = Prompt.fromJson(prompt);
       this.pushPrompt(prompt);
       this.$router.push({ name: "prompt_signature" });

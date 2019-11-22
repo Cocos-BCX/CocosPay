@@ -355,6 +355,7 @@ export default {
     ...mapState("trans", ["tranferInfo"])
   },
   created() {
+    console.log(this.prompt.data.type)
     I18n.locale = window.localStorage.getItem("lang_type") || "ZH";
 
     this.languages = CommonJs.getI18nMessages(I18n);
@@ -372,17 +373,17 @@ export default {
           amount: this.prompt.data.payload.amount,
           memo: this.prompt.data.payload.memo
         });
-        this.tranferBCXFree().then(res => {
-          if (res.code === 1) {
-            this.fee = res.data.fee_amount;
-          }
-        });
+        // this.tranferBCXFree().then(res => {
+        //   if (res.code === 1) {
+        //     this.fee = res.data.fee_amount;
+        //   }
+        // });
       } else if (!this.locked && this.prompt.data.type === "callContract") {
-        this.callContractFunctionFree(this.prompt.data.payload).then(res => {
-          if (res.code === 1) {
-            this.fee = res.data.fee_amount;
-          }
-        });
+        // this.callContractFunctionFree(this.prompt.data.payload).then(res => {
+        //   if (res.code === 1) {
+        //     this.fee = res.data.fee_amount;
+        //   }
+        // });
       }
     });
     // this.$nextTick(() => {
