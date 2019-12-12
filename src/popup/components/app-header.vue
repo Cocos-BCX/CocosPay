@@ -62,6 +62,7 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import vClickOutside from "v-click-outside";
 import Storage from "../../lib/storage";
 import BCX from "bcx-api";
+// import BCX from '../../lib/bcx-api'
 
 // import '../../lib/bcx.min.js'
 export default {
@@ -85,76 +86,186 @@ export default {
     this.choose = Storage.get("choose_node");
   },
   methods: {
-    ...mapActions("wallet", ["getAccounts"]),
-    ...mapMutations(["setAccountType"]),
-    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode"]),
+    ...mapActions("account", [
+      "logoutBCXAccount"
+    ]),
+    ...mapActions("wallet", [
+      "getAccounts",
+      "deleteWallet"
+    ]),
+    ...mapMutations(["setAccountType", "setLogin", "setIsAccount", "setAccount"]),
+    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList"]),
     onClickOutside() {
       this.showNetworkDropdown = false;
     },
     changeNetwork(network) {
-      if (network.chainId === Storage.get("choose_node").chainId) {
+      let _this = this
+      
+      // if (network.chainId === Storage.get("choose_node").chainId) {
+      //   console.log('network.chainId === Storage.get("choose_node").chainId')
         this.switchAPINode({
           url: network.ws
         }).then(res => {
           if (res.code === 1) {
-            this.$kalert({
-              message: this.$i18n.t("alert.modifySuccess")
-            });
-            this.choose = network;
-            Storage.set("choose_node", network);
-          }
-        });
-      } else {
-        let Node = network;
-        this.NewBCX(Node);
-        this.init().then(res => {
-          if (res.code !== 1) {
-            this.$kalert({
-              message: this.$i18n.t(`error[${res.code}]`)
-            });
-            // this.init(this.nodes[0]);
-            this.init().then(change => {
-              this.switchAPINode({
-                url: this.nodes[0].ws
-              }).then(change => {
-                this.apiConfig(this.nodes[0]);
+            if (res.data.selectedNodeUrl) {
+              _this.$kalert({
+                message: _this.$i18n.t("alert.modifySuccess")
               });
-            });
+              _this.choose = network;
+              _this.lookupWSNodeList().then( lookupWSNodeListRes => {
+                if (lookupWSNodeListRes.data.selectedNodeUrl) {
+                  
+                    Storage.set("choose_node", network);
+                    _this.removeCurrentAccount()
+                } else {
+                  _this.$kalert({
+                    message: _this.$i18n.t("alert.modifyFailed")
+                  });
+                }
+              })
+            } else {
+              _this.$kalert({
+                message:  _this.$i18n.t("alert.modifyFailed")
+              });
+            }
           } else {
-            this.$kalert({
-              message: this.$i18n.t("alert.modifySuccess")
-            });
-            this.choose = network;
+              _this.$kalert({
+                message:  _this.$i18n.t("alert.modifyFailed")
+              });
           }
         });
-      }
+      // } else {
+      //   console.log('else   network.chainId === Storage.get("choose_node").chainId')
+      //   let Node = network;
+
+
+        // 2019-12-09 注释修改 结束
+        // this.NewBCX(Node);
+          
+        // _this.init().then(res => {
+        //   console.log('-------change--------this.init()---------')
+        //   console.log(res)
+        //   if (res.code !== 1) {
+        //     _this.$kalert({
+        //       message: _this.$i18n.t(`error[${res.code}]`)
+        //     });
+        //     // this.init(this.nodes[0]);
+        //     // this.init().then(change => {
+        //     //   this.switchAPINode({
+        //     //     url: this.nodes[0].ws
+        //     //   }).then(change => {
+        //     //     this.apiConfig(this.nodes[0]);
+        //     //   });
+        //     // });
+        //   } else {
+        //     _this.$kalert({
+        //       message: _this.$i18n.t("alert.modifySuccess")
+        //     });
+        //     _this.choose = network;
+        //   }
+        // });
+        // 2019-12-09 注释修改  结束
+      // }
     },
     NewBCX(Node) {
-      return new BCX({
-        default_ws_node: 'ws://test.cocosbcx.net',
-        ws_node_list: [
-          {
-            url: Node.ws,
-            name: Node.name
-          }
-        ],
-        networks: [
-          {
-            core_asset: "COCOS",
-            chain_id: Node.chainId
-          }
-        ],
-        faucet_url: Node.url,
-        auto_reconnect: false,
-        worker: false
-      });
+      
+        var _configParams = {
+            ws_node_list: [{
+                url: Node.ws,
+                name: Node.name
+            }],
+            networks: [{
+                core_asset: "COCOS",
+                chain_id: Node.chainId
+            }],
+            // faucet_url:"http://47.93.62.96:3000",
+            faucetUrl: Node.faucetUrl,
+            auto_reconnect: true,
+            worker: false,
+            real_sub: true,
+            check_cached_nodes_data: true,
+            // app_keys: ["5HxzZncKDjx7NEaEv989Huh7yYY7RukcJLKBDQztXAmZYCHWPgd"]
+        };
+        return new BCX(_configParams)
+      // return new BCX({
+      //   default_ws_node: 'ws://test.cocosbcx.net',
+      //   ws_node_list: [
+      //     {
+      //       url: Node.ws,
+      //       name: Node.name
+      //     }
+      //   ],
+      //   networks: [
+      //     {
+      //       core_asset: "COCOS",
+      //       chain_id: Node.chainId
+      //     }
+      //   ],
+      //   faucet_url: Node.url,
+      //   auto_reconnect: false,
+      //   worker: false
+      // });
     },
     goSettings() {
       this.$router.push({ name: "settings" });
     },
     refreshData() {
       this.$emit("refresh");
-    }
+    },
+    
+    removeCurrentAccount(formName) {
+      Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
+      window.localStorage.setItem("delAccount", "sure");
+        this.setLogin(false);
+        this.setIsAccount(false);
+        this.setAccount({
+          account: "",
+          password: ""
+        });
+        this.$router.replace({ name: "initAccount" });
+      });
+      // if (this.accountType === "account") {
+      //   this.logoutBCXAccount().then(res => {
+      //     if (res.code === 1) {
+      //       this.setLogin(false);
+      //       this.setIsAccount(false);
+      //       this.setAccount({
+      //         account: "",
+      //         password: ""
+      //       });
+      //       this.$router.replace({ name: "initAccount" });
+      //     }
+      //   });
+      // } else {
+      //   this.deleteWallet().then(res => {
+      //     if (res.code === 1) {
+
+      //       this.$router.replace({ name: "initAccount" });
+      //     }
+      //   });
+      // }
+
+      // this.$refs[formName].validate(valid => {
+      //   if (valid) {
+      //     if (utils.hashPassword(this.formData.password) === this.pwdhash) {
+      //       this.removeAccount(this.currentAccount);
+      //       this.formData.password = "";
+      //       this.removePasswordShow = false;
+      //       if (this.accounts.length > 0) {
+      //         this.setCurrentAccount(this.accounts[0]);
+      //         this.selectAccount(this.accounts[0]);
+      //       } else {
+      //         this.setCurrentAccount({});
+      //         this.$router.replace({ name: "initAccount" });
+      //       }
+      //     } else {
+      //       this.$kalert({
+      //         message: this.$i18n.t("alert.passwordError")
+      //       });
+      //     }
+      //   }
+      // });
+    },
   }
 };
 </script>

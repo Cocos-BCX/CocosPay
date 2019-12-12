@@ -134,22 +134,103 @@ export default {
         root: true
       })
       try {
-        console.log(13213213);
         
         let resData
+        // console.log("WalletBCXAccount => createAccountWithWallet  q钱包模式")
+        // console.log("========createAccountWithWallet========params============")
+        // console.log(rootState.cocosAccount.accounts)
+        // console.log(rootState.cocosAccount.passwords)
         await NewBCX.createAccountWithWallet({
           account: rootState.cocosAccount.accounts,
           password: rootState.cocosAccount.passwords
         }).then(res => {
-          console.log(res);
+          // console.log('createAccountWithWallet res');
+          // console.log(res);
           
           commit('loading', false, {
             root: true
           })
           if (res.code !== 1) {
-            Alert({
-              message: CommonJs.getI18nMessages(I18n).error[res.code]
-            })
+            if (res.msg) {
+              if (res.msg.indexOf('illegal request parameter') > -1) {
+                Alert({
+                  message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[400001]
+                });
+              } else if (res.msg.indexOf('not cheap') > -1) {
+                Alert({
+                  message: CommonJs.getI18nMessages(I18n).chainInterfaceError[400002]
+                });
+              } else if (res.msg.indexOf('the account name already exists') > -1) {
+                Alert({
+                  message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[400003]
+                });
+              } else if (res.msg.indexOf('no auth') > -1) {
+                Alert({
+                  message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401001]
+                });
+              } else if (res.msg.indexOf('You already register too many free account') > -1) {
+                Alert({
+                  message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401002]
+                });
+              } else if (res.msg.indexOf('Account creation limit reached') > -1) {
+                Alert({
+                  message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401003]
+                });
+              } else {
+                // Alert({
+                //   message: CommonJs.getI18nMessages(I18n).error[0]
+                // })
+                if (CommonJs.getI18nMessages(I18n).error[res.code]) {
+                  Alert({
+                    message: CommonJs.getI18nMessages(I18n).error[res.code]
+                  })
+                } else {
+                  Alert({
+                    message: CommonJs.getI18nMessages(I18n).error[0]
+                  })
+                }
+              }
+            } else {
+              if (res.message.indexOf('illegal request parameter') > -1) {
+                Alert({
+                  message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[400001]
+                });
+              } else if (res.message.indexOf('not cheap') > -1) {
+                Alert({
+                  message: CommonJs.getI18nMessages(I18n).chainInterfaceError[400002]
+                });
+              } else if (res.message.indexOf('the account name already exists') > -1) {
+                Alert({
+                  message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[400003]
+                });
+              } else if (res.message.indexOf('no auth') > -1) {
+                Alert({
+                  message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401001]
+                });
+              } else if (res.message.indexOf('You already register too many free account') > -1) {
+                Alert({
+                  message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401002]
+                });
+              } else if (res.message.indexOf('Account creation limit reached') > -1) {
+                Alert({
+                  message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401003]
+                });
+              } else {
+                // Alert({
+                //   message: CommonJs.getI18nMessages(I18n).error[0]
+                // })
+                if (CommonJs.getI18nMessages(I18n).error[res.code]) {
+                  Alert({
+                    message: CommonJs.getI18nMessages(I18n).error[res.code]
+                  })
+                } else {
+                  Alert({
+                    message: CommonJs.getI18nMessages(I18n).error[0]
+                  })
+                }
+              }
+            }
+            
           } else {
             commit('setAccountType', 'wallet', {
               root: true

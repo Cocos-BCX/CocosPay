@@ -11,6 +11,7 @@ export const SETCURRENTACCOUNT = 'setCurrentAccount'
 export const SETCURRENTNETWORK = 'setCurrentNetwork'
 export const ENCRYPTKEYSTORE = 'encryptKeystore'
 export const DECRYPTKEYSTORE = 'decryptKeystore'
+
 export const SIGNSENDTRANSACTION = 'signsendtransaction'
 export const CALL_CONTRACT = 'callContract'//cc
 export const GET_ACCOUNT_INFO = 'getAccountInfo'

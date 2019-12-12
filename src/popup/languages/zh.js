@@ -90,7 +90,7 @@ export default {
     walletPassword: '请输入最初的临时密码',
     noZero: '数量应该大于 0'
   },
-  // title
+  // title  
   title: {
     agreement: '用户协议',
     createAccount: '创建账号',
@@ -132,6 +132,7 @@ export default {
     sendSuccess: '发送成功',
     sendFail: '发送出错',
     modifySuccess: '修改成功',
+    modifyFailed: "修改失败",
     modifyPasswordSuccess: '密码修改成功',
     redeemSuccess: '解冻成功',
     redeemFail: '解冻失败，请稍后再试',
@@ -297,6 +298,17 @@ export default {
     168: '当前没有订阅此项',
     169: 'API方法不存在',
     300: '链同步错误，请检查您的系统时钟',
-    301: '连接RPC失败，请检查你的网络'
+    301: '连接RPC失败，请检查你的网络',
+  },
+  
+  chainInterfaceError: {
+    200: '请求成功',
+    400001: '请参数非法',
+    400002: '账户名不是便宜账户',
+    400003: '账户名已存在',
+    401001: '没有权限',
+    401002: '今日你创建的账户已到达最大限制',
+    401003: '今日账户创建已达最大限制',
+    500: '内部服务错误',
   }
 }

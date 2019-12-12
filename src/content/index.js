@@ -8,6 +8,7 @@ import Message from '../messages/Message'
 import * as TabMessageTypes from '../messages/TabsMessageTypes'
 import newBcx from '../popup/utils/newBcx'
 import Storage from '../lib/storage'
+import bcx from '../popup/utils/newBcx'
 /***
  * This is just a helper to manage resolving fake-async
  * requests using browser messaging.
@@ -80,6 +81,10 @@ class BcxWeb {
 
   static setGetAccountInfo(getAccountInfo) {
     this.BCX.getAccountInfo = getAccountInfo
+  }
+
+  static setgetExtensionNode(getExtensionNode) {
+    this.BCX.getExtensionNode = getExtensionNode
   }
 
   static setAddress(account_name) {
@@ -221,6 +226,15 @@ function publishVotes(message) {
     resolve(_send(MessageTypes.PUBLISH_VOTES, message))
   })
 }
+
+
+function getExtensionNode() {
+  return new Promise((resolve, reject) => {
+    resolve(bcx)
+  })
+}
+
+
 let bcxWeb = newBcx.GetNewBCX()
 
 
@@ -284,6 +298,7 @@ export default class Content {
     BcxWeb.setCreatNHAsset(creatNHAsset)
     BcxWeb.setDeleteNHAsset(deleteNHAsset)
     BcxWeb.setpublishVotes(publishVotes)
+    BcxWeb.setgetExtensionNode(getExtensionNode)
     BcxWeb.BCX.account_name = payload.account_name
     window.BcxWeb = BcxWeb.BCX
     // }

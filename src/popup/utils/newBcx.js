@@ -1,5 +1,5 @@
-// import BCX from 'bcx-api'
 import BCX from 'bcx-api'
+// import BCX from '../../lib/bcx-api'
 
 // import '../../lib/bcx.min'
 
@@ -43,18 +43,31 @@ export default class NewBCX {
 
   static GetNewBCX() {
     let nodes = Storage.get('node')
+    let choose_node = Storage.get('choose_node')
+    console.log('choose_node', choose_node)
     console.log('hhh', nodes);
-
     if (!nodes || nodes.length < 1) {
       nodes = [{
-        chainId: "c1ac4bb7bd7d94874a1cb98b39a8a582421d03d022dfa4be8c70567076e03ad0",
+        chainId: "6057d856c398875cac2650fe33caef3d5f6b403d184c5154abbff526ec1143c4",
         coreAsset: 'COCOS',
-        faucetUrl: 'http://test-faucet.cocosbcx.net',
-        name: 'Cocos - China - Beijing',
-        type: '0',
-        ws: 'ws://test.cocosbcx.net',
+        faucetUrl: 'https://faucet.cocosbcx.net',
+        // name: 'Cocos - China - Beijing',
+        name: 'Main',
+        type: '1',
+        ws: 'wss://api.cocosbcx.net',
         choose: true,
-      }, ]
+      }]
+      // 测试环境 节点
+      // [{
+      //   chainId: "1ae3653a3105800f5722c5bda2b55530d0e9e8654314e2f3dc6d2b010da641c5",
+      //   coreAsset: "COCOS",
+      //   faucetUrl: "http://test-faucet.cocosbcx.net",
+      //   // isForce: false,
+      //   name: "Test",
+      //   type: "0",
+      //   ws: "ws://test.cocosbcx.net",
+      //     choose: true,
+      // }]
     }
     let Node;
     let choose = Storage.get('choose_node')
@@ -94,6 +107,5 @@ export default class NewBCX {
     })
     Storage.set('choose_node', Node)
     return NewBCX
-
   }
 }

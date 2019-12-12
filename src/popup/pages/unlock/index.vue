@@ -111,7 +111,11 @@ export default {
           this.setIsAccount(true);
           this.setLogin(true);
           this.$router.push({ name: "home" });
-        }
+        } else {
+              this.$kalert({
+                message:  _this.$i18n.t("chainInterfaceError[500]")
+              });
+          }
       });
     }
   }

@@ -132,6 +132,10 @@ export default {
                   name: "login"
                 });
               }, 1000);
+            } else {
+                this.$kalert({
+                  message:  _this.$i18n.t("chainInterfaceError[500]")
+                });
             }
           });
         }

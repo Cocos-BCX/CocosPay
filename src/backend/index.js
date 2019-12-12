@@ -165,6 +165,7 @@ export default class Background {
             amount: payload.payload.amount,
             memo: payload.payload.memo,
             assetId: payload.payload.coin,
+            isEncryption: payload.payload.isEncryption
           }).then((res) => {
             if (res.code !== 1) {
               Alert({

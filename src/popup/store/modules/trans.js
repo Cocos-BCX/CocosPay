@@ -26,6 +26,7 @@ export default {
       console.log(state,tranferInfo);
       
       state.tranferInfo = tranferInfo;
+      console.log(state.tranferInfo)
     },
     setTranferList(state, tranferList) {
       state.tranferList = tranferList
@@ -50,8 +51,10 @@ export default {
           memo: state.tranferInfo.memo,
           assetId: state.tranferInfo.coin,
           isPropose: false,
-          onlyGetFee: false
+          isEncryption: false
         }).then(res => {
+          console.log('*NewBCX.transferAsset*')
+          console.log(res)
           commit('loading', false, {
             root: true
           })
@@ -61,6 +64,9 @@ export default {
             })
           }
           resData = res;
+        }).catch( err => {
+          console.log('========catch=========')
+          console.log(err)
         })
         return resData
       } catch (e) {
@@ -85,6 +91,7 @@ export default {
           memo: state.tranferInfo.memo,
           assetId: state.tranferInfo.coin,
           isPropose: false,
+          isEncryption: false
           // onlyGetFee: true
         }).then(res => {
 
@@ -321,11 +328,11 @@ export default {
       try {
         let resData;
         // let NHAssetIds = '4.2.57326'
-        console.log(params);
-        console.log(params.type);
-        console.log(params.vote_ids);
-        console.log(params.votes);
-        console.log(NewBCX);
+        // console.log(params);
+        // console.log(params.type);
+        // console.log(params.vote_ids);
+        // console.log(params.votes);
+        // console.log(NewBCX);
         
         
         await NewBCX.publishVotes({
@@ -333,7 +340,7 @@ export default {
           vote_ids:params.vote_ids,
           votes:params.votes.toString()
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           
           if (res.code !== 1) {
             Alert({
@@ -448,8 +455,6 @@ export default {
           delete params.endId
         }
         await NewBCX.queryAccountOperations(params).then(res => {
-          console.log(res);
-
           commit('loading', false, {
             root: true
           })

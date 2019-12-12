@@ -16,7 +16,7 @@
       <el-form-item :label="$t('label.toAddress')" prop="to">
         <el-input class="no-border" v-model="formData.to"></el-input>
       </el-form-item>
-      <el-form-item :label="$t('label.tokenType') + $t('title.test')" prop="token">
+      <el-form-item :label="currentNodeName =='Test'?$t('label.tokenType') + $t('title.test'):$t('label.tokenType')" prop="token">
         <el-select
           class="no-border"
           v-model="formData.token"
@@ -66,7 +66,7 @@
             <div class="content money-content">
               <span>{{formData.amount}}</span>
               {{formData.token}}
-              <span class="test-coin">({{$t('title.test')}})</span>
+              <span class="test-coin" v-if="currentNodeName== 'Test'">({{$t('title.test')}})</span>
             </div>
           </div>
           <div class="item">
@@ -91,6 +91,7 @@ import utils from "../../../lib/utils";
 import InternalMessage from "../../../messages/InternalMessage";
 import * as InternalMessageTypes from "../../../messages/InternalMessageTypes";
 import { setTimeout } from "timers";
+import Storage from "../../../lib/storage";
 export default {
   components: {
     Navigation
@@ -136,6 +137,7 @@ export default {
       }
     };
     return {
+      currentNodeName: Storage.get("choose_node").name,
       popup: false,
       formData: {
         from: "",
@@ -187,6 +189,10 @@ export default {
             });
           }
         }
+      }else {
+          this.$kalert({
+            message:  _this.$i18n.t("chainInterfaceError[500]")
+          });
       }
     });
     if (this.accountType === "wallet") {
@@ -264,6 +270,8 @@ export default {
       });
     },
     surePay() {
+      console.log('this.formData')
+      console.log(this.formData)
       this.setAccount({
         toAccount: this.formData.to,
         coin: this.formData.token,
@@ -277,7 +285,14 @@ export default {
             message: this.$i18n.t("alert.tranferSuccess")
           });
           this.$router.push({ name: "home" });
+        } else {
+            this.$kalert({
+              message:  this.$i18n.t("chainInterfaceError[500]")
+            });
         }
+      }).catch( res => {
+        console.log('****************')
+        console.log(res)
       });
     }
   }

@@ -132,6 +132,7 @@ export default {
     sendSuccess: 'Send Success',
     sendFail: 'Send Fail',
     modifySuccess: 'Modify Success',
+    modifyFailed: 'Modify Failed',
     modifyPasswordSuccess: 'Modify Password Success',
     redeemSuccess: 'UnFreeze Success',
     redeemFail: 'UnFreeze failed. Please try again later',
@@ -297,5 +298,16 @@ export default {
     169: 'Method does not exist',
     300: 'Chain sync error, please check your system clock',
     301: 'RPC connection failed. Please check your network'
+  },
+  
+  chainInterfaceError: {
+    200: 'Create success',
+    400001: 'Account creation required',
+    400002: 'Creating  free account required',
+    400003: 'The account already exists',
+    401001: 'No authority',
+    401002: 'You can\'t create any more accounts today',
+    401003: 'No free account today',
+    500: 'Server error',
   }
 }

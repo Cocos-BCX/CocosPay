@@ -36,6 +36,10 @@ export default {
       })
       try {
         let resData;
+        // console.log("loadBCXAccount => createAccountWithPassword   账户模式")
+        // console.log("createAccountWithPassword============params")
+        // console.log(rootState.cocosAccount.accounts)
+        // console.log(rootState.cocosAccount.passwords)
         await NewBCX.createAccountWithPassword({
           account: rootState.cocosAccount.accounts,
           password: rootState.cocosAccount.passwords,
@@ -45,9 +49,49 @@ export default {
             root: true
           })
           if (res.code !== 1) {
-            Alert({
-              message: CommonJs.getI18nMessages(I18n).error[res.code]
-            })
+            // Alert({
+            //   message: CommonJs.getI18nMessages(I18n).error[res.code]
+            // })
+            
+            if (res.message.indexOf('illegal request parameter') > -1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).chainInterfaceError[400001]
+              });
+            } else if (res.message.indexOf('not cheap') > -1) {
+              Alert({
+                message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[400002]
+              });
+            } else if (res.message.indexOf('the account name already exists') > -1) {
+              Alert({
+                message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[400003]
+              });
+            } else if (res.message.indexOf('no auth') > -1) {
+              Alert({
+                message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401001]
+              });
+            } else if (res.message.indexOf('You already register too many free account') > -1) {
+              Alert({
+                message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401002]
+              });
+            } else if (res.message.indexOf('Account creation limit reached') > -1) {
+              Alert({
+                message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401003]
+              });
+            } else {
+              // Alert({
+              //   message:res.message
+              // })
+              if (CommonJs.getI18nMessages(I18n).error[res.code]) {
+                Alert({
+                  message: CommonJs.getI18nMessages(I18n).error[res.code]
+                })
+              } else {
+                Alert({
+                  message: CommonJs.getI18nMessages(I18n).error[0]
+                })
+              }
+            }
+            
           }
           resData = res;
         })
@@ -136,6 +180,10 @@ export default {
             })
           }
         }, 8000)
+        // console.log("setPrivateKeys => importPrivateKey")
+        // console.log("importPrivateKey=======================params")
+        // console.log(rootState.privateKeys)
+        // console.log(rootState.temporaryKeys)
         await NewBCX.importPrivateKey({
           privateKey: rootState.privateKeys,
           password: rootState.temporaryKeys,
@@ -145,17 +193,28 @@ export default {
           })
           if (res.code !== 1) {
             if (params && params.has_import && res.code !== 160) {
-              Alert({
-                message: CommonJs.getI18nMessages(I18n).verify.walletPassword
-              })
+              // Alert({
+              //   message: CommonJs.getI18nMessages(I18n).verify.walletPassword
+              // })
               resData = {
                 code: 150
               }
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
               return resData
+            } else {
+              
+              if (CommonJs.getI18nMessages(I18n).error[res.code]) {
+                Alert({
+                  message: CommonJs.getI18nMessages(I18n).error[res.code]
+                })
+              } else {
+                Alert({
+                  message: CommonJs.getI18nMessages(I18n).error[0]
+                })
+              }
             }
-            Alert({
-              message: CommonJs.getI18nMessages(I18n).error[res.code]
-            })
           } else {
             commit('setAccountType', 'wallet', {
               root: true
@@ -210,6 +269,10 @@ export default {
       })
       try {
         let resData;
+        // console.log("loginBCXAccount => passwordLogin")
+        // console.log("=======passwordLogin==========params=======")
+        // console.log(rootState.cocosAccount.accounts)
+        // console.log(rootState.cocosAccount.passwords)
         await NewBCX.passwordLogin({
           account: rootState.cocosAccount.accounts,
           password: rootState.cocosAccount.passwords
@@ -329,9 +392,45 @@ export default {
             root: true
           })
           if (res.code !== 1) {
-            Alert({
-              message: CommonJs.getI18nMessages(I18n).error[res.code]
-            })
+            
+            if (res.message.indexOf('illegal request parameter') > -1) {
+              Alert({
+                message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[400001]
+              });
+            } else if (res.message.indexOf('not cheap') > -1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).chainInterfaceError[400002]
+              });
+            } else if (res.message.indexOf('the account name already exists') > -1) {
+              Alert({
+                message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[400003]
+              });
+            } else if (res.message.indexOf('no auth') > -1) {
+              Alert({
+                message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401001]
+              });
+            } else if (res.message.indexOf('You already register too many free account') > -1) {
+              Alert({
+                message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401002]
+              });
+            } else if (res.message.indexOf('Account creation limit reached') > -1) {
+              Alert({
+                message:  CommonJs.getI18nMessages(I18n).chainInterfaceError[401003]
+              });
+            } else {
+              // Alert({
+              //   message: CommonJs.getI18nMessages(I18n).error[res.code]
+              // })
+              if (CommonJs.getI18nMessages(I18n).error[res.code]) {
+                Alert({
+                  message: CommonJs.getI18nMessages(I18n).error[res.code]
+                })
+              } else {
+                Alert({
+                  message: CommonJs.getI18nMessages(I18n).error[0]
+                })
+              }
+            }
           }
           resData = res
         })

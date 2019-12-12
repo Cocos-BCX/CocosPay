@@ -83,6 +83,7 @@ import LogoHeader from "../../components/logo-header";
 import { createAccountName } from "../../utils/tools";
 import utils from "../../../lib/utils";
 import { mapState, mapMutations, mapActions } from "vuex";
+import Storage from '../../utils/storage'
 export default {
   components: {
     LogoHeader
@@ -105,10 +106,33 @@ export default {
   mounted() {
     this.nodeLists().then(res => {
       if (!Array.isArray(res)) return;
-      res[0].connect = true;
-      this.apiConfig(res[0]).then(() => {
+
+      // 2019-12-09  新增修改
+      let connectNodeName = Storage.get("choose_node").name
+      console.log(res)
+      let connectNode = res.filter( item => {
+        return item.name == connectNodeName
+      })
+      console.log(connectNode)
+      // 2019-12-09  新增修改 完成
+
+      
+      // 2019-12-09  注释修改
+      // res[0].connect = true;
+      // this.apiConfig(res[0]).then(() => {
+      //   this.init();
+      // });
+      // 2019-12-09  注释修改 完成
+
+      
+      // 2019-12-09  新增修改
+      connectNode[0].connect = true;
+      console.log(connectNode)
+      
+      this.apiConfig(connectNode[0]).then(() => {
         this.init();
       });
+      // 2019-12-09  新增修改 完成
     });
     this.lang =
       this.curLng === "ZH"

@@ -13,9 +13,94 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
+import bcx from './utils/bcx'
 export default {
   name: "root",
+  created(){
+    let NewBCX = bcx.getBCXWithState();
+    // NewBCX.lookupWSNodeList({
+    //   refresh:true
+    // }).then(res=>{
+    //   console.log("====lookupWSNodeList=================")
+    //   console.log(res)
+    // })
+    let isVersionUpdate = localStorage.getItem('isVersionUpdate')
+    if (isVersionUpdate) {
+    } else {
+      this.removeCurrentAccount()
+
+    }
+  },
+  methods: {
+    ...mapMutations([
+      "setCurrentAccount",
+      "setCurrentCreateAccount",
+      "setCurrentCreateVisible",
+      "setLogin",
+      "setIsAccount",
+      "setAccount",
+      "setCocosCount",
+      "setAccountType"
+    ]),
+    ...mapActions("wallet", ["deleteWallet"]),
+    ...mapActions("account", ["logoutBCXAccount"]),
+    
+    removeCurrentAccount(formName) {
+      Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
+      window.localStorage.setItem("delAccount", "sure");
+        this.setLogin(false);
+        this.setIsAccount(false);
+        this.setAccount({
+          account: "",
+          password: ""
+        });
+        this.$router.replace({ name: "initAccount" });
+        localStorage.setItem('isVersionUpdate', true)
+      });
+      // if (this.accountType === "account") {
+      //   this.logoutBCXAccount().then(res => {
+      //     if (res.code === 1) {
+      //       this.setLogin(false);
+      //       this.setIsAccount(false);
+      //       this.setAccount({
+      //         account: "",
+      //         password: ""
+      //       });
+      //       this.$router.replace({ name: "initAccount" });
+      //     }
+      //   });
+      // } else {
+      //   this.deleteWallet().then(res => {
+      //     if (res.code === 1) {
+
+      //       this.$router.replace({ name: "initAccount" });
+      //     }
+      //   });
+      // }
+
+      // this.$refs[formName].validate(valid => {
+      //   if (valid) {
+      //     if (utils.hashPassword(this.formData.password) === this.pwdhash) {
+      //       this.removeAccount(this.currentAccount);
+      //       this.formData.password = "";
+      //       this.removePasswordShow = false;
+      //       if (this.accounts.length > 0) {
+      //         this.setCurrentAccount(this.accounts[0]);
+      //         this.selectAccount(this.accounts[0]);
+      //       } else {
+      //         this.setCurrentAccount({});
+      //         this.$router.replace({ name: "initAccount" });
+      //       }
+      //     } else {
+      //       this.$kalert({
+      //         message: this.$i18n.t("alert.passwordError")
+      //       });
+      //     }
+      //   }
+      // });
+    },
+  },
   computed: {
     ...mapState(["loading"]),
     key: function() {

@@ -84,6 +84,7 @@ export default {
     ...mapActions("account", ["setPrivateKeys", "logoutBCXAccount"]),
     ...mapActions("wallet", ["getAccounts"]),
     importAccount(formName) {
+      let _this = this
       // this.logoutBCXAccount();
       this.$refs[formName].validate(async valid => {
         if (valid) {
@@ -94,6 +95,8 @@ export default {
           // });
           this.settemporaryKeys(this.formData.password);
           this.setPrivateKeys({ has_import: this.has_import }).then(res => {
+            console.log('=========setPrivateKeys========')
+            console.log(res)
             if (res.code === 1) {
               this.setKeys("");
               this.setAccount({
@@ -105,6 +108,11 @@ export default {
               this.setIsAccount(true);
               this.$router.push({ name: "home" });
             }
+            //  else {
+            //     _this.$kalert({
+            //       message:  _this.$i18n.t("chainInterfaceError[500]")
+            //     });
+            // }
           });
           // if (!utils.validatePrivateKey(this.formData.privateKey)) {
           //   this.$kalert({

@@ -59,7 +59,6 @@
     >
       <div class="warm-tip">{{$t('message.savePrivateKey')}}</div>
       <section class="privateKey-area">{{active_private_key}}</section>
-      <!-- <div class="warm-tip">{{$t('message.privateKeyOnly')}}</div> -->
       <el-button
         class="full-btn"
         type="primary"
@@ -82,6 +81,7 @@
 import { mapState, mapMutations, mapActions } from "vuex";
 import Navigation from "../../components/navigation";
 import { setTimeout } from "timers";
+import axios from "axios";
 export default {
   components: {
     Navigation
@@ -173,8 +173,8 @@ export default {
       this.accountKey = false;
     },
     createWallet(formName) {
+      let _this = this
       this.$refs[formName].validate(valid => {
-        
         if (valid) {
           this.setAccount(this.formData);
           if (this.type === "account") {
@@ -182,6 +182,8 @@ export default {
             // setTimeout(() => {
             //   this.loading(false);
             this.loadBCXAccount().then(res => {
+              console.log('loadBCXAccount')
+              console.log(res)
               if (res.code === 1) {
                 this.setIsAccount(true);
                 // this.loginBCXAccount().then(res => {

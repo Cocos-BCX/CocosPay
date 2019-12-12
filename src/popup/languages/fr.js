@@ -132,6 +132,7 @@ export default {
     sendSuccess: 'Envoyer le succès',
     sendFail: 'Echec d\'envoie',
     modifySuccess: 'Succès des modifications',
+    modifyFailed: 'Erreur de modification',
     modifyPasswordSuccess: 'Succès de la modification du mot de passe',
     redeemSuccess: 'Succès de dégele',
     redeemFail: 'Le dégele a échoué. Veuillez réessayer plus tard',
@@ -297,5 +298,16 @@ export default {
     169: 'La méthode n\'existe pas',
     300: 'Erreur de synchronisation de la chaîne, veuillez vérifier l\'horloge de votre système',
     301: 'La connexion RPC a échoué. S\'il vous plaît vérifier votre réseau '
+  },
+  
+  chainInterfaceError: {
+    200: 'Create success',
+    400001: 'Account creation required',
+    400002: 'Creating  free account required',
+    400003: 'The account already exists',
+    401001: 'No authority',
+    401002: 'You can\'t create any more accounts today',
+    401003: 'No free account today',
+    500: 'Server error',
   }
 }

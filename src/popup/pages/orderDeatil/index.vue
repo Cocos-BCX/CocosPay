@@ -5,9 +5,16 @@
       <section class="eos-main" v-if="orderDeatil.type === 'transfer'">
         <h2
           class="eos-style cocos mt20"
+          v-if="currentNodeName== 'Main'"
+        >{{cocosAccount.accounts === orderDeatil.parse_operations.from ? '-' : '+'}}{{orderDeatil.parse_operations.amount}}</h2>
+        <h2
+          class="eos-style cocos mt20"
+          v-if="currentNodeName== 'Test'"
         >{{cocosAccount.accounts === orderDeatil.parse_operations.from ? '-' : '+'}}{{orderDeatil.parse_operations.amount}}({{$t('title.test')}})</h2>
+        
         <div class="des">{{$t('alert.tranferSuccess')}}</div>
         <div class="translate-log-title mt40">
+          
           <div class="log-line"></div>
           <!-- <div class="log-title">{{$t('title.history')}}</div>-->
         </div>
@@ -137,7 +144,7 @@
         <div class="title mt20">
           <div class="key">{{$t('label.charge')}}:</div>
           <div class="name">
-            <p>{{(orderDeatil.parse_operations.fees[0]?orderDeatil.parse_operations.fees[0]:'0').indexOf('GAS')===-1?orderDeatil.parse_operations.fees[0]:0}}({{$t('title.test')}})</p>
+            <p>{{(orderDeatil.parse_operations.fees[0]?orderDeatil.parse_operations.fees[0]:'0').indexOf('GAS')===-1?orderDeatil.parse_operations.fees[0]:0}}{{(currentNodeName=="Test"?$t('title.test'):"")}}</p>
           </div>
         </div>
 
@@ -156,9 +163,9 @@
           <div class="name">{{orderDeatil.date}}</div>
         </div>
 
-        <div class="title mt20" v-if="memo">
+        <div class="title mt20" v-if="orderDeatil.memo">
           <div class="key memo">{{$t('label.memo')}}:</div>
-          <div class="name memo">{{orderDeatil.memo.data.text}}</div>
+          <div class="name memo">{{orderDeatil.memo}}</div>
         </div>
       </section>
     </div>
@@ -171,12 +178,14 @@ import { mapState, mapActions, mapMutations } from "vuex";
 import bcx from "../../utils/bcx";
 import PerfectScrollbar from "perfect-scrollbar";
 let NewBCX = bcx.getBCXWithState();
+import Storage from "../../../lib/storage";
 export default {
   components: {
     Navigation
   },
   data() {
     return {
+      currentNodeName: Storage.get("choose_node").name,
       orderDeatil: {},
       memo: false,
       transactionsScroller: null
@@ -187,18 +196,19 @@ export default {
   },
   async created() {
     this.orderDeatil = this.$route.params;
+    console.log('this.orderDeatil');
     console.log(this.orderDeatil);
 
     if (this.orderDeatil.memo) {
       this.orderDeatil.memo = await NewBCX.decodeMemo(this.orderDeatil.memo);
       this.memo = true;
     } else {
-      this.orderDeatil.memo = this.orderDeatil.raw_data.memo
-        ? await NewBCX.decodeMemo(this.orderDeatil.raw_data.memo)
-        : "";
-      if (this.orderDeatil.memo) {
-        this.memo = true;
-      }
+      this.orderDeatil.memo = this.orderDeatil.raw_data.memo[0] == 1
+        ? await NewBCX.decodeMemo(this.orderDeatil.raw_data.memo[1].message)
+        : this.orderDeatil.raw_data.memo[1];
+      // if (this.orderDeatil.memo) {
+      //   this.memo = true;
+      // }
     }
     console.log(this.orderDeatil);
   },
@@ -246,6 +256,9 @@ export default {
 }
 .mt40 {
   margin-top: 40px;
+}
+.mt20 {
+  margin-top: 20px;
 }
 .running {
   display: flex;

@@ -26,7 +26,7 @@
             :class="cocosAccount.accounts === data.parse_operations.from ? 'out' : 'in'"
           >
             {{data.parse_operations.amount}}
-            <span class="test-coin">({{$t('title.test')}})</span>
+            <span class="test-coin" v-if="currentNodeName == 'Test'">({{$t('title.test')}})</span>
           </span>
         </span>
       </div>
@@ -48,7 +48,7 @@
         <span class="action-eos">
           <span class="coin contract">
             {{data.parse_operations.contract_name}}
-            <!-- <span class="test-coin">({{$t('title.test')}})</span> -->
+            <span class="test-coin" v-if="currentNodeName == 'Test'">({{$t('title.test')}})</span>
           </span>
         </span>
       </div>
@@ -77,7 +77,7 @@
             :class="cocosAccount.accounts === data.parse_operations.from ? 'out' : 'in'"
           >
             {{data.parse_operations.nh_asset}}
-            <span class="test-coin">({{$t('title.test')}})</span>
+            <span class="test-coin" v-if="currentNodeName == 'Test'">({{$t('title.test')}})</span>
           </span>
         </span>
       </div>
@@ -89,6 +89,7 @@ import { mapState } from "vuex";
 import utils from "../../lib/utils";
 import store from "../store";
 import defaultNetworks from "../config/networks";
+import Storage from "../../lib/storage";
 export default {
   props: {
     data: {
@@ -99,7 +100,9 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      currentNodeName: Storage.get("choose_node").name,
+    };
   },
   computed: {
     ...mapState(["cocosAccount"]),

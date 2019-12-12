@@ -157,16 +157,43 @@ export default new Vuex.Store({
       try {
         let nodes = [];
         await axios
-          .get("http://backend.test.cocosbcx.net/getParams")
+          .get("https://api-cocosbcx.cocosbcx.net/backend/getParams")
           .then(response => {
             nodes = response.data.data;
+            console.log('==========init===============')
+            // nodes = response.data.data.filter(( item )=>{
+            //   return item.name == 'Test'
+            // })
+            // nodes = [{
+            //   chainId: "dc57c58b0366a06b33615a10fb624c380557f3642278d51910580ade3ab487fe",
+            //   coreAsset: 'COCOS',
+            //   faucetUrl: 'http://test-faucet.cocosbcx.net',
+            //   name: 'Cocos - China - Beijing',
+            //   type: '0',
+            //   ws: 'ws://192.168.90.46:8149',
+            //   choose: true,
+            // }, ]
             console.log(nodes);
             Storage.set("node", nodes);
+            // let isHave = false
+            // let chooseNodeChainId = Storage.get("choose_node").chainId;
+            // console.log(chooseNodeChainId)
+            // nodes.filter( item => {
+            //   if (item.chainId == chooseNodeChainId) {
+            //     isHave = true
+            //   }
+            // }) 
           })
           .catch(function (error) {
             console.log(error);
           });
-        return nodes;
+          
+        // await NewBCX.lookupWSNodeList({
+        //   refresh:true,
+        // }).then(res => {
+        //   console.log('res')
+        //   console.log(res)
+        // })
       } catch (e) {
         console.log(e);
       }
@@ -178,6 +205,21 @@ export default new Vuex.Store({
         return await NewBCX.decodeMemo(memo)
       } catch (e) {
         return e
+      }
+    },
+    async lookupWSNodeList({
+      commit
+    }, url) {
+      try {
+        let resData
+        await NewBCX.lookupWSNodeList({
+          refresh:true,
+        }).then(res => {
+          resData = res
+        })
+        return resData
+      } catch (e) {
+        console.log(e);
       }
     },
     async switchAPINode({
@@ -196,6 +238,8 @@ export default new Vuex.Store({
     async apiConfig({
       commit
     }, Node) {
+      // console.log(">>>>>>>>>>apiConfig>>>>>>>>>>")
+      // console.log(Node)
       try {
         await NewBCX.apiConfig({
           default_ws_node: 'ws://test.cocosbcx.net',
@@ -207,7 +251,7 @@ export default new Vuex.Store({
             core_asset: "COCOS",
             chain_id: Node.chainId
           }],
-          faucet_url: Node.faucetUrl ? Node.faucetUrl : Node.url,
+          faucetUrl: Node.faucetUrl ? Node.faucetUrl : Node.url,
           auto_reconnect: Node.connect ? Node.connect : false,
           worker: false
         });
@@ -225,6 +269,10 @@ export default new Vuex.Store({
         })
         await NewBCX.init({
           refresh: true,
+          real_sub:true,
+          subscribeToRpcConnectionStatusCallback:res=>{
+              console.info("subscribeToRpcConnectionStatusCallback res",res);
+          }
         }).then((res) => {
           commit('loading', false, {
             root: true

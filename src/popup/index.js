@@ -39,7 +39,6 @@ VueClipboard.config.autoSetContainer = true
 Vue.use(VueClipboard)
 
 Vue.component('v-icon', Icon)
-
 // const i18n = new VueI18n({
 //   locale: store.state.curLng,
 //   messages: {

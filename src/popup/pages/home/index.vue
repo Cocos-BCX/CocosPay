@@ -21,7 +21,8 @@
             <li v-for="(item, index) in accountList" :key="index">
               <div class="asset-name">
                 <img src="/icons/48px.png" width="30" height="30" alt />
-                <span>{{item[0]}}({{$t('title.test')}})</span>
+                <span v-if="currentNodeName == 'Test'">{{item[0]}}({{$t('title.test')}})</span>
+                <span v-if="currentNodeName == 'Main'">{{item[0]}}</span>
               </div>
               <span class="asset-value">{{item[1]}}</span>
             </li>
@@ -111,7 +112,7 @@
             <img class="eos-logo" src="/icons/logo-middle.png" />
             <h2 class="eos-style mt15">
               {{cocosCount || 0}} COCOS
-              <span class="test-coin">({{$t('title.test')}})</span>
+              <span class="test-coin" v-if="currentNodeName== 'Test'">({{$t('title.test')}})</span>
             </h2>
             <div class="btn-group" style="justify-content: space-around;">
               <el-button class="gradual-button charge" @click="goRecharge">{{$t('button.recharge')}}</el-button>
@@ -311,9 +312,13 @@ import InternalMessage from "../../../messages/InternalMessage";
 import * as InternalMessageTypes from "../../../messages/InternalMessageTypes";
 import { apis } from "../../../lib/BrowserApis";
 import Prompt from "../../../models/prompt/Prompt";
+
+import Storage from "../../../lib/storage";
 export default {
   name: "home",
   components: {
+    currentNodeName: Storage.get("choose_node").name,
+
     KDialog,
     AppHeader,
     ActionItem,
@@ -340,6 +345,8 @@ export default {
     }
 
     return {
+      currentNodeName: Storage.get("choose_node").name,
+
       tokenScroller: null,
       transactionsScroller: null,
       accountScroller: null,
@@ -485,6 +492,7 @@ export default {
       this.transactionsScroller.update();
     },
     loadData() {
+      let _this = this
       this.scrollTopList();
       this.loadingBCXAccount().then(res => {
         if (res && res.locked) {
@@ -496,7 +504,12 @@ export default {
             if (res.code === 1) {
               this.accountList = Object.entries(res.data);
               this.setCocosCount(res.data.COCOS);
-            }
+            } else {
+                
+                  _this.$kalert({
+                    message:  _this.$i18n.t("chainInterfaceError[500]")
+                  });
+              }
           });
           clearInterval(this.timer);
           this.timer = setInterval(() => {
@@ -505,6 +518,10 @@ export default {
               if (res.code === 1) {
                 this.accountList = Object.entries(res.data);
                 this.setCocosCount(res.data.COCOS);
+              } else {
+                  _this.$kalert({
+                    message:  _this.$i18n.t("chainInterfaceError[500]")
+                  });
               }
             });
           }, 5000);
@@ -521,9 +538,14 @@ export default {
       });
     },
     listShow() {
+      let _this = this
       this.UserAccount().then(res => {
         if (res.code === 1) {
           this.accountList = Object.entries(res.data);
+        } else {
+            _this.$kalert({
+              message:  _this.$i18n.t("chainInterfaceError[500]")
+            });
         }
       });
     },
@@ -543,15 +565,21 @@ export default {
       this.password = "";
     },
     showPrivateKey() {
+      let _this = this
       this.OutPutKey().then(res => {
         if (res.code === 1) {
           this.active_private_key = res.data.active_private_keys[0];
           this.owner_private_key = res.data.owner_private_keys[0];
           this.privateKey = true;
+        } else {
+            _this.$kalert({
+              message:  _this.$i18n.t("chainInterfaceError[500]")
+            });
         }
       });
     },
     getLogin() {
+      let _this = this
       if (!this.password) {
         this.$kalert({
           message: this.$i18n.t("verify.passwordNull")
@@ -570,6 +598,10 @@ export default {
           });
           if (res.code === 1) {
             this.showPrivateKey();
+          } else {
+              _this.$kalert({
+                message:  _this.$i18n.t("chainInterfaceError[500]")
+              });
           }
         });
       } else {
@@ -580,6 +612,10 @@ export default {
           });
           if (res.code === 1) {
             this.showPrivateKey();
+          } else {
+              _this.$kalert({
+                message:  _this.$i18n.t("chainInterfaceError[500]")
+              });
           }
         });
       }
@@ -684,12 +720,17 @@ export default {
       // });
     },
     chooseAccount(account, index) {
+      let _this = this
       this.setCurrentAccounts({ account }).then(res => {
         if (res.code === 1) {
           this.setAccount({
             account: account,
             password: ""
           });
+        } else {
+            this.$kalert({
+              message:  _this.$i18n.t("chainInterfaceError[500]")
+            });
         }
         this.loadData();
       });
