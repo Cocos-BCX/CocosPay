@@ -98,7 +98,7 @@ export default {
           } else {
             if (res.message.indexOf("wrong password") > -1) {
               this.$kalert({
-                message:  _this.$i18n.t("error[105]")
+                message:  this.$i18n.t("error[105]")
               });
             } else {
               this.AccountLock();

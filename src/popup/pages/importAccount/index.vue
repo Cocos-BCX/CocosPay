@@ -96,10 +96,12 @@ export default {
           // this.setKeys(this.formData.privateKey);
           // this.settemporaryKeys(this.formData.password);
           this.setPrivateKeys({
-            has_import: this.has_import,
+            has_import: this.has_import || false,
             privateKey: this.formData.privateKey,
             password: this.formData.password,
           }).then(res => {
+            console.log("====setPrivateKeys=====")
+            console.log(res)
             if (res.code === 1) {
               this.setKeys("");
               this.setAccount({
@@ -110,27 +112,24 @@ export default {
               this.setLogin(true);
               this.setIsAccount(true);
               this.$router.push({ name: "home" });
-            } 
-            // else {
-            //   if (res.message.indexOf('The private key has been imported into the wallet') > -1) {
-            //     Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
-            //     window.localStorage.setItem("delAccount", "sure");
-            //       this.setLogin(false);
-            //       this.setIsAccount(false);
-            //       this.setAccount({
-            //         account: "",
-            //         password: ""
-            //       });
-            //     })
-            //   }
-            //   // 
+            } else if (res.code == 160) {
               
-            // }
-            //  else {
-            //     _this.$kalert({
-            //       message:  _this.$i18n.t("chainInterfaceError[500]")
-            //     });
-            // }
+              this.getAccounts().then(res => {
+                console.log("getAccounts")
+                console.log(res)
+                  
+                  this.setKeys("");
+                  this.setAccount({
+                    account: res.current_account.account_name,
+                    password: ""
+                  });
+                  this.settemporaryKeys("");
+                  this.setLogin(true);
+                  this.setIsAccount(true);
+                  this.$router.push({ name: "home" });
+              });
+            }
+            
           });
           // if (!utils.validatePrivateKey(this.formData.privateKey)) {
           //   this.$kalert({
