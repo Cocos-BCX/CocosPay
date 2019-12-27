@@ -8,6 +8,9 @@ const getI18nMessages = (i18n) => {
     return i18n['messages']['FR']
   }
 }
+
+const defaultNode = "Main"
 export default {
-  getI18nMessages
+  getI18nMessages,
+  defaultNode
 }

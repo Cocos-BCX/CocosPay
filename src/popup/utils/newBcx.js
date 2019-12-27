@@ -58,7 +58,7 @@ export default class NewBCX {
         choose: true,
       }]
       // 测试环境 节点
-      // [{
+      // nodes = [{
       //   chainId: "1ae3653a3105800f5722c5bda2b55530d0e9e8654314e2f3dc6d2b010da641c5",
       //   coreAsset: "COCOS",
       //   faucetUrl: "http://test-faucet.cocosbcx.net",
@@ -71,9 +71,14 @@ export default class NewBCX {
     }
     let Node;
     let choose = Storage.get('choose_node')
-    nodes.map(item => {
-      choose && choose.ws === item.ws ? (Node = item) : (Node = nodes[0])
-    })
+    // nodes.map(item => {
+    //   choose && choose.ws === item.ws ? (Node = item) : (Node = nodes[0])
+    // })
+    if (!choose) {
+      Node = nodes[0]
+    } else {
+      Node = choose
+    }
     console.log('------',Node);
     
     // if (bcxNodes.length < 1) {

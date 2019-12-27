@@ -51,6 +51,31 @@
   }
 }
 
+.nodes-select {
+  // width: 100px;
+  width:74px;
+  // height:28px;
+  // border-radius:2px;
+  // border:1px solid rgba(220,220,220,1);
+  // font-size:14px;
+  // font-weight:400;
+  // color:rgba(76,106,221,1);
+  // line-height:28px;
+  
+
+  .el-input__inner {
+    padding-left: 8px;
+    font-size: 14px;
+  }
+  // .el-input__suffix .el-input__suffix-inner .el-input__icon{
+  //   height: 115%!important;
+  // }
+  
+
+  input {
+    text-align: center;
+  }
+}
 .el-input__inner {
   border: none;
   //border-bottom: 1px solid #e6e6e6;

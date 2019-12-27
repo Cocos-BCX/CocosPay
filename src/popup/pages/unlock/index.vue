@@ -84,6 +84,8 @@ export default {
       });
       if (this.accountType === "wallet") {
         this.unlockAccount().then(res => {
+          console.log("unlockAccount")
+          console.log(res)
           if (res.code === 1) {
             this.setLoginNoAlert(true);
             this.setAccount({
@@ -94,7 +96,14 @@ export default {
             this.setLogin(true);
             this.$router.push({ name: "home" });
           } else {
-            this.AccountLock();
+            if (res.message.indexOf("wrong password") > -1) {
+              this.$kalert({
+                message:  _this.$i18n.t("error[105]")
+              });
+            } else {
+              this.AccountLock();
+            }
+            
           }
         });
       } else {
@@ -102,6 +111,7 @@ export default {
       }
     },
     AccountLock() {
+      let _this = this
       this.loginBCXAccount().then(res => {
         this.setAccount({
           account: this.cocosAccount.accounts,

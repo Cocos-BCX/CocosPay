@@ -158,8 +158,9 @@ export default new Vuex.Store({
         let nodes = [];
         await axios
           .get("https://api-cocosbcx.cocosbcx.net/backend/getParams")
-          .then(response => {
+          .then(async response => {
             nodes = response.data.data;
+            let addNode = Storage.get("add_node")
             console.log('==========init===============')
             // nodes = response.data.data.filter(( item )=>{
             //   return item.name == 'Test'
@@ -173,7 +174,11 @@ export default new Vuex.Store({
             //   ws: 'ws://192.168.90.46:8149',
             //   choose: true,
             // }, ]
+            
             console.log(nodes);
+            if (addNode) {
+              nodes = nodes.concat([addNode])
+            }
             Storage.set("node", nodes);
             // let isHave = false
             // let chooseNodeChainId = Storage.get("choose_node").chainId;
@@ -183,11 +188,15 @@ export default new Vuex.Store({
             //     isHave = true
             //   }
             // }) 
+            console.log("NewBCX")
+            // await NewBCX.init().then(res_url => {
+            //   console.log('res_url ', res_url)
+            // })
           })
           .catch(function (error) {
             console.log(error);
           });
-          
+          return nodes
         // await NewBCX.lookupWSNodeList({
         //   refresh:true,
         // }).then(res => {
@@ -203,6 +212,37 @@ export default new Vuex.Store({
     }, memo) {
       try {
         return await NewBCX.decodeMemo(memo)
+      } catch (e) {
+        return e
+      }
+    },
+    async addAPINode({
+      commit
+    }, params) {
+      try {
+        let resData
+        await NewBCX.addAPINode({
+          name: params.name,
+          url: params.url
+        }).then( res => {
+            resData = res
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+    async deleteAPINode({
+      commit
+    }, url) {
+      try {
+        let resData
+        await NewBCX.deleteAPINode({
+          url: url
+        }).then( res => {
+            resData = res
+        })
+        return resData
       } catch (e) {
         return e
       }
@@ -227,8 +267,22 @@ export default new Vuex.Store({
     }, url) {
       try {
         let resData
+        commit('loading', true, {
+          root: true
+        })
+        console.log("switchAPINode")
+        console.log(url)
         await NewBCX.switchAPINode(url).then(res => {
+          commit('loading', false, {
+            root: true
+          })
           resData = res
+        }).catch( err => {
+          commit('loading', false, {
+            root: true
+          })
+          console.log("=======switchAPINode==========err=======")
+          console.log(err)
         })
         return resData
       } catch (e) {
@@ -238,23 +292,40 @@ export default new Vuex.Store({
     async apiConfig({
       commit
     }, Node) {
+      let resData
       // console.log(">>>>>>>>>>apiConfig>>>>>>>>>>")
       // console.log(Node)
       try {
+        // 2019-12-19 注释开始
+        // await NewBCX.apiConfig({
+        //   default_ws_node: 'ws://test.cocosbcx.net',
+        //   ws_node_list: [{
+        //     url: Node.ws,
+        //     name: Node.name
+        //   }],
+        //   networks: [{
+        //     core_asset: "COCOS",
+        //     chain_id: Node.chainId
+        //   }],
+        //   faucetUrl: Node.faucetUrl ? Node.faucetUrl : Node.url,
+        //   auto_reconnect: Node.connect ? Node.connect : false,
+        //   worker: false
+        // }).then(res=>{
+        //   resData = res
+        // });
+        // 2019-12-19 注释结束
+
+        // 2019-12-19 修改开始
         await NewBCX.apiConfig({
-          default_ws_node: 'ws://test.cocosbcx.net',
-          ws_node_list: [{
-            url: Node.ws,
-            name: Node.name
-          }],
-          networks: [{
-            core_asset: "COCOS",
-            chain_id: Node.chainId
-          }],
-          faucetUrl: Node.faucetUrl ? Node.faucetUrl : Node.url,
-          auto_reconnect: Node.connect ? Node.connect : false,
-          worker: false
+          // check_cached_nodes_data:false,
+          // locale: Node.locale || "zh",
+          // real_sub: Node.real_sub || true,
+          faucet_url: Node.faucetUrl
+        }).then(res=>{
+          resData = res
         });
+        // 2019-12-19 修改结束
+        return resData
       } catch (e) {
         console.log(e);
       }
@@ -271,6 +342,7 @@ export default new Vuex.Store({
           refresh: true,
           real_sub:true,
           subscribeToRpcConnectionStatusCallback:res=>{
+            console.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
               console.info("subscribeToRpcConnectionStatusCallback res",res);
           }
         }).then((res) => {

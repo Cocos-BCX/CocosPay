@@ -3,6 +3,21 @@
     <logo-header />
     <section class="app-container">
       <section class="select-lang no-bg">
+        <el-select class="nodes-select" v-model="chooseName" @change="changeNode">
+          <!-- <el-option
+            v-for="(item, index) in langs"
+            :key="index"
+            :label="item.name"
+            :value="item.value"
+          ></el-option> -->
+          <!--  v-for="(network,index) in nodes" -->
+          <el-option
+            v-for="(item,index) in nodes"
+            :key="index"
+            :label="item.name"
+            :value="item.name"
+          ></el-option>
+        </el-select>
         <el-select class="language-select" v-model="lang" @change="changeLanguage">
           <el-option
             v-for="(item, index) in langs"
@@ -84,6 +99,7 @@ import { createAccountName } from "../../utils/tools";
 import utils from "../../../lib/utils";
 import { mapState, mapMutations, mapActions } from "vuex";
 import Storage from '../../utils/storage'
+import { defaultNode } from '../../config/common'
 export default {
   components: {
     LogoHeader
@@ -97,23 +113,50 @@ export default {
         { name: "中文", value: "ZH" },
         { name: "English", value: "EN" },
         { name: "Français", value: "FR" }
-      ]
+      ],
+      choose: {},
+      chooseName: '',
+      nodes: []
     };
   },
   computed: {
     ...mapState(["currentCreateAccount", "curLng"])
   },
   mounted() {
+    let _this = this
     this.nodeLists().then(res => {
       if (!Array.isArray(res)) return;
-
       // 2019-12-09  新增修改
-      let connectNodeName = Storage.get("choose_node").name
-      console.log(res)
-      let connectNode = res.filter( item => {
-        return item.name == connectNodeName
+      let isArrayNodeIndex = ''
+      for (let i = 0; i < res.length; i++) {
+        if (Array.isArray(res[i])) {
+          isArrayNodeIndex = i
+          break;
+        }
+      }
+      if (isArrayNodeIndex != "") {
+        res.splice(isArrayNodeIndex,1);
+      }
+      
+      let chooseNodeName = ''
+      let concatNodes = []
+      if (Storage.get("choose_node").name) {
+        chooseNodeName = Storage.get("choose_node").name
+      } else {
+        chooseNodeName = defaultNode
+      }
+
+      if (Storage.get("add_node")) {
+        concatNodes = res.concat(Storage.get("add_node"))
+      } else {
+        concatNodes = res
+      }
+      _this.nodes = concatNodes
+      let connectNode = concatNodes.filter( item => {
+        return item.name == chooseNodeName
       })
-      console.log(connectNode)
+      _this.choose = connectNode[0];
+      _this.chooseName = connectNode[0].name
       // 2019-12-09  新增修改 完成
 
       
@@ -127,10 +170,20 @@ export default {
       
       // 2019-12-09  新增修改
       connectNode[0].connect = true;
-      console.log(connectNode)
       
-      this.apiConfig(connectNode[0]).then(() => {
-        this.init();
+      _this.loadingBCXAccount().then(res => {
+        console.log("loadingBCXAccount")
+        console.log(res)
+      })
+      _this.apiConfig(connectNode[0]).then((apiConfigRes) => {
+        _this.lookupWSNodeList({
+          refresh:true,
+        }).then( lookupWSNodeListRes =>{
+          console.log('++++++lookupWSNodeListRes')
+          console.log(lookupWSNodeListRes)
+          // this.init();
+        })
+        
       });
       // 2019-12-09  新增修改 完成
     });
@@ -142,9 +195,17 @@ export default {
         : "Français";
     this.$i18n.locale = this.curLng;
   },
+  created (){
+    console.log("this.$router.query")
+    console.log(this.$route.query)
+      // this.nodes = Storage.get("node").concat(
+      //   Storage.get("add_node") ? Storage.get("add_node") : []
+      // );
+      // this.choose = Storage.get("choose_node");
+  },
   methods: {
     ...mapMutations("wallet", ["addAccount"]),
-    ...mapActions(["nodeLists", "apiConfig", "init"]),
+    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList"]),
     ...mapMutations([
       "setCurrentAccount",
       "setCurrentCreateAccount",
@@ -152,7 +213,7 @@ export default {
       "setCurLng"
     ]),
     ...mapActions("wallet", ["deleteWallet"]),
-    ...mapActions("account", ["logoutBCXAccount"]),
+    ...mapActions("account", ["logoutBCXAccount", "loadingBCXAccount"]),
     closedDialog() {
       this.currentCreateVisible = false;
       this.register = false;
@@ -171,6 +232,58 @@ export default {
       this.$kalert({
         message: this.$i18n.t("alert.copyFail")
       });
+    },
+    changeNode(){
+      let _this = this
+      let connectNode = this.nodes.filter( item => {
+        return item.name == _this.chooseName
+      })
+      let network = connectNode[0]
+      console.log("network")
+      console.log(network)
+      // if (network.chainId === Storage.get("choose_node").chainId) {
+      //   console.log('network.chainId === Storage.get("choose_node").chainId')
+        this.switchAPINode({
+          url: network.ws
+        }).then(res => {
+          console.log('***********switchAPINode***************')
+          console.log("switchAPINode", res)
+          if (res.code === 1) {
+            if (res.data.selectedNodeUrl) {
+              // _this.apiConfig({
+              //   faucet_url:"http://47.93.62.96:8042"   
+              // })
+                _this.apiConfig(network).then( apiConfigres => {
+                  console.log("apiConfigres")
+                  console.log(apiConfigres)
+                _this.choose = network;
+                _this.lookupWSNodeList().then( lookupWSNodeListRes => {
+                  console.log("lookupWSNodeListRes", lookupWSNodeListRes)
+                  if (lookupWSNodeListRes.data.selectedNodeUrl) {
+                          Storage.set("choose_node", network);
+                          _this.$kalert({
+                            message: _this.$i18n.t("alert.modifySuccess")
+                          });
+                      
+                  } else {
+                    _this.$kalert({
+                      message: _this.$i18n.t("alert.modifyFailed")
+                    });
+                  }
+                })
+              })
+              
+            } else {
+              _this.$kalert({
+                message:  _this.$i18n.t("alert.modifyFailed")
+              });
+            }
+          } else {
+              _this.$kalert({
+                message:  _this.$i18n.t("alert.modifyFailed")
+              });
+          }
+        });
     },
     changeLanguage() {
       this.setCurLng(this.lang);
@@ -229,7 +342,7 @@ export default {
 }
 .select-lang {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   height: 50px;
 }

@@ -14,7 +14,7 @@
             <small>ChainId: {{item.chainId}}</small>
           </section>
           <section class="remove">
-            <i @click="changeNode(index)" class="el-icon-edit"></i>
+            <!-- <i @click="changeNode(index)" class="el-icon-edit"></i> -->
             <i @click="deleteNode(index)" class="el-icon-delete"></i>
           </section>
         </section>
@@ -69,7 +69,7 @@
 </template>
 <script>
 import SettingNavigation from "../../components/setting-navigation";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapActions } from "vuex";
 import PerfectScrollbar from "perfect-scrollbar";
 import Storage from "../../utils/storage";
 import { uuid } from "../../utils/tools";
@@ -107,6 +107,11 @@ export default {
     this.edit = false;
   },
   mounted() {
+    
+    this.formData.ws = ""
+    this.formData.faucet_url = ""
+    this.formData.chainId = ""
+    this.formData.name = ""
     this.editNode = Storage.get("add_node") || [];
     console.log(this.editNode);
     this.network = new PerfectScrollbar("#network", {
@@ -117,6 +122,7 @@ export default {
   },
   methods: {
     ...mapMutations(["updateNetwork", "setCurrentNetwork"]),
+    ...mapActions(["addAPINode", "lookupWSNodeList", "deleteAPINode"]),
     resetBack() {
       this.edit = false;
       if (!this.editNode.length) {
@@ -124,20 +130,37 @@ export default {
       }
     },
     deleteNode(index) {
+      let _this = this
       let editNode = Storage.get("add_node");
-      editNode.splice(index, 1);
-      Storage.set("add_node", editNode);
-      this.editNode = editNode;
-      if (!this.editNode.length) {
-        this.edit = false;
-        this.formData = {
-          ws: "",
-          faucet_url: "",
-          chainId: "",
-          name: "",
-          type: 2
-        };
-      }
+      _this.deleteAPINode(editNode[index].ws).then( deleteAPINodeRes => {
+        if (deleteAPINodeRes.code == 1) {
+          editNode.splice(index, 1);
+          if (!this.editNode.length) {
+            this.edit = false;
+            this.formData = {
+              ws: "",
+              faucet_url: "",
+              chainId: "",
+              name: "",
+              type: 2
+            };
+          }
+          Storage.set("add_node", editNode);
+          _this.editNode = editNode;
+          _this.$kalert({
+            message: "删除成功"
+          });
+        } else {
+          
+          _this.$kalert({
+            message: "删除失败"
+          });
+        }
+        _this.lookupWSNodeList().then( lookupWSNodeListRes => {
+          console.log("lookupWSNodeListRes")
+          console.log(lookupWSNodeListRes)
+        })
+      })
     },
     changeNode(index) {
       this.edit = true;
@@ -156,6 +179,7 @@ export default {
       };
     },
     saveNetwork() {
+      let _this = this
       if (
         !this.formData.ws ||
         !this.formData.faucet_url ||
@@ -167,29 +191,121 @@ export default {
         });
         return;
       }
-      if (this.formData.id) {
-        let editNode = Storage.get("add_node");
-        editNode.forEach((item, index) => {
-          if (item.id === this.formData.id) {
-            editNode[index] = this.formData;
-            Storage.set("add_node", editNode);
-          }
-        });
-        this.editNode = editNode;
-        this.edit = false;
-      } else {
-        this.formData.type = 2;
-        this.formData.id = uuid();
-        let editNode = Storage.get("add_node") ? Storage.get("add_node") : [];
-        editNode.push(this.formData);
-        Storage.set("add_node", editNode);
-        this.editNode = editNode;
-        this.edit = false;
+      console.log(this.formData)
+      // 2019-12-23 新增
+      let nodes = Storage.get("node")
+      let repeatNode = nodes.filter(item => {
+        return item.ws == _this.formData.ws
+      })
+      if (repeatNode.length > 0) {
         this.$kalert({
-          message: this.$i18n.t("alert.setSuccess")
+          message: this.$i18n.t("error[140]")
         });
-        // this.$router.push({ name: "home" });
+        return false
       }
+      // 2019-12-23 新增完毕
+      this.addAPINode({
+          name: _this.formData.name,
+          url: _this.formData.ws
+      }).then( res => {
+        console.log("****addAPINode*****")
+        console.log(res)
+        if (res.code == 1) {
+          // this.$kalert({
+          //   message: this.$i18n.t("alert.setSuccess")
+          // });
+          let newNode = res.data[_this.formData.ws]
+          console.log("newNode")
+          console.log(newNode)
+          if (newNode.ping == 0) {
+            console.log("=delete=")
+            _this.deleteAPINode(_this.formData.ws).then( deleteAPINodeRes => {
+              console.log("deleteAPINodeRes")
+              console.log(deleteAPINodeRes)
+              
+              _this.$kalert({
+                message: "该Ws无效"
+              });
+              _this.lookupWSNodeList().then( lookupWSNodeListRes => {
+                console.log("lookupWSNodeListRes")
+                console.log(lookupWSNodeListRes)
+              })
+            })
+            // _this.deleteNode()
+          } else {
+            if (_this.formData.id) {
+              let editNode = Storage.get("add_node");
+              editNode.forEach((item, index) => {
+                if (item.id === _this.formData.id) {
+                  editNode[index] = _this.formData;
+                  Storage.set("add_node", editNode);
+                }
+              });
+              _this.editNode = editNode;
+              _this.edit = false;
+            } else {
+              _this.formData.type = 2;
+              _this.formData.id = uuid();
+              let editNode = Storage.get("add_node") ? Storage.get("add_node") : [];
+              editNode.push(_this.formData);
+              Storage.set("add_node", editNode);
+              _this.editNode = editNode;
+              _this.edit = false;
+              _this.$kalert({
+                message: _this.$i18n.t("alert.setSuccess")
+              });
+              // this.$router.push({ name: "home" });
+            }
+          }
+          _this.lookupWSNodeList().then( lookupWSNodeListRes => {
+            console.log("lookupWSNodeListRes")
+            console.log(lookupWSNodeListRes)
+          })
+
+
+        } else {
+          if (res.message.indexOf("Node address must start with ws:// or wss://") > -1) {
+            this.$kalert({
+              message: this.$i18n.t("error[139]")
+            });
+          } else if (res.message.indexOf("API server node address already exists") > -1) {
+            this.$kalert({
+              message: this.$i18n.t("error[140]")
+            });
+          } else {
+            this.$kalert({
+              message: this.$i18n.t("error[0]")
+            });
+          }
+          
+        }
+      })
+
+      // 2019-12-23  注释
+      // if (this.formData.id) {
+      //   let editNode = Storage.get("add_node");
+      //   editNode.forEach((item, index) => {
+      //     if (item.id === this.formData.id) {
+      //       editNode[index] = this.formData;
+      //       Storage.set("add_node", editNode);
+      //     }
+      //   });
+      //   this.editNode = editNode;
+      //   this.edit = false;
+      // } else {
+      //   this.formData.type = 2;
+      //   this.formData.id = uuid();
+      //   let editNode = Storage.get("add_node") ? Storage.get("add_node") : [];
+      //   editNode.push(this.formData);
+      //   Storage.set("add_node", editNode);
+      //   this.editNode = editNode;
+      //   this.edit = false;
+      //   this.$kalert({
+      //     message: this.$i18n.t("alert.setSuccess")
+      //   });
+      //   // this.$router.push({ name: "home" });
+      // }
+      // 2019-12-23  注释完毕
     }
   }
 };
