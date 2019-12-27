@@ -162,29 +162,32 @@ export default {
       state,
       rootState
     }, params) {
+      console.log("***vuex   setPrivateKeys ****")
+      console.log(params)
       commit('loading', true, {
         root: true
       })
       try {
         var resData
-        setTimeout(() => {
-          commit('loading', false, {
-            root: true
-          })
-          if (!resData) {
-            // Alert({
-            //   message: CommonJs.getI18nMessages(I18n).error[150]
-            // })
-            Alert({
-              message: CommonJs.getI18nMessages(I18n).error[109]
-            })
-          }
-        }, 3500)
+        // setTimeout(() => {
+        //   commit('loading', false, {
+        //     root: true
+        //   })
+        //   if (!resData) {
+        //     // Alert({
+        //     //   message: CommonJs.getI18nMessages(I18n).error[150]
+        //     // })
+        //     Alert({
+        //       message: CommonJs.getI18nMessages(I18n).error[109]
+        //     })
+        //   }
+        // }, 3500)
         console.log("=====================================")
         // console.log(rootState.privateKeys)
         // console.log(rootState.temporaryKeys)
-        console.log(params.privateKeys)
-        console.log(params.temporaryKeys)
+        console.log(params)
+        console.log(params.privateKey)
+        console.log(params.password)
         await NewBCX.importPrivateKey({
           // privateKey: rootState.privateKeys,
           // password: rootState.temporaryKeys,
@@ -201,35 +204,46 @@ export default {
               // Alert({
               //   message: CommonJs.getI18nMessages(I18n).verify.walletPassword
               // })
-              resData = {
-                code: 150
-              }
-              Alert({
-                message: CommonJs.getI18nMessages(I18n).error[res.code]
-              })
-              return resData
-            } else {
-              
-              if (CommonJs.getI18nMessages(I18n).error[res.code]) {
+              if (res.message.indexOf("wrong password") > -1) {
+                Alert({
+                  message: CommonJs.getI18nMessages(I18n).alert.passwordError
+                })
+              } else {
+                resData = {
+                  code: 150
+                }
                 Alert({
                   message: CommonJs.getI18nMessages(I18n).error[res.code]
                 })
-              } else {
-                Alert({
-                  message: CommonJs.getI18nMessages(I18n).error[0]
-                })
               }
+            } else {
+              if (res.code !== 160) {
+                if (CommonJs.getI18nMessages(I18n).error[res.code]) {
+                  Alert({
+                    message: CommonJs.getI18nMessages(I18n).error[res.code]
+                  })
+                } else {
+                  Alert({
+                    message: CommonJs.getI18nMessages(I18n).error[0]
+                  })
+                }
+              }
+              
             }
-          } else {
-            commit('setAccountType', 'wallet', {
-              root: true
-            })
           }
           resData = res;
         }).catch( err => {
           console.log('importPrivateKey err')
           console.log(err)
+          commit('loading', false, {
+            root: true
+          })
+          Alert({
+            message: CommonJs.getI18nMessages(I18n).error[150]
+          })
         })
+        console.log("****")
+        console.log(resData)
         return resData
       } catch (e) {
         return e
