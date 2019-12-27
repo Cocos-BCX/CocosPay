@@ -180,13 +180,18 @@ export default {
     await this.UserAccount().then(res => {
       if (res.code === 1) {
         if (Array.isArray(res.data)) {
-          this.coins = res.data;
+          this.coins = res.data.filter( item => {
+            return item.coins != "GAS"
+          });
         } else {
           for (let [key, value] of Object.entries(res.data)) {
-            this.coins.push({
-              coin: key,
-              amount: value
-            });
+            if (key != "GAS") {
+              this.coins.push({
+                coin: key,
+                amount: value
+              });
+            }
+            
           }
         }
       }else {
@@ -286,12 +291,29 @@ export default {
           });
           this.$router.push({ name: "home" });
         } else {
+          if (res.message.indexOf('Transaction was not signed. Do you have a private key? [no_signers]') > -1) {
+            this.$kalert({
+              message:  this.$i18n.t("verify.ownerKey")
+            });
+          } else if (res.message.indexOf('Assert Exception: itr->get_balance()') > -1) {
+            this.$kalert({
+              message:  this.$i18n.t("alert.transferFail")
+            });
+          } else if (res.message.indexOf('locked->value') > -1) {
+            this.$kalert({
+              message:  this.$i18n.t("alert.transferFail")
+            });
+          } else if (res.message.indexOf('insufficient_balance') > -1) {
+            this.$kalert({
+              message:  this.$i18n.t("alert.transferFail")
+            });
+          } else {
             this.$kalert({
               message:  this.$i18n.t("chainInterfaceError[500]")
             });
+          }
         }
       }).catch( res => {
-        console.log('****************')
         console.log(res)
       });
     }

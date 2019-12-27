@@ -7,7 +7,6 @@ import {
 } from '../../../lib/constants'
 import I18n from '../../languages'
 import CommonJs from '../../config/common'
-import async from '../../../lib/mapTransaction/index';
 
 let NewBCX = bcx.getBCXWithState();
 export default {
@@ -36,10 +35,6 @@ export default {
       })
       try {
         let resData;
-        // console.log("loadBCXAccount => createAccountWithPassword   账户模式")
-        // console.log("createAccountWithPassword============params")
-        // console.log(rootState.cocosAccount.accounts)
-        // console.log(rootState.cocosAccount.passwords)
         await NewBCX.createAccountWithPassword({
           account: rootState.cocosAccount.accounts,
           password: rootState.cocosAccount.passwords,
@@ -48,6 +43,8 @@ export default {
           commit('loading', false, {
             root: true
           })
+          console.log("-------createAccountWithPassword------------------------------")
+          console.log(res)
           if (res.code !== 1) {
             // Alert({
             //   message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -175,22 +172,30 @@ export default {
             root: true
           })
           if (!resData) {
+            // Alert({
+            //   message: CommonJs.getI18nMessages(I18n).error[150]
+            // })
             Alert({
-              message: CommonJs.getI18nMessages(I18n).error[150]
+              message: CommonJs.getI18nMessages(I18n).error[109]
             })
           }
-        }, 8000)
-        // console.log("setPrivateKeys => importPrivateKey")
-        // console.log("importPrivateKey=======================params")
+        }, 3500)
+        console.log("=====================================")
         // console.log(rootState.privateKeys)
         // console.log(rootState.temporaryKeys)
+        console.log(params.privateKeys)
+        console.log(params.temporaryKeys)
         await NewBCX.importPrivateKey({
-          privateKey: rootState.privateKeys,
-          password: rootState.temporaryKeys,
+          // privateKey: rootState.privateKeys,
+          // password: rootState.temporaryKeys,
+          privateKey: params.privateKey,
+          password: params.password,
         }).then((res) => {
           commit('loading', false, {
             root: true
           })
+          console.log("NewBCX.importPrivateKey")
+          console.log(res)
           if (res.code !== 1) {
             if (params && params.has_import && res.code !== 160) {
               // Alert({
@@ -221,6 +226,9 @@ export default {
             })
           }
           resData = res;
+        }).catch( err => {
+          console.log('importPrivateKey err')
+          console.log(err)
         })
         return resData
       } catch (e) {
@@ -269,10 +277,6 @@ export default {
       })
       try {
         let resData;
-        // console.log("loginBCXAccount => passwordLogin")
-        // console.log("=======passwordLogin==========params=======")
-        // console.log(rootState.cocosAccount.accounts)
-        // console.log(rootState.cocosAccount.passwords)
         await NewBCX.passwordLogin({
           account: rootState.cocosAccount.accounts,
           password: rootState.cocosAccount.passwords

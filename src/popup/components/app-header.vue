@@ -80,9 +80,20 @@ export default {
     clickOutside: vClickOutside.directive
   },
   mounted() {
-    this.nodes = Storage.get("node").concat(
+    let nodes = Storage.get("node").concat(
       Storage.get("add_node") ? Storage.get("add_node") : []
     );
+    let isArrayNodeIndex = ''
+    for (let i = 0; i < nodes.length; i++) {
+      if (Array.isArray(nodes[i])) {
+        isArrayNodeIndex = i
+        break;
+      }
+    }
+    if (isArrayNodeIndex != "") {
+      nodes.splice(isArrayNodeIndex,1);
+    }
+    this.nodes = nodes
     this.choose = Storage.get("choose_node");
   },
   methods: {
@@ -99,40 +110,134 @@ export default {
       this.showNetworkDropdown = false;
     },
     changeNetwork(network) {
-      let _this = this
       
+      let _this = this
+      console.log("network")
+      console.log(network)
+      Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
+        console.log("deleteWallet")
+        console.log(res)
+      window.localStorage.setItem("delAccount", "sure");
+        this.setLogin(false);
+        this.setIsAccount(false);
+        this.setAccount({
+          account: "",
+          password: ""
+        });
+        
+        this.switchAPINode({
+          url: network.ws
+        }).then(res => {
+          if (res.code === 1) {
+            return new Promise(function (resolve, reject) {
+              resolve(res)
+            })
+          } else {
+              _this.$kalert({
+                message:  _this.$i18n.t("alert.modifyFailed")
+              });
+          }
+        }).then(res =>{
+          
+            return new Promise(function (resolve, reject) {
+              
+              if (res.data.selectedNodeUrl) {
+                
+                _this.apiConfig(network).then( apiConfigres => {
+                  console.log("apiConfigres")
+                  console.log(apiConfigres)
+                  resolve(apiConfigres)
+                })
+                // _this.apiConfig({
+                //   faucet_url:"http://47.93.62.96:8042"   
+                // })
+                _this.choose = network;
+              } else {
+                _this.$kalert({
+                  message:  _this.$i18n.t("alert.modifyFailed")
+                });
+              }
+            })
+        }).then( res => {
+          
+          _this.lookupWSNodeList().then( lookupWSNodeListRes => {
+              if (lookupWSNodeListRes.data.selectedNodeUrl) {
+                  Storage.set("choose_node", network);
+                  _this.$router.replace({ name: "initAccount", query: {isReload: false}});
+              } else {
+                _this.$kalert({
+                  message: _this.$i18n.t("alert.modifyFailed")
+                });
+              }
+          })
+        });
+
+      });
+    },
+
+    // changeNetwork  2019-12-26 备份
+    changeNetwork123(network) {
+      let _this = this
+      console.log("network")
+      console.log(network)
       // if (network.chainId === Storage.get("choose_node").chainId) {
       //   console.log('network.chainId === Storage.get("choose_node").chainId')
         this.switchAPINode({
           url: network.ws
         }).then(res => {
           if (res.code === 1) {
-            if (res.data.selectedNodeUrl) {
-              _this.$kalert({
-                message: _this.$i18n.t("alert.modifySuccess")
-              });
-              _this.choose = network;
-              _this.lookupWSNodeList().then( lookupWSNodeListRes => {
-                if (lookupWSNodeListRes.data.selectedNodeUrl) {
-                  
-                    Storage.set("choose_node", network);
-                    _this.removeCurrentAccount()
-                } else {
-                  _this.$kalert({
-                    message: _this.$i18n.t("alert.modifyFailed")
-                  });
-                }
-              })
-            } else {
-              _this.$kalert({
-                message:  _this.$i18n.t("alert.modifyFailed")
-              });
-            }
+            return new Promise(function (resolve, reject) {
+              resolve(res)
+            })
           } else {
               _this.$kalert({
                 message:  _this.$i18n.t("alert.modifyFailed")
               });
           }
+        }).then(res =>{
+          
+            return new Promise(function (resolve, reject) {
+              
+              if (res.data.selectedNodeUrl) {
+                
+                // _this.apiConfig({
+                //   faucet_url:"http://47.93.62.96:8042"   
+                // })
+                _this.choose = network;
+                _this.lookupWSNodeList().then( lookupWSNodeListRes => {
+                    
+                    if (lookupWSNodeListRes.data.selectedNodeUrl) {
+                      
+                      resolve(lookupWSNodeListRes)
+                      
+                    } else {
+                      _this.$kalert({
+                        message: _this.$i18n.t("alert.modifyFailed")
+                      });
+                    }
+                  
+                  
+                })
+              } else {
+                _this.$kalert({
+                  message:  _this.$i18n.t("alert.modifyFailed")
+                });
+              }
+            })
+        }).then( res => {
+          
+          _this.apiConfig(network).then( apiConfigres => {
+            console.log("apiConfigres")
+            console.log(apiConfigres)
+            Storage.set("choose_node", network);
+            _this.removeCurrentAccount()
+            // _this.init().then( initRes => {
+            //   _this.$kalert({
+            //     message: _this.$i18n.t("alert.modifySuccess")
+            //   });
+            //   _this.removeCurrentAccount()
+            // })
+          })
         });
       // } else {
       //   console.log('else   network.chainId === Storage.get("choose_node").chainId')
@@ -167,6 +272,8 @@ export default {
         // 2019-12-09 注释修改  结束
       // }
     },
+
+
     NewBCX(Node) {
       
         var _configParams = {

@@ -82,21 +82,24 @@ export default {
       "settemporaryKeys"
     ]),
     ...mapActions("account", ["setPrivateKeys", "logoutBCXAccount"]),
-    ...mapActions("wallet", ["getAccounts"]),
+    ...mapActions("wallet", ["getAccounts", "deleteWallet"]),
     importAccount(formName) {
       let _this = this
       // this.logoutBCXAccount();
+      // formName就是from字符串
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          this.setKeys(this.formData.privateKey);
           // this.setAccount({
           //   account: "",
           //   password: this.formData.password
           // });
-          this.settemporaryKeys(this.formData.password);
-          this.setPrivateKeys({ has_import: this.has_import }).then(res => {
-            console.log('=========setPrivateKeys========')
-            console.log(res)
+          // this.setKeys(this.formData.privateKey);
+          // this.settemporaryKeys(this.formData.password);
+          this.setPrivateKeys({
+            has_import: this.has_import,
+            privateKey: this.formData.privateKey,
+            password: this.formData.password,
+          }).then(res => {
             if (res.code === 1) {
               this.setKeys("");
               this.setAccount({
@@ -107,7 +110,22 @@ export default {
               this.setLogin(true);
               this.setIsAccount(true);
               this.$router.push({ name: "home" });
-            }
+            } 
+            // else {
+            //   if (res.message.indexOf('The private key has been imported into the wallet') > -1) {
+            //     Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
+            //     window.localStorage.setItem("delAccount", "sure");
+            //       this.setLogin(false);
+            //       this.setIsAccount(false);
+            //       this.setAccount({
+            //         account: "",
+            //         password: ""
+            //       });
+            //     })
+            //   }
+            //   // 
+              
+            // }
             //  else {
             //     _this.$kalert({
             //       message:  _this.$i18n.t("chainInterfaceError[500]")

@@ -495,14 +495,22 @@ export default {
       let _this = this
       this.scrollTopList();
       this.loadingBCXAccount().then(res => {
+        console.log("loadingBCXAccount")
+        console.log(res)
         if (res && res.locked) {
           this.$router.replace({ name: "unlock" });
         } else {
           this.transferList();
           this.transferNHAsset();
           this.UserAccount().then(res => {
+            console.log("UserAccount")
+            console.log(res)
             if (res.code === 1) {
               this.accountList = Object.entries(res.data);
+              console.log(this.accountList)
+              this.accountList = this.accountList.filter( item => {
+                return item[0] != "GAS"
+              })
               this.setCocosCount(res.data.COCOS);
             } else {
                 
@@ -517,6 +525,10 @@ export default {
             this.UserAccount().then(res => {
               if (res.code === 1) {
                 this.accountList = Object.entries(res.data);
+                console.log(this.accountList)
+                this.accountList = this.accountList.filter( item => {
+                  return item[0] != "GAS"
+                })
                 this.setCocosCount(res.data.COCOS);
               } else {
                   _this.$kalert({
@@ -542,6 +554,10 @@ export default {
       this.UserAccount().then(res => {
         if (res.code === 1) {
           this.accountList = Object.entries(res.data);
+          console.log(this.accountList)
+          this.accountList = this.accountList.filter( item => {
+            return item[0] != "GAS"
+          })
         } else {
             _this.$kalert({
               message:  _this.$i18n.t("chainInterfaceError[500]")
