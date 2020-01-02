@@ -395,7 +395,7 @@ var _navigation = __webpack_require__(868);
 
 var _navigation2 = _interopRequireDefault(_navigation);
 
-var _function = __webpack_require__(244);
+var _function = __webpack_require__(245);
 
 var _function2 = _interopRequireDefault(_function);
 
@@ -415,7 +415,7 @@ var InternalMessageTypes = _interopRequireWildcard(_InternalMessageTypes);
 
 var _timers = __webpack_require__(99);
 
-var _storage = __webpack_require__(405);
+var _storage = __webpack_require__(243);
 
 var _storage2 = _interopRequireDefault(_storage);
 

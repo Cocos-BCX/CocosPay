@@ -11,6 +11,7 @@ import IdGenerator from '../lib/IdGenerator'
 import utils from '../lib/utils'
 import newBcx from '../popup/utils/newBcx'
 import * as TabMessageTypes from '../messages/TabsMessageTypes'
+import Storage from '../lib/storage'
 let stream = new WeakMap()
 let isReady = false
 
@@ -259,6 +260,49 @@ class Inject {
       console.log('init CocosPay Fail')
     }
   }
+  chromeOnMessage() {
+    chrome.extension.onMessage.addListener(
+        function (request, sender, sendResponse) {
+          console.log("chromeOnMessage")
+            console.log("addListener")
+            console.log(request)
+            Storage.set('choose_node', request)
+            // console.log(Storage.get('choose_node'))
+            // console.log(Storage)
+            // console.log(localStorage.getItem("choose_node"))
+            // console.log(window.BcxWeb)
+        //收到copy信息，开始获取当前页面id为sb_form_q的值
+                // var ctrl = $("#sb_form_q");
+                // if (ctrl.length > 0) {
+                // // 如果获取的值不为空则返回数据到popup.js的回调函数
+                //     if (sendResponse) sendResponse(ctrl.val());
+                // } else {
+                //     alert("No data");
+                // }
+        }
+    );
+  }
+  
 }
+
+
+chrome.extension.onMessage.addListener(
+  function (request, sender, sendResponse) {
+      console.log("addListener")
+      console.log(request)
+      let changeNode = request
+      
+      Storage.set("choose_node", changeNode);
+  //收到copy信息，开始获取当前页面id为sb_form_q的值
+          // var ctrl = $("#sb_form_q");
+          // if (ctrl.length > 0) {
+          // // 如果获取的值不为空则返回数据到popup.js的回调函数
+          //     if (sendResponse) sendResponse(ctrl.val());
+          // } else {
+          //     alert("No data");
+          // }
+      }
+
+);
 // eslint-disable-next-line
 new Inject()

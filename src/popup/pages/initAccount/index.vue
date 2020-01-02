@@ -214,6 +214,23 @@ export default {
     ]),
     ...mapActions("wallet", ["deleteWallet"]),
     ...mapActions("account", ["logoutBCXAccount", "loadingBCXAccount"]),
+    nodeSyncFn(changeNode){
+        console.log("nodeSyncFn")
+    // chrome.tabs.query可以通过回调函数获得当前页面的信息tabs
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            console.log("tabs")
+            console.log(tabs)
+        // 发送一个copy消息出去
+            chrome.tabs.sendMessage(tabs[0].id, changeNode, function (response) {
+                console.log("response")
+                console.log(response);
+      // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
+      // 将值存在background.js的data属性里面。
+                // var win = chrome.extension.getBackgroundPage();
+                // win.data=response;
+            });  
+        });
+    },
     closedDialog() {
       this.currentCreateVisible = false;
       this.register = false;
@@ -261,6 +278,7 @@ export default {
                   console.log("lookupWSNodeListRes", lookupWSNodeListRes)
                   if (lookupWSNodeListRes.data.selectedNodeUrl) {
                           Storage.set("choose_node", network);
+                          _this.nodeSyncFn(network)
                           _this.$kalert({
                             message: _this.$i18n.t("alert.modifySuccess")
                           });
@@ -345,5 +363,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   height: 50px;
+}
+.testNodeSync{
+  width: 150px;
+  height: 50px;
+  text-align: center;
+  font-size: 16px;
+  color: #000;
 }
 </style>

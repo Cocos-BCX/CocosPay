@@ -106,11 +106,41 @@ export default {
     ]),
     ...mapMutations(["setAccountType", "setLogin", "setIsAccount", "setAccount"]),
     ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList"]),
+    
+    nodeSyncFn(changeNode){
+      console.log("nodeSyncFn")
+      let _this = this
+      console.log("changeNode")
+      console.log(changeNode)
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        console.log("tabs")
+        console.log(tabs)
+        // 发送一个copy消息出去
+        chrome.tabs.sendMessage(tabs[0].id, changeNode, function (response) {
+          console.log("response")
+          console.log(response);
+          // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
+          // 将值存在background.js的data属性里面。
+          // var win = chrome.extension.getBackgroundPage();
+          // console.log("win")
+          // console.log(win)
+          // win.data=response;
+          
+        });
+        
+        _this.$kalert({
+          message: _this.$i18n.t("alert.modifySuccess")
+        });
+        Storage.set("choose_node", changeNode);
+        _this.$router.replace({ name: "initAccount", query: {isReload: false}});
+      });
+    // chrome.tabs.query可以通过回调函数获得当前页面的信息tabs
+        
+    },
     onClickOutside() {
       this.showNetworkDropdown = false;
     },
     changeNetwork(network) {
-      
       let _this = this
       console.log("network")
       console.log(network)
@@ -159,18 +189,17 @@ export default {
               }
             })
         }).then( res => {
-          
           _this.lookupWSNodeList().then( lookupWSNodeListRes => {
               if (lookupWSNodeListRes.data.selectedNodeUrl) {
-                  Storage.set("choose_node", network);
-                  _this.$router.replace({ name: "initAccount", query: {isReload: false}});
+                
+                  _this.nodeSyncFn(network)
               } else {
                 _this.$kalert({
                   message: _this.$i18n.t("alert.modifyFailed")
                 });
               }
           })
-        });
+        })
 
       });
     },

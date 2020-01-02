@@ -272,7 +272,7 @@ var _perfectScrollbar = __webpack_require__(625);
 
 var _perfectScrollbar2 = _interopRequireDefault(_perfectScrollbar);
 
-var _storage = __webpack_require__(405);
+var _storage = __webpack_require__(243);
 
 var _storage2 = _interopRequireDefault(_storage);
 
