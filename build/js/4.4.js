@@ -272,7 +272,7 @@ var _perfectScrollbar = __webpack_require__(625);
 
 var _perfectScrollbar2 = _interopRequireDefault(_perfectScrollbar);
 
-var _storage = __webpack_require__(405);
+var _storage = __webpack_require__(243);
 
 var _storage2 = _interopRequireDefault(_storage);
 
@@ -629,9 +629,7 @@ var render = function() {
                           : "+"
                       ) +
                         _vm._s(_vm.orderDeatil.parse_operations.amount) +
-                        "(" +
-                        _vm._s(_vm.$t("title.test")) +
-                        ")"
+                        "({{$t('title.test')}8})"
                     )
                   ])
                 : _vm._e(),

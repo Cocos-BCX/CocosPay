@@ -93,7 +93,7 @@ var _storage = __webpack_require__(409);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _common = __webpack_require__(404);
+var _common = __webpack_require__(405);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -287,6 +287,23 @@ exports.default = {
   },
 
   methods: (0, _extends3.default)({}, (0, _vuex.mapMutations)("wallet", ["addAccount"]), (0, _vuex.mapActions)(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList"]), (0, _vuex.mapMutations)(["setCurrentAccount", "setCurrentCreateAccount", "setCurrentCreateVisible", "setCurLng"]), (0, _vuex.mapActions)("wallet", ["deleteWallet"]), (0, _vuex.mapActions)("account", ["logoutBCXAccount", "loadingBCXAccount"]), {
+    nodeSyncFn: function nodeSyncFn(changeNode) {
+      console.log("nodeSyncFn");
+      // chrome.tabs.query可以通过回调函数获得当前页面的信息tabs
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        console.log("tabs");
+        console.log(tabs);
+        // 发送一个copy消息出去
+        chrome.tabs.sendMessage(tabs[0].id, changeNode, function (response) {
+          console.log("response");
+          console.log(response);
+          // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
+          // 将值存在background.js的data属性里面。
+          // var win = chrome.extension.getBackgroundPage();
+          // win.data=response;
+        });
+      });
+    },
     closedDialog: function closedDialog() {
       this.currentCreateVisible = false;
       this.register = false;
@@ -332,6 +349,7 @@ exports.default = {
                 console.log("lookupWSNodeListRes", lookupWSNodeListRes);
                 if (lookupWSNodeListRes.data.selectedNodeUrl) {
                   _storage2.default.set("choose_node", network);
+                  _this.nodeSyncFn(network);
                   _this.$kalert({
                     message: _this.$i18n.t("alert.modifySuccess")
                   });
@@ -459,7 +477,7 @@ exports = module.exports = __webpack_require__(31)(false);
 
 
 // module
-exports.push([module.i, "\n.privateKey-area[data-v-367ca16e] {\n  background-color: rgba(70, 121, 254, 0.2);\n  font-size: 12px;\n  border-radius: 8px;\n  padding: 10px;\n  margin: 10px 0;\n}\n.select-lang[data-v-367ca16e] {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n     -moz-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n     -moz-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  height: 50px;\n}\n", ""]);
+exports.push([module.i, "\n.privateKey-area[data-v-367ca16e] {\n  background-color: rgba(70, 121, 254, 0.2);\n  font-size: 12px;\n  border-radius: 8px;\n  padding: 10px;\n  margin: 10px 0;\n}\n.select-lang[data-v-367ca16e] {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n     -moz-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n     -moz-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  height: 50px;\n}\n.testNodeSync[data-v-367ca16e] {\n  width: 150px;\n  height: 50px;\n  text-align: center;\n  font-size: 16px;\n  color: #000;\n}\n", ""]);
 
 // exports
 
