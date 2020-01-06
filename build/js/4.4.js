@@ -629,9 +629,7 @@ var render = function() {
                           : "+"
                       ) +
                         _vm._s(_vm.orderDeatil.parse_operations.amount) +
-                        "(" +
-                        _vm._s(_vm.$t("title.test")) +
-                        ")"
+                        "({{$t('title.test')}8})"
                     )
                   ])
                 : _vm._e(),

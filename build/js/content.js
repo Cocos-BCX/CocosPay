@@ -24162,7 +24162,7 @@ var objectKeys = Object.keys || function (obj) {
 module.exports = Duplex;
 
 /*<replacement>*/
-var util = __webpack_require__(69);
+var util = Object.create(__webpack_require__(69));
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -30049,7 +30049,7 @@ var Duplex;
 Writable.WritableState = WritableState;
 
 /*<replacement>*/
-var util = __webpack_require__(69);
+var util = Object.create(__webpack_require__(69));
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -40242,7 +40242,7 @@ function _isUint8Array(obj) {
 /*</replacement>*/
 
 /*<replacement>*/
-var util = __webpack_require__(69);
+var util = Object.create(__webpack_require__(69));
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -41359,7 +41359,7 @@ module.exports = Transform;
 var Duplex = __webpack_require__(44);
 
 /*<replacement>*/
-var util = __webpack_require__(69);
+var util = Object.create(__webpack_require__(69));
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -49465,7 +49465,7 @@ module.exports = PassThrough;
 var Transform = __webpack_require__(172);
 
 /*<replacement>*/
-var util = __webpack_require__(69);
+var util = Object.create(__webpack_require__(69));
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -51323,7 +51323,7 @@ module.exports.makeKey = makeKey
 /* 304 */
 /***/ (function(module, exports) {
 
-module.exports = {"name":"elliptic","version":"6.5.2","description":"EC cryptography","main":"lib/elliptic.js","files":["lib"],"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","unit":"istanbul test _mocha --reporter=spec test/index.js","test":"npm run lint && npm run unit","version":"grunt dist && git add dist/"},"repository":{"type":"git","url":"git@github.com:indutny/elliptic"},"keywords":["EC","Elliptic","curve","Cryptography"],"author":"Fedor Indutny <fedor@indutny.com>","license":"MIT","bugs":{"url":"https://github.com/indutny/elliptic/issues"},"homepage":"https://github.com/indutny/elliptic","devDependencies":{"brfs":"^1.4.3","coveralls":"^3.0.8","grunt":"^1.0.4","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^9.0.1","istanbul":"^0.4.2","jscs":"^3.0.7","jshint":"^2.10.3","mocha":"^6.2.2"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"__npminstall_done":"Fri Dec 27 2019 17:05:29 GMT+0800 (GMT+08:00)","_from":"elliptic@6.5.2","_resolved":"https://registry.npm.taobao.org/elliptic/download/elliptic-6.5.2.tgz?cache=0&sync_timestamp=1574450126293&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Felliptic%2Fdownload%2Felliptic-6.5.2.tgz"}
+module.exports = {"name":"elliptic","version":"6.5.2","description":"EC cryptography","main":"lib/elliptic.js","files":["lib"],"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","unit":"istanbul test _mocha --reporter=spec test/index.js","test":"npm run lint && npm run unit","version":"grunt dist && git add dist/"},"repository":{"type":"git","url":"git@github.com:indutny/elliptic"},"keywords":["EC","Elliptic","curve","Cryptography"],"author":"Fedor Indutny <fedor@indutny.com>","license":"MIT","bugs":{"url":"https://github.com/indutny/elliptic/issues"},"homepage":"https://github.com/indutny/elliptic","devDependencies":{"brfs":"^1.4.3","coveralls":"^3.0.8","grunt":"^1.0.4","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^9.0.1","istanbul":"^0.4.2","jscs":"^3.0.7","jshint":"^2.10.3","mocha":"^6.2.2"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"__npminstall_done":"Mon Jan 06 2020 14:09:41 GMT+0800 (GMT+08:00)","_from":"elliptic@6.5.2","_resolved":"https://registry.npm.taobao.org/elliptic/download/elliptic-6.5.2.tgz"}
 
 /***/ }),
 /* 305 */
@@ -68849,7 +68849,7 @@ module.exports = exports["default"];
 /* 439 */
 /***/ (function(module, exports) {
 
-module.exports = {"name":"bigi","version":"1.4.2","description":"Big integers.","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"repository":{"url":"https://github.com/cryptocoinjs/bigi","type":"git"},"main":"./lib/index.js","scripts":{"browser-test":"./node_modules/.bin/mochify --wd -R spec","test":"./node_modules/.bin/_mocha -- test/*.js","jshint":"./node_modules/.bin/jshint --config jshint.json lib/*.js ; true","unit":"./node_modules/.bin/mocha","coverage":"./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info"},"dependencies":{},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"__npminstall_done":"Fri Dec 27 2019 17:05:29 GMT+0800 (GMT+08:00)","_from":"bigi@1.4.2","_resolved":"https://registry.npm.taobao.org/bigi/download/bigi-1.4.2.tgz"}
+module.exports = {"name":"bigi","version":"1.4.2","description":"Big integers.","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"repository":{"url":"https://github.com/cryptocoinjs/bigi","type":"git"},"main":"./lib/index.js","scripts":{"browser-test":"./node_modules/.bin/mochify --wd -R spec","test":"./node_modules/.bin/_mocha -- test/*.js","jshint":"./node_modules/.bin/jshint --config jshint.json lib/*.js ; true","unit":"./node_modules/.bin/mocha","coverage":"./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info"},"dependencies":{},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"__npminstall_done":"Mon Jan 06 2020 14:09:41 GMT+0800 (GMT+08:00)","_from":"bigi@1.4.2","_resolved":"https://registry.npm.taobao.org/bigi/download/bigi-1.4.2.tgz"}
 
 /***/ }),
 /* 440 */
@@ -125492,6 +125492,8 @@ var NewBCX = function () {
       var nodes = _storage2.default.get('node');
       var choose_node = _storage2.default.get('choose_node');
       console.log('choose_node', choose_node);
+      console.log("window.BcxWeb");
+      console.log(window.BcxWeb);
       if (!nodes || nodes.length < 1) {
         nodes = [{
           chainId: "6057d856c398875cac2650fe33caef3d5f6b403d184c5154abbff526ec1143c4",

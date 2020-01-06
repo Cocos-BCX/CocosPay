@@ -52,7 +52,9 @@
         <div class="info">
           <div class="info-label">{{languages.label.ptamount}}</div>
           <div class="info-content">
-            <span>{{prompt.data.payload.amount}} {{prompt.data.payload.assetId}} ({{languages.title.test}})</span>
+            <span>{{prompt.data.payload.amount}} {{prompt.data.payload.assetId}} 
+              <!-- ({{languages.title.test}}) -->
+            </span>
           </div>
         </div>
         <div class="info">
@@ -64,7 +66,9 @@
         <div class="info" v-if="fee">
           <div class="info-label">{{languages.label.charge}}</div>
           <div class="info-content">
-            <span>{{fee}} COCOS({{languages.title.test}})</span>
+            <span>{{fee}} COCOS
+              <!-- ({{languages.title.test}}) -->
+            </span>
           </div>
         </div>
       </div>
@@ -88,7 +92,9 @@
         <div class="info" v-if="fee">
           <div class="info-label">{{languages.label.charge}}</div>
           <div class="info-content">
-            <span>{{fee}} COCOS({{languages.title.test}})</span>
+            <span>{{fee}} COCOS
+              <!-- ({{languages.title.test}}) -->
+            </span>
           </div>
         </div>
       </div>
@@ -107,7 +113,9 @@
         <div class="info" v-if="fee">
           <div class="info-label">{{languages.label.charge}}</div>
           <div class="info-content">
-            <span>{{fee}} COCOS({{languages.title.test}})</span>
+            <span>{{fee}} COCOS 
+              <!-- ({{languages.title.test}}) -->
+            </span>
           </div>
         </div>
       </div>
@@ -127,7 +135,9 @@
         <div class="info" v-if="fee">
           <div class="info-label">{{languages.label.charge}}</div>
           <div class="info-content">
-            <span>{{fee}} COCOS({{languages.title.test}})</span>
+            <span>{{fee}} COCOS
+              <!-- ({{languages.title.test}}) -->
+            </span>
           </div>
         </div>
       </div>
@@ -142,11 +152,15 @@
         </div>
         <div class="info">
           <div class="info-label">{{languages.label.orderPrice}}</div>
-          <div class="info-content">{{prompt.data.payload.price}}({{languages.title.test}})</div>
+          <div class="info-content">{{prompt.data.payload.price}}
+            <!-- ({{languages.title.test}}) -->
+          </div>
         </div>
         <div class="info">
           <div class="info-label">{{languages.label.coin}}</div>
-          <div class="info-content">{{prompt.data.payload.priceAssetId}}({{languages.title.test}})</div>
+          <div class="info-content">{{prompt.data.payload.priceAssetId}}
+            <!-- ({{languages.title.test}}) -->
+            </div>
         </div>
         <div class="info">
           <div class="info-label">{{languages.label.orderTime}}</div>

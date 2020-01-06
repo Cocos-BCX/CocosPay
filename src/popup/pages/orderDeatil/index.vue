@@ -10,7 +10,7 @@
         <h2
           class="eos-style cocos mt20"
           v-if="currentNodeName== 'Test'"
-        >{{cocosAccount.accounts === orderDeatil.parse_operations.from ? '-' : '+'}}{{orderDeatil.parse_operations.amount}}({{$t('title.test')}})</h2>
+        >{{cocosAccount.accounts === orderDeatil.parse_operations.from ? '-' : '+'}}{{orderDeatil.parse_operations.amount}}({{$t('title.test')}8})</h2>
         
         <div class="des">{{$t('alert.tranferSuccess')}}</div>
         <div class="translate-log-title mt40">
