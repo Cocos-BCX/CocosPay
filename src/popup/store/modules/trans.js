@@ -23,10 +23,7 @@ export default {
 
   mutations: {
     setAccount(state, tranferInfo) {
-      console.log(state,tranferInfo);
-      
       state.tranferInfo = tranferInfo;
-      console.log(state.tranferInfo)
     },
     setTranferList(state, tranferList) {
       state.tranferList = tranferList
@@ -53,8 +50,6 @@ export default {
           isPropose: false,
           isEncryption: false
         }).then(res => {
-          console.log('*NewBCX.transferAsset*')
-          console.log(res)
           commit('loading', false, {
             root: true
           })
@@ -243,7 +238,6 @@ export default {
               message: CommonJs.getI18nMessages(I18n).error[res.code]
             })
           }
-          console.log("registerCreatorrrr", res);
           resData = res;
         })
         return resData
@@ -260,7 +254,6 @@ export default {
       try {
         let resData;
         await NewBCX.creatWorldView(params).then(res => {
-          console.log("creatWorldView---trans", res);
           if (res.code !== 1) {
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -282,7 +275,6 @@ export default {
       try {
         let resData;
         await NewBCX.creatNHAsset(params).then(res => {
-          console.log("creatNHAsset", res);
           if (res.code !== 1) {
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]

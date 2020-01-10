@@ -112,6 +112,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+
+.el-select .el-input .el-select__caret{
+  color: #000 !important;
+}
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);

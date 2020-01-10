@@ -44,9 +44,6 @@ export default class NewBCX {
   static GetNewBCX() {
     let nodes = Storage.get('node')
     let choose_node = Storage.get('choose_node')
-    console.log('choose_node', choose_node)
-    console.log("window.BcxWeb")
-    console.log(window.BcxWeb)
     if (!nodes || nodes.length < 1) {
       nodes = [{
         chainId: "6057d856c398875cac2650fe33caef3d5f6b403d184c5154abbff526ec1143c4",
@@ -119,7 +116,7 @@ export default class NewBCX {
         chain_id: Node.chainId,
       }, ],
       faucet_url: faucetUrl,
-      auto_reconnect: false,
+      auto_reconnect: true,
       worker: false,
     })
     Storage.set('choose_node', Node)

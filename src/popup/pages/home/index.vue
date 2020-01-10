@@ -115,7 +115,7 @@
               <span class="test-coin" v-if="currentNodeName== 'Test'">({{$t('title.test')}})</span>
             </h2>
             <div class="btn-group" style="justify-content: space-around;">
-              <el-button class="gradual-button charge" @click="goRecharge">{{$t('button.recharge')}}</el-button>
+              <el-button class="gradual-button charge" @click="goRecharge">{{$t('button.collection')}}</el-button>
               <el-button class="gradual-button charge" @click="goTransfer">{{$t('button.transfer')}}</el-button>
               <!-- <el-button
                 class="gradual-button three-btn"
@@ -243,7 +243,7 @@
           v-clipboard:success="copySuccess"
           v-clipboard:error="copyError"
           v-if="active_private_key"
-        >{{$t('button.copy')}} active_key</el-button>
+        >{{$t('button.copy')}}{{$t('button.assetPrivateKey')}}</el-button>
         <section v-if="owner_private_key" class="privateKey-area">{{owner_private_key}}</section>
         <el-button
           class="full-btn"
@@ -252,7 +252,7 @@
           v-clipboard:success="copySuccess"
           v-clipboard:error="copyError"
           v-if="owner_private_key"
-        >{{$t('button.copy')}} owner_key</el-button>
+        >{{$t('button.copy')}}{{$t('button.accountPrivateKey')}}</el-button>
       </section>
     </el-dialog>
     <el-dialog top="15vh" center :title="$t('title.editorAccount')" :visible.sync="nameVisible">
@@ -317,8 +317,6 @@ import Storage from "../../../lib/storage";
 export default {
   name: "home",
   components: {
-    currentNodeName: Storage.get("choose_node").name,
-
     KDialog,
     AppHeader,
     ActionItem,
@@ -335,13 +333,13 @@ export default {
     let accountDetail = "";
     let accountDetailTail = "";
     if ("developmentNewTest" === process.env.NODE_ENV) {
-     accountDetail = "https://www.cocosabc.com/account"
+     accountDetail = "https://www.cocosabc.com/accounts/account"
       // accountDetail = "https://explorer.cocosbcx.io/address";
       // accountDetail = "http://easywallet.pro/terminal/#/account";
       // accountDetailTail = "lastOperation";
     } else {
       // accountDetail = "https://explorer.cocosbcx.io/address";
-      accountDetail = "https://www.cocosabc.com/account"
+      accountDetail = "https://www.cocosabc.com/accounts/account"
     }
 
     return {
@@ -495,19 +493,14 @@ export default {
       let _this = this
       this.scrollTopList();
       this.loadingBCXAccount().then(res => {
-        console.log("loadingBCXAccount")
-        console.log(res)
         if (res && res.locked) {
           this.$router.replace({ name: "unlock" });
         } else {
           this.transferList();
           this.transferNHAsset();
           this.UserAccount().then(res => {
-            console.log("UserAccount")
-            console.log(res)
             if (res.code === 1) {
               this.accountList = Object.entries(res.data);
-              console.log(this.accountList)
               this.accountList = this.accountList.filter( item => {
                 return item[0] != "GAS"
               })
@@ -525,7 +518,6 @@ export default {
             this.UserAccount().then(res => {
               if (res.code === 1) {
                 this.accountList = Object.entries(res.data);
-                console.log(this.accountList)
                 this.accountList = this.accountList.filter( item => {
                   return item[0] != "GAS"
                 })
@@ -554,7 +546,6 @@ export default {
       this.UserAccount().then(res => {
         if (res.code === 1) {
           this.accountList = Object.entries(res.data);
-          console.log(this.accountList)
           this.accountList = this.accountList.filter( item => {
             return item[0] != "GAS"
           })
@@ -615,9 +606,15 @@ export default {
           if (res.code === 1) {
             this.showPrivateKey();
           } else {
-              _this.$kalert({
+            if (res.message.indexOf("wrong password") > -1 || res.message.indexOf("password error") > -1 ) {
+              this.$kalert({
+                message:  this.$i18n.t("error[105]")
+              });
+            } else {
+              this.$kalert({
                 message:  _this.$i18n.t("chainInterfaceError[500]")
               });
+            }
           }
         });
       } else {
@@ -629,9 +626,15 @@ export default {
           if (res.code === 1) {
             this.showPrivateKey();
           } else {
-              _this.$kalert({
+            if (res.message.indexOf("wrong password") > -1 || res.message.indexOf("password error") > -1 ) {
+              this.$kalert({
+                message:  this.$i18n.t("error[105]")
+              });
+            } else {
+              this.$kalert({
                 message:  _this.$i18n.t("chainInterfaceError[500]")
               });
+            }
           }
         });
       }

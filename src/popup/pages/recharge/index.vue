@@ -2,10 +2,10 @@
   <section>
     <app-header @refresh="refreshAccount"/>
     <section class="app-container">
-      <navigation :title="$t('title.recharge')"/>
-      <div class="text-center mt20">{{$t('message.rechargeOnly')}}</div>
+      <navigation :title="$t('title.collection')"/>
+      <div class="text-center mt20">{{$t('message.rechargeOnly1')}}</div>
       <qriously class="qr-code text-center mt20" foreground="#0191ee" :value="account" :size="130"/>
-      <div class="small-tip code text-center">{{currentAccount.accounts}}</div>
+      <div class="small-tip code text-center">{{cocosAccount.accounts}}</div>
       <el-button
         class="full-btn mt40"
         type="primary"

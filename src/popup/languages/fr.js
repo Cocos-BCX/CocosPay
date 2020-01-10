@@ -47,7 +47,11 @@ export default {
     redeemSure: 'Confirmer',
     importSure: 'Confirmer',
     confirm: 'Confirmer',
-    reject: 'Rejeter'
+    reject: 'Rejeter',
+
+    assetPrivateKey: 'Clé privée de l\'actif',
+    accountPrivateKey: 'Clé privée de compte',
+    collection: 'Déposer'
   },
   // message
   message: {
@@ -62,13 +66,18 @@ export default {
     joinWhiteList: 'Ajouter à la liste blanche, ce site ne le demandera plus',
     warningPrivateKey: 'Avertissement de sécurité: ne divulguez pas votre clé privée à personne',
     rechargeOnly: 'Cette adresse ne supporte que COCOS et son jeton',
+    rechargeOnly1: 'Cette adresse prend en charge les monnaies de la chaîne COCOS',
     verifyPassword: 'Vous devez vérifier votre mot de passe actuel',
     lockSetting: 'Réglage automatique du verrouillage',
     ownerError: 'Le nom du compte n\'est pas vous',
     lockTip: 'Lorsque vous vous arrêtez, vous pouvez verrouiller automatiquement CocosPay en définissant l\'heure de départ',
     changeLanguage: 'Sélectionnez la langue',
     resourceTip: 'Les transferts, les transactions, l\'exécution de contrats et d\'autres opérations consomment des ressources, qui peuvent être obtenues en hypothéquant des COCOS',
-    pledgeTip: 'Par le biais de COCOS hypothécaires (droits de vote sur le champ de vagues) et de ressources, le COCOS hypothécaire sera gelé pendant trois jours et ne pourra plus être échangé. À la fin de la période de gel, le COCOS hypothéqué peut être libéré et échangé.'
+    pledgeTip: 'Par le biais de COCOS hypothécaires (droits de vote sur le champ de vagues) et de ressources, le COCOS hypothécaire sera gelé pendant trois jours et ne pourra plus être échangé. À la fin de la période de gel, le COCOS hypothéqué peut être libéré et échangé.',
+
+    newUsersPlease: 'Les nouveaux utilisateurs sont priés',
+    forExistingCOCOSAccount: 'Compte COCOS disponible',
+    switchingTheNetworkWillExitTheAccount: 'Si vous changez de réseau, vous quittez le compte'
   },
   // verify
   verify: {
@@ -118,7 +127,10 @@ export default {
     creatWorldView: 'Créer un multivers',
     creatNHAsset: 'NH资产创建',
     deleteNHAsset: 'NH资产删除',
-    publishVotes: 'Vote'
+    publishVotes: 'Vote',
+
+    collection: 'Déposer',
+    switchingTheNetwork: 'Réseau de commutation'
   },
   // alert
   alert: {
@@ -200,7 +212,9 @@ export default {
     itemlds: 'itemlds:',
     tpType: '类型:',
     tpId: '账号ID:',
-    tpNum: '票数:'
+    tpNum: '票数:',
+
+    balance: 'Balance'
   },
   // settings
   settings: {
@@ -210,7 +224,10 @@ export default {
     modifyPassword: 'Mot de passe',
     lockSetting: 'Réglage de verrouillage',
     about: 'À propos',
-    lock: 'Verrouillage'
+    lock: 'Verrouillage',
+    
+    vote: '投票',
+    monetaryUnit: '货币单位'
   },
   // unit
   unit: {

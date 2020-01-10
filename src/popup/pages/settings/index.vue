@@ -4,12 +4,18 @@
     <section class="app-container">
       <section class="settings">
         <section class="item" v-for="(link,index) in links" :key="index">
-          <router-link :to="{ name: link.route }">
+          <router-link v-if="link.route" :to="{ name: link.route }">
             <span class="icon">
               <img :src="`/icons/${link.icon}.png`">
             </span>
             <span class="text">{{link.name}}</span>
           </router-link>
+          <a v-if="link.href" target="_blank" :href="link.href">
+            <span class="icon">
+              <img :src="`/icons/${link.icon}.png`">
+            </span>
+            <span class="text">{{link.name}}</span>
+          </a>
         </section>
         <!-- <section class="item">
           <a @click="lockApp">
@@ -38,6 +44,11 @@ export default {
     return {
       links: [
         {
+          href: "https://vote.cocosbcx.net/",
+          name: this.$i18n.t("settings.vote"),
+          icon: "vote"
+        },
+        {
           route: "network",
           name: this.$i18n.t("settings.network"),
           icon: "bianji"
@@ -51,7 +62,12 @@ export default {
           route: "language",
           name: this.$i18n.t("settings.language"),
           icon: "yuyan"
-        }
+        },
+        {
+          route: "monetaryUnit",
+          name: this.$i18n.t("settings.monetaryUnit"),
+          icon: "monetaryUnit"
+        },
         // {
         //   route: "lockSetting",
         //   name: this.$i18n.t("settings.lockSetting"),

@@ -369,7 +369,6 @@ export default {
     ...mapState("trans", ["tranferInfo"])
   },
   created() {
-    console.log(this.prompt.data.type)
     I18n.locale = window.localStorage.getItem("lang_type") || "ZH";
 
     this.languages = CommonJs.getI18nMessages(I18n);

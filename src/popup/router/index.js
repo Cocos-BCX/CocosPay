@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Language from '../pages/settings/language'
+import MonetaryUnit from '../pages/settings/monetaryUnit'
 import LockSetting from '../pages/settings/lockSetting'
 import ModifyPassword from '../pages/settings/modifyPassword'
 import Network from '../pages/settings/network'
@@ -116,6 +117,11 @@ const routes = [{
     path: '/language',
     name: 'language',
     component: Language,
+  },
+  {
+    path: '/monetaryUnit',
+    name: 'monetaryUnit',
+    component: MonetaryUnit,
   },
   {
     path: '/lockSetting',

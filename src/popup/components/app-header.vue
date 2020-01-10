@@ -51,6 +51,24 @@
         </a>
       </div>
     </div>
+    
+    <!-- change node -->
+
+    <k-dialog
+      :visible="changeNodeRemovePasswordShow"
+      :title="$t('title.switchingTheNetwork') "
+      @close="changeNodeRemovePasswordShow = false"
+    >
+      <div class="warning-tit">{{$t('message.switchingTheNetworkWillExitTheAccount')}}</div>
+      <div class="warning-tip">{{$t('confirm.removeAccount')}}</div>
+      <div slot="footer" class="text-center">
+        <el-button
+          class="full-btn"
+          type="primary"
+          @click="sureBtn('removeForm')"
+        >{{$t('button.sure')}}</el-button>
+      </div>
+    </k-dialog>
     <div class="setting-icon">
       <img src="/icons/shuaxin.png" alt @click="refreshData">
       <img src="/icons/shezhi2.png" alt @click="goSettings">
@@ -62,15 +80,22 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import vClickOutside from "v-click-outside";
 import Storage from "../../lib/storage";
 import BCX from "bcx-api";
+import KDialog from "../components/dialog/DialogComponent";
 // import BCX from '../../lib/bcx-api'
 
 // import '../../lib/bcx.min.js'
 export default {
+  components: {
+    KDialog
+  },
   data() {
     return {
       showNetworkDropdown: false,
       nodes: [],
-      choose: ""
+      choose: "",
+
+      changeNodeRemovePasswordShow: false,
+      networkNode: {},
     };
   },
   computed: {
@@ -108,17 +133,10 @@ export default {
     ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList"]),
     
     nodeSyncFn(changeNode){
-      console.log("nodeSyncFn")
       let _this = this
-      console.log("changeNode")
-      console.log(changeNode)
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        console.log("tabs")
-        console.log(tabs)
         // 发送一个copy消息出去
-        chrome.tabs.sendMessage(tabs[0].id, changeNode, function (response) {
-          console.log("response")
-          console.log(response);
+        chrome.tabs.sendMessage(tabs[0].id, {type: "change", content: changeNode}, function (response) {
           // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
           // 将值存在background.js的data属性里面。
           // var win = chrome.extension.getBackgroundPage();
@@ -141,13 +159,18 @@ export default {
       this.showNetworkDropdown = false;
     },
     changeNetwork(network) {
+      this.networkNode = {}
+      this.changeNodeRemovePasswordShow = true
+      this.networkNode = network
+    },
+    sureBtn(){
       let _this = this
-      console.log("network")
-      console.log(network)
+      this.switchAPINodeAjax(_this.networkNode)
+    },
+    switchAPINodeAjax(network) {
+      let _this = this
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
-        console.log("deleteWallet")
-        console.log(res)
-      window.localStorage.setItem("delAccount", "sure");
+        window.localStorage.setItem("delAccount", "sure");
         this.setLogin(false);
         this.setIsAccount(false);
         this.setAccount({
@@ -174,8 +197,6 @@ export default {
               if (res.data.selectedNodeUrl) {
                 
                 _this.apiConfig(network).then( apiConfigres => {
-                  console.log("apiConfigres")
-                  console.log(apiConfigres)
                   resolve(apiConfigres)
                 })
                 // _this.apiConfig({
@@ -205,102 +226,102 @@ export default {
     },
 
     // changeNetwork  2019-12-26 备份
-    changeNetwork123(network) {
-      let _this = this
-      console.log("network")
-      console.log(network)
-      // if (network.chainId === Storage.get("choose_node").chainId) {
-      //   console.log('network.chainId === Storage.get("choose_node").chainId')
-        this.switchAPINode({
-          url: network.ws
-        }).then(res => {
-          if (res.code === 1) {
-            return new Promise(function (resolve, reject) {
-              resolve(res)
-            })
-          } else {
-              _this.$kalert({
-                message:  _this.$i18n.t("alert.modifyFailed")
-              });
-          }
-        }).then(res =>{
+    // changeNetwork123(network) {
+    //   let _this = this
+    //   console.log("network")
+    //   console.log(network)
+    //   // if (network.chainId === Storage.get("choose_node").chainId) {
+    //   //   console.log('network.chainId === Storage.get("choose_node").chainId')
+    //     this.switchAPINode({
+    //       url: network.ws
+    //     }).then(res => {
+    //       if (res.code === 1) {
+    //         return new Promise(function (resolve, reject) {
+    //           resolve(res)
+    //         })
+    //       } else {
+    //           _this.$kalert({
+    //             message:  _this.$i18n.t("alert.modifyFailed")
+    //           });
+    //       }
+    //     }).then(res =>{
           
-            return new Promise(function (resolve, reject) {
+    //         return new Promise(function (resolve, reject) {
               
-              if (res.data.selectedNodeUrl) {
+    //           if (res.data.selectedNodeUrl) {
                 
-                // _this.apiConfig({
-                //   faucet_url:"http://47.93.62.96:8042"   
-                // })
-                _this.choose = network;
-                _this.lookupWSNodeList().then( lookupWSNodeListRes => {
+    //             // _this.apiConfig({
+    //             //   faucet_url:"http://47.93.62.96:8042"   
+    //             // })
+    //             _this.choose = network;
+    //             _this.lookupWSNodeList().then( lookupWSNodeListRes => {
                     
-                    if (lookupWSNodeListRes.data.selectedNodeUrl) {
+    //                 if (lookupWSNodeListRes.data.selectedNodeUrl) {
                       
-                      resolve(lookupWSNodeListRes)
+    //                   resolve(lookupWSNodeListRes)
                       
-                    } else {
-                      _this.$kalert({
-                        message: _this.$i18n.t("alert.modifyFailed")
-                      });
-                    }
+    //                 } else {
+    //                   _this.$kalert({
+    //                     message: _this.$i18n.t("alert.modifyFailed")
+    //                   });
+    //                 }
                   
                   
-                })
-              } else {
-                _this.$kalert({
-                  message:  _this.$i18n.t("alert.modifyFailed")
-                });
-              }
-            })
-        }).then( res => {
+    //             })
+    //           } else {
+    //             _this.$kalert({
+    //               message:  _this.$i18n.t("alert.modifyFailed")
+    //             });
+    //           }
+    //         })
+    //     }).then( res => {
           
-          _this.apiConfig(network).then( apiConfigres => {
-            console.log("apiConfigres")
-            console.log(apiConfigres)
-            Storage.set("choose_node", network);
-            _this.removeCurrentAccount()
-            // _this.init().then( initRes => {
-            //   _this.$kalert({
-            //     message: _this.$i18n.t("alert.modifySuccess")
-            //   });
-            //   _this.removeCurrentAccount()
-            // })
-          })
-        });
-      // } else {
-      //   console.log('else   network.chainId === Storage.get("choose_node").chainId')
-      //   let Node = network;
+    //       _this.apiConfig(network).then( apiConfigres => {
+    //         console.log("apiConfigres")
+    //         console.log(apiConfigres)
+    //         Storage.set("choose_node", network);
+    //         _this.removeCurrentAccount()
+    //         // _this.init().then( initRes => {
+    //         //   _this.$kalert({
+    //         //     message: _this.$i18n.t("alert.modifySuccess")
+    //         //   });
+    //         //   _this.removeCurrentAccount()
+    //         // })
+    //       })
+    //     });
+    //   // } else {
+    //   //   console.log('else   network.chainId === Storage.get("choose_node").chainId')
+    //   //   let Node = network;
 
 
-        // 2019-12-09 注释修改 结束
-        // this.NewBCX(Node);
+    //     // 2019-12-09 注释修改 结束
+    //     // this.NewBCX(Node);
           
-        // _this.init().then(res => {
-        //   console.log('-------change--------this.init()---------')
-        //   console.log(res)
-        //   if (res.code !== 1) {
-        //     _this.$kalert({
-        //       message: _this.$i18n.t(`error[${res.code}]`)
-        //     });
-        //     // this.init(this.nodes[0]);
-        //     // this.init().then(change => {
-        //     //   this.switchAPINode({
-        //     //     url: this.nodes[0].ws
-        //     //   }).then(change => {
-        //     //     this.apiConfig(this.nodes[0]);
-        //     //   });
-        //     // });
-        //   } else {
-        //     _this.$kalert({
-        //       message: _this.$i18n.t("alert.modifySuccess")
-        //     });
-        //     _this.choose = network;
-        //   }
-        // });
-        // 2019-12-09 注释修改  结束
-      // }
-    },
+    //     // _this.init().then(res => {
+    //     //   console.log('-------change--------this.init()---------')
+    //     //   console.log(res)
+    //     //   if (res.code !== 1) {
+    //     //     _this.$kalert({
+    //     //       message: _this.$i18n.t(`error[${res.code}]`)
+    //     //     });
+    //     //     // this.init(this.nodes[0]);
+    //     //     // this.init().then(change => {
+    //     //     //   this.switchAPINode({
+    //     //     //     url: this.nodes[0].ws
+    //     //     //   }).then(change => {
+    //     //     //     this.apiConfig(this.nodes[0]);
+    //     //     //   });
+    //     //     // });
+    //     //   } else {
+    //     //     _this.$kalert({
+    //     //       message: _this.$i18n.t("alert.modifySuccess")
+    //     //     });
+    //     //     _this.choose = network;
+    //     //   }
+    //     // });
+    //     // 2019-12-09 注释修改  结束
+    //   // }
+    // },
 
 
     NewBCX(Node) {
@@ -407,6 +428,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "../theme/v1/variable";
+@import "../styles/home.scss";
+.warning-tit{
+  font-size: 12px;
+  color: #333;
+}
 .header {
   width: 100%;
   height: 60px;
@@ -418,7 +444,7 @@ export default {
   background-color: $bg-shallow;
 }
 .setting-icon {
-  width: 62px;
+  width: 93px;
   display: flex;
   justify-content: space-between;
   img {

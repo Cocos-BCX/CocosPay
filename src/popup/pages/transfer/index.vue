@@ -13,6 +13,7 @@
         </el-select>-->
         <el-input class="no-border" v-model="formData.from" :disabled="true"></el-input>
       </el-form-item>
+      <p class="balance">{{$t('label.balance')}}：{{cocosCount || 0}} COCOS</p>
       <el-form-item :label="$t('label.toAddress')" prop="to">
         <el-input class="no-border" v-model="formData.to"></el-input>
       </el-form-item>
@@ -157,7 +158,8 @@ export default {
       assetKey: this.$route.params.assetKey ? this.$route.params.assetKey : "",
       coins: [],
       precision: "",
-      fee: ""
+      fee: "",
+
     };
   },
   computed: {
@@ -275,8 +277,6 @@ export default {
       });
     },
     surePay() {
-      console.log('this.formData')
-      console.log(this.formData)
       this.setAccount({
         toAccount: this.formData.to,
         coin: this.formData.token,
@@ -330,6 +330,11 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 99;
+}
+.balance{
+  margin-top: 10px;
+  color:rgba(113,71,254,1);
+  font-size:12px;
 }
 .popup-container {
   width: 100%;

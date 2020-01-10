@@ -270,8 +270,6 @@ export default new Vuex.Store({
         commit('loading', true, {
           root: true
         })
-        console.log("switchAPINode")
-        console.log(url)
         await NewBCX.switchAPINode(url).then(res => {
           commit('loading', false, {
             root: true
@@ -281,8 +279,6 @@ export default new Vuex.Store({
           commit('loading', false, {
             root: true
           })
-          console.log("=======switchAPINode==========err=======")
-          console.log(err)
         })
         return resData
       } catch (e) {
@@ -343,7 +339,7 @@ export default new Vuex.Store({
           real_sub:true,
           subscribeToRpcConnectionStatusCallback:res=>{
             console.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-              console.info("subscribeToRpcConnectionStatusCallback res",res);
+            console.info("subscribeToRpcConnectionStatusCallback res",res);
           }
         }).then((res) => {
           commit('loading', false, {

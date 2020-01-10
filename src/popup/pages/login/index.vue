@@ -74,9 +74,14 @@ export default {
       }
     };
   },
+  created(){
+    console.log(">>>>>>>>created>>>>>>>>")
+    console.log(this.isLogin)
+    console.log(this.isAccount)
+  },
   computed: {
     ...mapState("wallet", ["accounts", "pwdhash", "password"]),
-    ...mapState(["cocosAccount"])
+    ...mapState(["cocosAccount", "isLogin", "isAccount"])
   },
   methods: {
     ...mapActions("wallet", ["setSeed"]),
@@ -94,17 +99,17 @@ export default {
     ]),
     //解锁账户
     unLock(formName) {
+      console.log(formName)
       this.$refs[formName].validate(valid => {
+        console.log(formName)
         if (valid) {
-          // this.logoutBCXAccount();
-          
           this.setAccount({
             account: this.cocosAccount.accounts || this.formData.account,
             password: this.formData.password
           });
           this.loginBCXAccount().then(res => {
-            console.log(res);
-            
+          console.log("loginBCXAccount")
+          console.log(res)
             if (res.code === 1) {
               this.setAccount({
                 account: this.cocosAccount.accounts,
@@ -112,6 +117,9 @@ export default {
               });
               this.setIsAccount(true);
               this.setLogin(true);
+              console.log("modify")
+              console.log(this.isLogin)
+              console.log(this.isAccount)
               this.$router.push({ name: "home" });
             } else {
               this.setAccount({

@@ -12,7 +12,8 @@ const ZipPlugin = require('zip-webpack-plugin')
 const GenerateJsonPlugin = require('generate-json-webpack-plugin')
 const manifest = require('../src/manifest')
 module.exports = merge(baseWebpack, {
-  devtool: 'none',
+  devtool: '#eval-source-map',
+  // devtool: 'none',
   module: {
     rules: styleLoaders({
       extract: true,

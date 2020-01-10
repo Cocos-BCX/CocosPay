@@ -13,8 +13,9 @@ module.exports = merge(baseWebpack, {
       sourceMap: false
     })
   },
+  devtool: '#eval-source-map',
   // devtool: '#cheap-module-eval-source-map',
-  devtool: '#hidden-source-map',
+  // devtool: '#hidden-source-map',
   plugins: [
     htmlPage('home', 'app', ['tab']),
     htmlPage('popup', 'popup', ['popup']),

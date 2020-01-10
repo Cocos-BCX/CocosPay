@@ -1,5 +1,5 @@
 <template>
-  <section class="app-container" @keyup.enter="unLock('form')">
+  <section class="app-container" @keyup.enter="unlockWallet()">
     <section class="logo mt40">
       <img class="block-center" src="/icons/logo-big.png" alt>
     </section>
@@ -84,7 +84,6 @@ export default {
       });
       if (this.accountType === "wallet") {
         this.unlockAccount().then(res => {
-          console.log("unlockAccount")
           console.log(res)
           if (res.code === 1) {
             this.setLoginNoAlert(true);
@@ -117,14 +116,24 @@ export default {
           account: this.cocosAccount.accounts,
           password: ""
         });
+        
+          console.log(res)
         if (res.code === 1) {
           this.setIsAccount(true);
           this.setLogin(true);
           this.$router.push({ name: "home" });
         } else {
+          
+            if (res.message.indexOf("wrong password") > -1 || res.message.indexOf("password error") > -1 ) {
+              this.$kalert({
+                message:  this.$i18n.t("error[105]")
+              });
+            } else {
               this.$kalert({
                 message:  _this.$i18n.t("chainInterfaceError[500]")
               });
+            }
+              
           }
       });
     }

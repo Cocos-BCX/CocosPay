@@ -113,7 +113,6 @@ export default {
     this.formData.chainId = ""
     this.formData.name = ""
     this.editNode = Storage.get("add_node") || [];
-    console.log(this.editNode);
     this.network = new PerfectScrollbar("#network", {
       minScrollbarLength: 40,
       maxScrollbarLength: 40
@@ -157,8 +156,6 @@ export default {
           });
         }
         _this.lookupWSNodeList().then( lookupWSNodeListRes => {
-          console.log("lookupWSNodeListRes")
-          console.log(lookupWSNodeListRes)
         })
       })
     },
@@ -191,7 +188,6 @@ export default {
         });
         return;
       }
-      console.log(this.formData)
       // 2019-12-23 新增
       let nodes = Storage.get("node")
       let repeatNode = nodes.filter(item => {
@@ -208,27 +204,18 @@ export default {
           name: _this.formData.name,
           url: _this.formData.ws
       }).then( res => {
-        console.log("****addAPINode*****")
-        console.log(res)
         if (res.code == 1) {
           // this.$kalert({
           //   message: this.$i18n.t("alert.setSuccess")
           // });
           let newNode = res.data[_this.formData.ws]
-          console.log("newNode")
-          console.log(newNode)
           if (newNode.ping == 0) {
-            console.log("=delete=")
             _this.deleteAPINode(_this.formData.ws).then( deleteAPINodeRes => {
-              console.log("deleteAPINodeRes")
-              console.log(deleteAPINodeRes)
               
               _this.$kalert({
                 message: "该Ws无效"
               });
               _this.lookupWSNodeList().then( lookupWSNodeListRes => {
-                console.log("lookupWSNodeListRes")
-                console.log(lookupWSNodeListRes)
               })
             })
             // _this.deleteNode()
@@ -258,8 +245,6 @@ export default {
             }
           }
           _this.lookupWSNodeList().then( lookupWSNodeListRes => {
-            console.log("lookupWSNodeListRes")
-            console.log(lookupWSNodeListRes)
           })
 
 

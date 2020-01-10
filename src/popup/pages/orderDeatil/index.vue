@@ -196,8 +196,6 @@ export default {
   },
   async created() {
     this.orderDeatil = this.$route.params;
-    console.log('this.orderDeatil');
-    console.log(this.orderDeatil);
 
     if (this.orderDeatil.memo) {
       this.orderDeatil.memo = await NewBCX.decodeMemo(this.orderDeatil.memo);
@@ -210,7 +208,6 @@ export default {
       //   this.memo = true;
       // }
     }
-    console.log(this.orderDeatil);
   },
   mounted() {
     this.transactionsScroller = new PerfectScrollbar("#perfect-scroll-detail", {

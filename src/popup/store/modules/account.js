@@ -43,8 +43,6 @@ export default {
           commit('loading', false, {
             root: true
           })
-          console.log("-------createAccountWithPassword------------------------------")
-          console.log(res)
           if (res.code !== 1) {
             // Alert({
             //   message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -162,8 +160,6 @@ export default {
       state,
       rootState
     }, params) {
-      console.log("***vuex   setPrivateKeys ****")
-      console.log(params)
       commit('loading', true, {
         root: true
       })
@@ -182,12 +178,6 @@ export default {
         //     })
         //   }
         // }, 3500)
-        console.log("=====================================")
-        // console.log(rootState.privateKeys)
-        // console.log(rootState.temporaryKeys)
-        console.log(params)
-        console.log(params.privateKey)
-        console.log(params.password)
         await NewBCX.importPrivateKey({
           // privateKey: rootState.privateKeys,
           // password: rootState.temporaryKeys,
@@ -197,8 +187,6 @@ export default {
           commit('loading', false, {
             root: true
           })
-          console.log("NewBCX.importPrivateKey")
-          console.log(res)
           if (res.code !== 1) {
             if (params && params.has_import && res.code !== 160) {
               // Alert({
@@ -233,8 +221,6 @@ export default {
           }
           resData = res;
         }).catch( err => {
-          console.log('importPrivateKey err')
-          console.log(err)
           commit('loading', false, {
             root: true
           })
@@ -242,8 +228,6 @@ export default {
             message: CommonJs.getI18nMessages(I18n).error[150]
           })
         })
-        console.log("****")
-        console.log(resData)
         return resData
       } catch (e) {
         return e
@@ -291,6 +275,8 @@ export default {
       })
       try {
         let resData;
+        console.log(rootState.cocosAccount.accounts)
+        console.log(rootState.cocosAccount.passwords)
         await NewBCX.passwordLogin({
           account: rootState.cocosAccount.accounts,
           password: rootState.cocosAccount.passwords

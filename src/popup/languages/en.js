@@ -47,7 +47,11 @@ export default {
     redeemSure: 'Confirm',
     importSure: 'Confirm',
     confirm: 'Confirm',
-    reject: 'Reject'
+    reject: 'Reject',
+
+    assetPrivateKey: 'Asset private key',
+    accountPrivateKey: 'Account private key',
+    collection: 'Deposit'
   },
   // message
   message: {
@@ -62,13 +66,18 @@ export default {
     joinWhiteList: 'Add to white list, this site no longer prompts',
     warningPrivateKey: 'Security warning: do not disclose your private key to anyone',
     rechargeOnly: 'This address only supports COCOS and its token',
+    rechargeOnly1: 'This address supports the currencies on COCOS chain',
     verifyPassword: 'You need to verify your current password',
     lockSetting: 'Automatic lock setting',
     ownerError: 'The account name is not you',
     lockTip: 'When you stop, you can automatically lock CocosPay by setting the departure time',
     changeLanguage: 'Select the language',
     resourceTip: 'Transfers, transactions, execution of contracts and other operations consume resources, which can be obtained by mortgaging COCOS',
-    pledgeTip: 'Through mortgage COCOS (wave field voting rights) and resources, mortgage COCOS will be frozen for three days and cannot be traded.At the end of the freeze period, the mortgaged COCOS can be UnFreeze and traded.'
+    pledgeTip: 'Through mortgage COCOS (wave field voting rights) and resources, mortgage COCOS will be frozen for three days and cannot be traded.At the end of the freeze period, the mortgaged COCOS can be UnFreeze and traded.',
+
+    newUsersPlease: 'New users please',
+    forExistingCOCOSAccount: 'For existing COCOS account, please',
+    switchingTheNetworkWillExitTheAccount: 'Switching the network will exit the account'
   },
   // verify
   verify: {
@@ -118,7 +127,10 @@ export default {
     creatWorldView: 'Create a Multiverse',
     creatNHAsset: 'NH Asset Creation',
     deleteNHAsset: 'NH Asset Deletion',
-    publishVotes: 'voting / withdrawal '
+    publishVotes: 'voting / withdrawal ',
+
+    collection: 'Deposit',
+    switchingTheNetwork: 'Switching the network'
   },
   // alert
   alert: {
@@ -200,7 +212,9 @@ export default {
     itemlds: 'itemlds:',
     tpType: 'TYPE:',
     tpId: 'ID:',
-    tpNum: 'poll:'
+    tpNum: 'poll:',
+
+    balance: 'Balance'
   },
   // settings
   settings: {
@@ -210,7 +224,10 @@ export default {
     modifyPassword: 'Password',
     lockSetting: 'Lock Setting',
     about: 'About',
-    lock: 'Lock'
+    lock: 'Lock',
+    
+    vote: '投票',
+    monetaryUnit: '货币单位'
   },
   // unit
   unit: {

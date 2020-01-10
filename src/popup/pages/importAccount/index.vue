@@ -100,8 +100,6 @@ export default {
             privateKey: this.formData.privateKey,
             password: this.formData.password,
           }).then(res => {
-            console.log("====setPrivateKeys=====")
-            console.log(res)
             if (res.code === 1) {
               this.setKeys("");
               this.setAccount({
@@ -115,8 +113,6 @@ export default {
             } else if (res.code == 160) {
               
               this.getAccounts().then(res => {
-                console.log("getAccounts")
-                console.log(res)
                   
                   this.setKeys("");
                   this.setAccount({

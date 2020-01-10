@@ -14,6 +14,34 @@ import newBcx from '../popup/utils/newBcx'
 
 let Repeat = new Set()
 let prompt = null
+
+
+chrome.runtime.onMessage.addListener(
+  function (request, sender, sendResponse) {
+    console.log("backend")
+    console.log(request)
+    if (request.type == "init") {
+
+      chrome.tabs.query({
+        active: true,
+        currentWindow: true
+      }, function (tabs) {
+        console.log("tabs")
+        console.log(tabs)
+        // 发送一个copy消息出去
+        chrome.tabs.sendMessage(tabs[0].id, {
+          type: 'init',
+          content: Storage.get("choose_node")
+        }, function (response) {
+          console.log("response")
+          // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
+          // 将值存在background.js的data属性里面。
+          console.log(response);
+        });
+      });
+    }
+  });
+
 export default class Background {
   constructor() {
     this.Params()
@@ -196,7 +224,6 @@ export default class Background {
             toAccount: payload.payload.toAccount,
             NHAssetIds: payload.payload.NHAssetIds,
           }).then((res) => {
-            console.log(res)
             if (res.code !== 1) {
               Alert({
                 message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -316,18 +343,13 @@ export default class Background {
         let whiteList = store.wallet.whiteList.some(ele => {
           return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
         })
-        console.log('----------');
-        
+
         if (whiteList) {
-          console.log(payload);
-          console.log(payload.payload.type);
-          console.log(payload.payload.vote_ids);
-          console.log(payload.payload.votes);
-          
+
           await this.getBCX().publishVotes({
             type: payload.payload.type,
-            vote_ids:payload.payload.vote_ids,
-            votes:payload.payload.votes
+            vote_ids: payload.payload.vote_ids,
+            votes: payload.payload.votes
           }).then((res) => {
             if (res.code !== 1) {
               Alert({
@@ -392,7 +414,6 @@ export default class Background {
         })
         if (whiteList) {
           await this.getBCX().registerCreator().then((res) => {
-            console.log("registerCreatorssss", res)
             if (res.code !== 1) {
               Alert({
                 message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -402,7 +423,6 @@ export default class Background {
             return
           })
         } else {
-          console.log("registerCreatorssss")
           this.openDialog(sendResponse, payload)
         }
       } catch (e) {
@@ -542,5 +562,7 @@ export default class Background {
     return newBcx.GetNewBCX()
   }
 }
+
+
 /* eslint-disable no-new */
 new Background()
