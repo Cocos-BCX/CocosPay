@@ -1,11 +1,11 @@
 <template>
   <section>
-    <setting-navigation :showSetting="false" :title="$t('settings.language')" />
+    <setting-navigation :showSetting="false" :title="$t('settings.monetaryUnit')" />
     <section class="app-container">
-      <section class="setting-tip">{{$t('message.changeLanguage')}}</section>
-      <el-select class="mt20" v-model="lang" style="width: 100%;" @change="changeLanguage">
+      <section class="setting-tip">{{$t('message.changeUnit')}}</section>
+      <el-select class="mt20" v-model="unitName" style="width: 100%;" @change="changeUnit">
         <el-option
-          v-for="(item, index) in langs"
+          v-for="(item, index) in unitList"
           :key="index"
           :value="item.value"
           :label="item.name"
@@ -17,37 +17,26 @@
 </template>
 <script>
 import SettingNavigation from "../../components/setting-navigation";
-import { mapState, mapMutations } from "vuex";
+import Storage from "../../../lib/storage";
 export default {
   components: {
     SettingNavigation
   },
   data() {
     return {
-      lang: "中文",
-      langs: [
-        { name: "CNY", value: "cny" },
-        { name: "English", value: "EN" }
+      unitName: Storage.get("currentCurrency") || "CNY",
+      unitList: [
+        { name: "CNY", value: "CNY" },
+        { name: "USD", value: "USD" }
       ]
     };
   },
-  computed: {
-    ...mapState(["curLng"])
-  },
   created() {
-    // this.lang = this.curLng;
-    this.lang = this.$i18n.locale;
   },
   methods: {
-    ...mapMutations(["setCurLng"]),
-    changeLanguage() {
-      
-      this.setCurLng(this.lang);
-      this.$i18n.locale = this.lang;
-      window.localStorage.setItem("lang_type", this.lang);
-      this.$kalert({
-        message: this.$i18n.t("alert.modifySuccess")
-      });
+    changeUnit(val){
+      if (Storage.get("currentCurrency") == val) return false
+      Storage.set("currentCurrency", val)
     }
   }
 };

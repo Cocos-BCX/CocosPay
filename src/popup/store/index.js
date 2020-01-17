@@ -61,6 +61,8 @@ export default new Vuex.Store({
     callback: '',
     accountType: '',
     loginNoAlert: false,
+    COCOSUsd: '',
+    currencyList: []
   },
   mutations: {
     loading(state, loading) {
@@ -74,6 +76,12 @@ export default new Vuex.Store({
     },
     setCurLng(state, lang) {
       state.curLng = lang
+    },
+    setCOCOSUsd(state, COCOSUsd) {
+      state.COCOSUsd = COCOSUsd
+    },
+    setCurrencyList(state, currencyList) {
+      state.currencyList = currencyList
     },
     setCurrentNetwork(state, network) {
       state.currentNetwork = network
@@ -188,7 +196,6 @@ export default new Vuex.Store({
             //     isHave = true
             //   }
             // }) 
-            console.log("NewBCX")
             // await NewBCX.init().then(res_url => {
             //   console.log('res_url ', res_url)
             // })
@@ -350,6 +357,33 @@ export default new Vuex.Store({
         return resData
       } catch (e) {
         return e
+      }
+    },
+    // claimVestingBalance
+    async claimVestingBalance({
+      commit
+    }, params) {
+      try {
+        let resData
+        commit('loading', true, {
+          root: true
+        })
+        await NewBCX.claimVestingBalance({
+          id: params.id,
+          amount: params.amount
+        }).then(res => {
+          commit('loading', false, {
+            root: true
+          })
+          resData = res
+        }).catch( err => {
+          commit('loading', false, {
+            root: true
+          })
+        })
+        return resData
+      } catch (e) {
+        console.log(e);
       }
     },
     async subscribeTo({}) {

@@ -51,7 +51,9 @@ export default {
 
     assetPrivateKey: 'Clé privée de l\'actif',
     accountPrivateKey: 'Clé privée de compte',
-    collection: 'Déposer'
+    collection: 'Déposer',
+
+    receiveImmediately: 'Recouvrement immédiat'
   },
   // message
   message: {
@@ -74,10 +76,11 @@ export default {
     changeLanguage: 'Sélectionnez la langue',
     resourceTip: 'Les transferts, les transactions, l\'exécution de contrats et d\'autres opérations consomment des ressources, qui peuvent être obtenues en hypothéquant des COCOS',
     pledgeTip: 'Par le biais de COCOS hypothécaires (droits de vote sur le champ de vagues) et de ressources, le COCOS hypothécaire sera gelé pendant trois jours et ne pourra plus être échangé. À la fin de la période de gel, le COCOS hypothéqué peut être libéré et échangé.',
-
     newUsersPlease: 'Les nouveaux utilisateurs sont priés',
     forExistingCOCOSAccount: 'Compte COCOS disponible',
-    switchingTheNetworkWillExitTheAccount: 'Si vous changez de réseau, vous quittez le compte'
+    switchingTheNetworkWillExitTheAccount: 'Si vous changez de réseau, vous quittez le compte',
+
+    changeUnit: 'Choix de la monnaie'
   },
   // verify
   verify: {
@@ -128,7 +131,6 @@ export default {
     creatNHAsset: 'NH资产创建',
     deleteNHAsset: 'NH资产删除',
     publishVotes: 'Vote',
-
     collection: 'Déposer',
     switchingTheNetwork: 'Réseau de commutation'
   },
@@ -154,6 +156,8 @@ export default {
     illegalPrivateKey: 'Clé privée illégal',
     transferFail: 'Le solde disponible est insuffisant après déduction des frais de service',
     setSuccess: 'Configuration réussite',
+    
+    SuccessfulReceiving: 'Succès de la collecte',
   },
   // confirm
   confirm: {
@@ -214,7 +218,8 @@ export default {
     tpId: '账号ID:',
     tpNum: '票数:',
 
-    balance: 'Balance'
+    balance: 'Balance',
+    routerBrowser: 'Allez dans votre navigateur pour voir les détails'
   },
   // settings
   settings: {
@@ -226,8 +231,8 @@ export default {
     about: 'À propos',
     lock: 'Verrouillage',
     
-    vote: '投票',
-    monetaryUnit: '货币单位'
+    vote: 'Vote',
+    monetaryUnit: 'Unité monétaire'
   },
   // unit
   unit: {
@@ -314,7 +319,15 @@ export default {
     168: 'Cet abonnement n\'existe pas',
     169: 'La méthode n\'existe pas',
     300: 'Erreur de synchronisation de la chaîne, veuillez vérifier l\'horloge de votre système',
-    301: 'La connexion RPC a échoué. S\'il vous plaît vérifier votre réseau '
+    301: 'La connexion RPC a échoué. S\'il vous plaît vérifier votre réseau ',
+
+
+    302: 'Pas en chiffres',
+    303: 'Veuillez enregistrer le développeur',
+    304: 'La vision du monde existe',
+    305: 'Les ressources ne sont pas suffisantes pour soutenir cette opération, il est demandé d’hypothèquer les GAS ou de réserver les COCOS',
+    306: 'Comptes non existants',
+    307: 'Pour le moment, il n’y a pas de COCOS&GAS disponible'
   },
   
   chainInterfaceError: {

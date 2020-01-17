@@ -51,7 +51,9 @@ export default {
 
     assetPrivateKey: 'Asset private key',
     accountPrivateKey: 'Account private key',
-    collection: 'Deposit'
+    collection: 'Deposit',
+
+    receiveImmediately: 'Receive immediately'
   },
   // message
   message: {
@@ -74,10 +76,11 @@ export default {
     changeLanguage: 'Select the language',
     resourceTip: 'Transfers, transactions, execution of contracts and other operations consume resources, which can be obtained by mortgaging COCOS',
     pledgeTip: 'Through mortgage COCOS (wave field voting rights) and resources, mortgage COCOS will be frozen for three days and cannot be traded.At the end of the freeze period, the mortgaged COCOS can be UnFreeze and traded.',
-
     newUsersPlease: 'New users please',
     forExistingCOCOSAccount: 'For existing COCOS account, please',
-    switchingTheNetworkWillExitTheAccount: 'Switching the network will exit the account'
+    switchingTheNetworkWillExitTheAccount: 'Switching the network will exit the account',
+
+    changeUnit: 'Choose currency'
   },
   // verify
   verify: {
@@ -128,7 +131,6 @@ export default {
     creatNHAsset: 'NH Asset Creation',
     deleteNHAsset: 'NH Asset Deletion',
     publishVotes: 'voting / withdrawal ',
-
     collection: 'Deposit',
     switchingTheNetwork: 'Switching the network'
   },
@@ -154,6 +156,8 @@ export default {
     illegalPrivateKey: 'Illegal PrivateKey',
     transferFail: 'The available balance is insufficient after deducting the service charge',
     setSuccess: 'Set Up Success',
+    
+    SuccessfulReceiving: 'Successful receiving',
   },
   // confirm
   confirm: {
@@ -214,7 +218,8 @@ export default {
     tpId: 'ID:',
     tpNum: 'poll:',
 
-    balance: 'Balance'
+    balance: 'Balance',
+    routerBrowser: 'View details in browser'
   },
   // settings
   settings: {
@@ -226,8 +231,8 @@ export default {
     about: 'About',
     lock: 'Lock',
     
-    vote: '投票',
-    monetaryUnit: '货币单位'
+    vote: 'Vote',
+    monetaryUnit: 'Currency unit'
   },
   // unit
   unit: {
@@ -314,7 +319,15 @@ export default {
     168: 'This subscription does not exist',
     169: 'Method does not exist',
     300: 'Chain sync error, please check your system clock',
-    301: 'RPC connection failed. Please check your network'
+    301: 'RPC connection failed. Please check your network',
+
+
+    302: 'Cannot start with a number',
+    303: 'Please register a developer account first',
+    304: 'The Multiverse already exists',
+    305: 'Resources are not enough to support this operation, please mortgage gas or reserve COCOS',
+    306: 'Account does not exist',
+    307: 'There is no GAS available'
   },
   
   chainInterfaceError: {

@@ -319,21 +319,11 @@ export default {
     }, params) {
       try {
         let resData;
-        // let NHAssetIds = '4.2.57326'
-        // console.log(params);
-        // console.log(params.type);
-        // console.log(params.vote_ids);
-        // console.log(params.votes);
-        // console.log(NewBCX);
-        
-        
         await NewBCX.publishVotes({
           type: params.type.toString(),
           vote_ids:params.vote_ids,
           votes:params.votes.toString()
         }).then(res => {
-          // console.log(res);
-          
           if (res.code !== 1) {
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]

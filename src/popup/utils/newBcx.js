@@ -88,7 +88,6 @@ export default class NewBCX {
     } else {
       Node = choose
     }
-    console.log('------',Node);
     
     // if (bcxNodes.length < 1) {
     //   _ininBcxNodes()

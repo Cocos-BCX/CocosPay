@@ -264,6 +264,35 @@ export default {
         return e
       }
     },
+    async lockAccount({
+      commit,
+      state,
+      rootState
+    }) {
+      commit('loading', true, {
+        root: true
+      })
+      try {
+        let resData
+        await NewBCX.lockAccount().then((res) => {
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code !== 1 && !rootState.loginNoAlert) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          // commit('setLoginNoAlert', false, {
+          //   root: true
+          // })
+          resData = res
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
     //login
     async loginBCXAccount({
       commit,
@@ -275,8 +304,6 @@ export default {
       })
       try {
         let resData;
-        console.log(rootState.cocosAccount.accounts)
-        console.log(rootState.cocosAccount.passwords)
         await NewBCX.passwordLogin({
           account: rootState.cocosAccount.accounts,
           password: rootState.cocosAccount.passwords
@@ -363,6 +390,32 @@ export default {
       try {
         await NewBCX.queryAccountBalances({
           unit: '',
+          account: rootState.cocosAccount.accounts,
+        }).then(res => {
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+    // queryVestingBalance
+    async queryVestingBalance({
+      commit,
+      state,
+      rootState
+    }) {
+      let resData;
+      try {
+        await NewBCX.queryVestingBalance({
           account: rootState.cocosAccount.accounts,
         }).then(res => {
           commit('loading', false, {

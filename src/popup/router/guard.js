@@ -6,8 +6,6 @@ import store from '../store'
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.isLogin)) {
     //判断是否注册过
-    console.log('store.state')
-    console.log(store.state)
     if (!store.state.isAccount) {
       next({
         name: 'initAccount'

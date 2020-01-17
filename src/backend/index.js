@@ -21,7 +21,6 @@ chrome.runtime.onMessage.addListener(
     console.log("backend")
     console.log(request)
     if (request.type == "init") {
-
       chrome.tabs.query({
         active: true,
         currentWindow: true
@@ -29,11 +28,25 @@ chrome.runtime.onMessage.addListener(
         console.log("tabs")
         console.log(tabs)
         // 发送一个copy消息出去
+        let sendNode = null
+        if (Storage.get("choose_node")) {
+          sendNode = Storage.get("choose_node")
+        } else {
+          sendNode = {
+            chainId: "6057d856c398875cac2650fe33caef3d5f6b403d184c5154abbff526ec1143c4",
+            choose: true,
+            coreAsset: "COCOS",
+            faucetUrl: "https://faucet.cocosbcx.net",
+            name: "Main",
+            type: "1",
+            ws: "wss://api.cocosbcx.net"
+          }
+        }
         chrome.tabs.sendMessage(tabs[0].id, {
           type: 'init',
-          content: Storage.get("choose_node")
+          content: sendNode
         }, function (response) {
-          console.log("response")
+          console.log("chrome.tabs.sendMessage(tabs[0].id")
           // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
           // 将值存在background.js的data属性里面。
           console.log(response);

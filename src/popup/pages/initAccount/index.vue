@@ -252,6 +252,7 @@ export default {
         this.switchAPINode({
           url: network.ws
         }).then(res => {
+          console.log(res)
           if (res.code === 1) {
             if (res.data.selectedNodeUrl) {
               // _this.apiConfig({

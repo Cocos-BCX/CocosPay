@@ -14,11 +14,15 @@
 </template>
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
+import { COCOSconversion, ExchangeRate } from "../lib/BusinessInterface"
+import Storage from "../lib/storage";
 import bcx from './utils/bcx'
 export default {
   name: "root",
   created(){
-    let NewBCX = bcx.getBCXWithState();
+    // let NewBCX = bcx.getBCXWithState();
+    this.COCOSconversionAjax()
+    this.ExchangeRateAjax()
     // NewBCX.lookupWSNodeList({
     //   refresh:true
     // }).then(res=>{
@@ -29,7 +33,6 @@ export default {
     if (isVersionUpdate) {
     } else {
       this.removeCurrentAccount()
-
     }
   },
   methods: {
@@ -41,11 +44,43 @@ export default {
       "setIsAccount",
       "setAccount",
       "setCocosCount",
-      "setAccountType"
+      "setAccountType",
+      "setCOCOSUsd",
+      "setCurrencyList"
     ]),
     ...mapActions("wallet", ["deleteWallet"]),
     ...mapActions("account", ["logoutBCXAccount"]),
-    
+    COCOSconversionAjax(){
+      let _this = this
+      COCOSconversion().then( res => {
+        _this.setCOCOSUsd(res.data[0].price_usd)
+      })
+    },
+    ExchangeRateAjax(){
+      ExchangeRate().then( res => {
+        console.log("ExchangeRate")
+        if (res.status == '200') {
+          let currencyList = res.data.data.result
+          let currencyListStore = []
+          for (let i = 0; i < currencyList.length; i++) {
+            let currencyListStoreEle = {}
+            if (currencyList[i].currencyT == 'USD') {
+              currencyListStoreEle.currencyT = currencyList[i].currencyT
+              currencyListStoreEle.currencyT_Name = currencyList[i].currencyT_Name
+              currencyListStoreEle.exchange = "1"
+            } else {
+              currencyListStoreEle.currencyT = currencyList[i].currencyT
+              currencyListStoreEle.currencyT_Name = currencyList[i].currencyT_Name
+              currencyListStoreEle.exchange = currencyList[i].exchange
+            }
+            currencyListStore.push(currencyListStoreEle)
+          }
+          Storage.set("currentCurrency", "CNY")
+          this.setCurrencyList(currencyListStore)
+          // console.log(res.data[0].price_usd)
+        }
+      })
+    },
     removeCurrentAccount(formName) {
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
       window.localStorage.setItem("delAccount", "sure");
@@ -100,9 +135,10 @@ export default {
       //   }
       // });
     },
+    
   },
   computed: {
-    ...mapState(["loading"]),
+    ...mapState(["loading", "COCOSUsd", "currencyList"]),
     key: function() {
       return this.$route.name !== undefined
         ? this.$route.name + "" + new Date()

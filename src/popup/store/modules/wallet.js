@@ -136,16 +136,10 @@ export default {
       try {
         
         let resData
-        // console.log("WalletBCXAccount => createAccountWithWallet  q钱包模式")
-        // console.log("========createAccountWithWallet========params============")
-        // console.log(rootState.cocosAccount.accounts)
-        // console.log(rootState.cocosAccount.passwords)
         await NewBCX.createAccountWithWallet({
           account: rootState.cocosAccount.accounts,
           password: rootState.cocosAccount.passwords
         }).then(res => {
-          // console.log('createAccountWithWallet res');
-          // console.log(res);
           
           commit('loading', false, {
             root: true
@@ -344,11 +338,11 @@ export default {
             commit('setLogin', true, {
               root: true
             })
-            if (rootState.accountType !== 'account') {
+            // if (rootState.accountType !== 'account') {
               commit('setAccountType', 'wallet', {
                 root: true
               })
-            }
+            // }
           } else {
             Alert({
               message: CommonJs.getI18nMessages(I18n).error[res.code]

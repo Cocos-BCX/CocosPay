@@ -23,6 +23,13 @@ const routes = [{
     },
   },
   {
+    path: '/unlockActive',
+    name: 'unlockActive',
+    component: (r) => {
+      require(['../pages/unlockActive'], r)
+    },
+  },
+  {
     path: '/home',
     name: 'home',
     component: (r) => {

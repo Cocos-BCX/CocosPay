@@ -84,7 +84,6 @@ export default {
       });
       if (this.accountType === "wallet") {
         this.unlockAccount().then(res => {
-          console.log(res)
           if (res.code === 1) {
             this.setLoginNoAlert(true);
             this.setAccount({
@@ -117,7 +116,6 @@ export default {
           password: ""
         });
         
-          console.log(res)
         if (res.code === 1) {
           this.setIsAccount(true);
           this.setLogin(true);

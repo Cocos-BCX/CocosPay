@@ -54,7 +54,9 @@ export default {
     
     // owner_key
     accountPrivateKey: '账户私钥',
-    collection: '收款'
+    collection: '收款',
+
+    receiveImmediately: '立即领取'
   },
   // message
   message: {
@@ -77,10 +79,11 @@ export default {
     changeLanguage: '选择语言',
     resourceTip: 'COCOS网络中的转账、交易、执行合约等操作会消耗资源（带宽和CPU），资源可通过冻结COCOS来获得',
     pledgeTip: '通过冻结COCOS（波场投票权）和资源，冻结的COCOS将被冻结3天，不能被交易。冻结期结束后，已冻结的COCOS可被解冻并可用于交易。',
-
     newUsersPlease: '新用户请',
     forExistingCOCOSAccount: '已有COCOS账户请',
-    switchingTheNetworkWillExitTheAccount: '切换网络将会退出账户'
+    switchingTheNetworkWillExitTheAccount: '切换网络将会退出账户',
+
+    changeUnit: '选择货币'
 
   },
   // verify
@@ -132,7 +135,6 @@ export default {
     creatNHAsset: 'NH资产创建',
     deleteNHAsset: 'NH资产删除',
     publishVotes: '投票/撤票',
-
     collection: '收款',
     switchingTheNetwork: '切换网络'
   },
@@ -157,7 +159,9 @@ export default {
     existAccount: '此账号已存在',
     illegalPrivateKey: '私钥不合法',
     transferFail: '扣除手续费后可用余额不足',
-    setSuccess: '设置成功'
+    setSuccess: '设置成功',
+    
+    SuccessfulReceiving: '领取成功',
   },
   // confirm
   confirm: {
@@ -218,7 +222,8 @@ export default {
     tpId: '账号ID:',
     tpNum: '票数:',
 
-    balance: '余额'
+    balance: '余额',
+    routerBrowser: '到浏览器中查看详细信息'
   },
   // settings
   settings: {
@@ -320,6 +325,14 @@ export default {
     169: 'API方法不存在',
     300: '链同步错误，请检查您的系统时钟',
     301: '连接RPC失败，请检查你的网络',
+
+
+    302: '不能以数字开头',
+    303: '请先注册开发者',
+    304: '世界观已存在',
+    305: '资源不足以支撑本次操作，请抵押GAS或预留COCOS',
+    306: '账户不存在',
+    307: '暂时没有可领取GAS'
   },
   
   chainInterfaceError: {

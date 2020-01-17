@@ -71,6 +71,7 @@
     </k-dialog>
     <div class="setting-icon">
       <img src="/icons/shuaxin.png" alt @click="refreshData">
+      <img src="/icons/mima.png" alt @click="lockAccountAjax">
       <img src="/icons/shezhi2.png" alt @click="goSettings">
     </div>
   </header>
@@ -99,7 +100,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["route", "currentNetwork"])
+    ...mapState(["route", "currentNetwork", "cocosAccount"])
   },
   directives: {
     clickOutside: vClickOutside.directive
@@ -123,13 +124,14 @@ export default {
   },
   methods: {
     ...mapActions("account", [
-      "logoutBCXAccount"
+      "logoutBCXAccount",
+      "lockAccount"
     ]),
     ...mapActions("wallet", [
       "getAccounts",
       "deleteWallet"
     ]),
-    ...mapMutations(["setAccountType", "setLogin", "setIsAccount", "setAccount"]),
+    ...mapMutations(["setAccountType", "setLogin", "setIsAccount", "setAccount", "setLoginNoAlert", ]),
     ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList"]),
     
     nodeSyncFn(changeNode){
@@ -177,21 +179,25 @@ export default {
           account: "",
           password: ""
         });
+        // this.init().then( initRes => {
+        //   return new Promise(function (resolve, reject) {
+        //     _this.switchAPINode({
+        //       url: network.ws
+        //     }).then(res => {
+        //       if (res.code === 1) {
+        //           resolve(res)
+        //       } else {
+        //           _this.$kalert({
+        //             message:  _this.$i18n.t("alert.modifyFailed")
+        //           });
+        //       }
+        //     })
+        //   })
+        // })
         
-        this.switchAPINode({
-          url: network.ws
-        }).then(res => {
-          if (res.code === 1) {
-            return new Promise(function (resolve, reject) {
-              resolve(res)
-            })
-          } else {
-              _this.$kalert({
-                message:  _this.$i18n.t("alert.modifyFailed")
-              });
-          }
-        }).then(res =>{
-          
+          _this.switchAPINode({
+              url: network.ws
+          }).then(res =>{
             return new Promise(function (resolve, reject) {
               
               if (res.data.selectedNodeUrl) {
@@ -221,10 +227,35 @@ export default {
               }
           })
         })
-
       });
     },
-
+    lockAccountAjax(){
+      let _this = this
+      this.lockAccount().then( res => {
+        if (res.code == 1) {
+          
+          // _this.setLoginNoAlert(false);
+          // _this.setAccount({
+          //   account: _this.cocosAccount.accounts,
+          //   password: ""
+          // });
+          // _this.setIsAccount(false);
+          // _this.setLogin(false);
+          _this.$router.push({ name: "unlockActive" })
+        } else {
+            if (res.message.indexOf("wrong password") > -1 || res.message.indexOf("password error") > -1 ) {
+              this.$kalert({
+                message:  this.$i18n.t("error[105]")
+              });
+            } else {
+              this.$kalert({
+                message:  _this.$i18n.t("chainInterfaceError[500]")
+              });
+            }
+        }
+        
+      })
+    },
     // changeNetwork  2019-12-26 备份
     // changeNetwork123(network) {
     //   let _this = this

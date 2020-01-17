@@ -106,7 +106,7 @@ export default {
                 account: res.data.account_name,
                 password: ""
               });
-              this.settemporaryKeys("");
+              // this.settemporaryKeys("");
               this.setLogin(true);
               this.setIsAccount(true);
               this.$router.push({ name: "home" });

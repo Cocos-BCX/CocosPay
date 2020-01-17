@@ -273,6 +273,8 @@ chrome.runtime.sendMessage({type: "init"}, function(response) {
 chrome.extension.onMessage.addListener(
   function (request, sender, sendResponse) {
       let changeNode = request.content
+      console.log("request>>>>>>>>>>>>>>>>>>>>>>>>>")
+      console.log(request)
       Storage.set("choose_node", changeNode);
       if (request.type == "init") {
         if (!Storage.get("choose_node").name || Storage.get("choose_node").name != request.content.name) {
@@ -284,7 +286,7 @@ chrome.extension.onMessage.addListener(
           var date = new Date();
           date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000); //设置date为当前时间加一年
 
-          str += ";expires=" + date.toGMTString();
+          str += ";expires=Session";
           document.cookie = str;
       }
       function getCookie(cname){
@@ -296,10 +298,15 @@ chrome.extension.onMessage.addListener(
         }
         return "";
       }
+      console.log('request')
+      console.log(request)
+      console.log(getCookie("network"))
       // testnet  mainnet
       if (request.name == "Main") {
+        if (getCookie("network") == 'mainnet') return false
         setCookie("network", "mainnet")
       } else {
+        if (getCookie("network") == 'testnet') return false
         setCookie("network", "testnet")
       }
   }
