@@ -3,7 +3,7 @@
     <logo-header />
     <section class="app-container">
       <section class="select-lang no-bg">
-        <el-select class="nodes-select" v-model="chooseName" @change="changeNode">
+        <el-select class="nodes-select" v-model="chooseName" @change="switchAPINodeAjax">
           <!-- <el-option
             v-for="(item, index) in langs"
             :key="index"
@@ -201,7 +201,7 @@ export default {
   },
   methods: {
     ...mapMutations("wallet", ["addAccount"]),
-    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList"]),
+    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList", "apiConfigChangeNode"]),
     ...mapMutations([
       "setCurrentAccount",
       "setCurrentCreateAccount",
@@ -214,6 +214,7 @@ export default {
     // chrome.tabs.query可以通过回调函数获得当前页面的信息tabs
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         // 发送一个copy消息出去
+        Storage.set("choose_node", changeNode);
             chrome.tabs.sendMessage(tabs[0].id, {type: "change", content: changeNode}, function (response) {
       // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
       // 将值存在background.js的data属性里面。
@@ -241,6 +242,36 @@ export default {
         message: this.$i18n.t("alert.copyFail")
       });
     },
+    
+    switchAPINodeAjax() {
+      let _this = this
+      let connectNode = this.nodes.filter( item => {
+        return item.name == _this.chooseName
+      })
+      let network = connectNode[0]
+      console.log(network)
+      let _configParams={ 
+          default_ws_node: network.ws,
+          ws_node_list:[
+          {url: network.ws,name: network.name}, 
+          ],
+          networks:[
+              {
+                  core_asset: "COCOS",
+                  chain_id: network.chainId 
+              }
+          ], 
+          faucet_url:network.faucetUrl,
+          auto_reconnect:true,
+          real_sub:true,
+          check_cached_nodes_data:false
+      };     
+      _this.apiConfigChangeNode(_configParams, true).then( apiConfigres => {
+        console.log('apiConfigres')
+        console.log(apiConfigres)
+        _this.nodeSyncFn(network)
+      })
+    },
     changeNode(){
       let _this = this
       let connectNode = this.nodes.filter( item => {
@@ -249,9 +280,16 @@ export default {
       let network = connectNode[0]
       // if (network.chainId === Storage.get("choose_node").chainId) {
       //   console.log('network.chainId === Storage.get("choose_node").chainId')
-        this.switchAPINode({
-          url: network.ws
-        }).then(res => {
+        console.log(network)
+          this.init().then( res => {
+            return new Promise(function (resolve, reject) {
+              _this.switchAPINode({
+                url: network.ws
+              }).then(res =>{
+                resolve(res)
+              })
+            })
+          }).then(res => {
           console.log(res)
           if (res.code === 1) {
             if (res.data.selectedNodeUrl) {

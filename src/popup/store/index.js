@@ -292,6 +292,41 @@ export default new Vuex.Store({
         console.log(e);
       }
     },
+    async apiConfigChangeNode({
+      commit
+    }, params) {
+      let resData
+      try {
+        await NewBCX.apiConfig({ 
+          default_ws_node: params.default_ws_node,
+          ws_node_list:[
+            {
+              url:params.ws_node_list[0].url,
+              name:params.ws_node_list[0].name
+            }, 
+          ],
+          networks:[
+            {
+              core_asset:"COCOS",
+              chain_id:params.networks[0].name 
+            }
+          ],
+          faucet_url: params.faucet_url,
+          auto_reconnect:true,
+          real_sub:true,
+          check_cached_nodes_data:false
+        }, true).then(res=>{
+          console.log("apiConfig", res)
+          resData = res
+        });
+        let getApiConfigResult = await NewBCX.getApiConfig()
+        console.log('getApiConfigResult', getApiConfigResult)
+        // 2019-12-19 修改结束
+        return resData
+      } catch (e) {
+        console.log(e);
+      }
+    },
     async apiConfig({
       commit
     }, Node) {

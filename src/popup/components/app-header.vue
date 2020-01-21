@@ -132,7 +132,7 @@ export default {
       "deleteWallet"
     ]),
     ...mapMutations(["setAccountType", "setLogin", "setIsAccount", "setAccount", "setLoginNoAlert", ]),
-    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList"]),
+    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList", "apiConfigChangeNode"]),
     
     nodeSyncFn(changeNode){
       let _this = this
@@ -172,6 +172,45 @@ export default {
     switchAPINodeAjax(network) {
       let _this = this
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
+        console.log("this.deleteWallet(), this.logoutBCXAccount()")
+        console.log(res)
+        window.localStorage.setItem("delAccount", "sure");
+        this.setLogin(false);
+        this.setIsAccount(false);
+        this.setAccount({
+          account: "",
+          password: ""
+        });
+      })
+      let Node = network
+      
+      let _configParams={ 
+          default_ws_node: network.ws,
+          ws_node_list:[
+          {url: network.ws,name: network.name}, 
+          ],
+          networks:[
+              {
+                  core_asset: "COCOS",
+                  chain_id: network.chainId 
+              }
+          ], 
+          faucet_url:network.faucetUrl,
+          auto_reconnect:true,
+          real_sub:true,
+          check_cached_nodes_data:false
+      };    
+      _this.apiConfigChangeNode(_configParams, true).then( apiConfigres => {
+        console.log('apiConfigres')
+        console.log(apiConfigres)
+        _this.nodeSyncFn(network)
+      })
+    },
+    switchAPINodeAjaxtest(network) {
+      let _this = this
+      Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
+        console.log("this.deleteWallet(), this.logoutBCXAccount()")
+        console.log(res)
         window.localStorage.setItem("delAccount", "sure");
         this.setLogin(false);
         this.setIsAccount(false);
@@ -194,9 +233,14 @@ export default {
         //     })
         //   })
         // })
-        
-          _this.switchAPINode({
-              url: network.ws
+          this.init().then( res => {
+            return new Promise(function (resolve, reject) {
+              _this.switchAPINode({
+                url: network.ws
+              }).then(res =>{
+                resolve(res)
+              })
+            })
           }).then(res =>{
             return new Promise(function (resolve, reject) {
               

@@ -803,6 +803,8 @@ export default {
     },
     removeCurrentAccount(formName) {
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
+        console.log("removeCurrentAccount")
+        console.log(res)
       window.localStorage.setItem("delAccount", "sure");
         this.setLogin(false);
         this.setIsAccount(false);
