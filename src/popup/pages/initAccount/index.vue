@@ -181,7 +181,6 @@ export default {
       //   }).then( lookupWSNodeListRes =>{
       //     // this.init();
       //   })
-        
       // });
       // 2019-12-09  新增修改 完成
     });
@@ -249,7 +248,6 @@ export default {
         return item.name == _this.chooseName
       })
       let network = connectNode[0]
-      console.log(network)
       let _configParams={ 
           default_ws_node: network.ws,
           ws_node_list:[

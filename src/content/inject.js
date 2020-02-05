@@ -14,7 +14,7 @@ import * as TabMessageTypes from '../messages/TabsMessageTypes'
 import Storage from '../lib/storage'
 let stream = new WeakMap()
 let isReady = false
-
+console.log("injecj....")
 class Inject {
   constructor() {
     this._setEncryptedStream()

@@ -178,6 +178,9 @@ export default {
         //     })
         //   }
         // }, 3500)
+        console.log(NewBCX)
+        console.log(params.privateKey)
+        console.log(params.password)
         await NewBCX.importPrivateKey({
           // privateKey: rootState.privateKeys,
           // password: rootState.temporaryKeys,
@@ -187,6 +190,7 @@ export default {
           commit('loading', false, {
             root: true
           })
+          console.log("store...  loading false")
           if (res.code !== 1) {
             if (params && params.has_import && res.code !== 160) {
               // Alert({
@@ -230,6 +234,8 @@ export default {
         })
         return resData
       } catch (e) {
+        console.log('setPrivateKeys e')
+        console.log(e)
         return e
       }
     },

@@ -100,6 +100,8 @@ export default {
             privateKey: this.formData.privateKey,
             password: this.formData.password,
           }).then(res => {
+            console.log('res')
+            console.log(res)
             if (res.code === 1) {
               this.setKeys("");
               this.setAccount({
@@ -110,6 +112,40 @@ export default {
               this.setLogin(true);
               this.setIsAccount(true);
               this.$router.push({ name: "home" });
+            } else if (res.code == 149) {
+              this.setPrivateKeys({
+                has_import: this.has_import || false,
+                privateKey: this.formData.privateKey,
+                password: this.formData.password,
+              }).then(res => {
+                console.log('res')
+                console.log(res)
+                if (res.code === 1) {
+                  this.setKeys("");
+                  this.setAccount({
+                    account: res.data.account_name,
+                    password: ""
+                  });
+                  // this.settemporaryKeys("");
+                  this.setLogin(true);
+                  this.setIsAccount(true);
+                  this.$router.push({ name: "home" });
+                } else if (res.code == 160) {
+              
+                  this.getAccounts().then(res => {
+                      
+                      this.setKeys("");
+                      this.setAccount({
+                        account: res.current_account.account_name,
+                        password: ""
+                      });
+                      this.settemporaryKeys("");
+                      this.setLogin(true);
+                      this.setIsAccount(true);
+                      this.$router.push({ name: "home" });
+                  });
+                }
+              })
             } else if (res.code == 160) {
               
               this.getAccounts().then(res => {

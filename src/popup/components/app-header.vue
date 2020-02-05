@@ -82,6 +82,7 @@ import vClickOutside from "v-click-outside";
 import Storage from "../../lib/storage";
 import BCX from "bcx-api";
 import KDialog from "../components/dialog/DialogComponent";
+import extension from "../../lib/extension"
 // import BCX from '../../lib/bcx-api'
 
 // import '../../lib/bcx.min.js'
@@ -136,23 +137,25 @@ export default {
     
     nodeSyncFn(changeNode){
       let _this = this
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        // 发送一个copy消息出去
-        chrome.tabs.sendMessage(tabs[0].id, {type: "change", content: changeNode}, function (response) {
-          // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
-          // 将值存在background.js的data属性里面。
-          // var win = chrome.extension.getBackgroundPage();
-          // console.log("win")
-          // console.log(win)
-          // win.data=response;
-          
-        });
-        
-        _this.$kalert({
-          message: _this.$i18n.t("alert.modifySuccess")
-        });
-        Storage.set("choose_node", changeNode);
-        _this.$router.replace({ name: "initAccount", query: {isReload: false}});
+      
+      console.log(">>>>>>>>>>>>>")
+      
+      _this.$router.push('initAccount', function () {
+        console.log("extension.tabsSendMessage  /initAccount")
+        // extension.tabsSendMessage().then( res => {
+        //   console.log("extension.tabsSendMessage")
+        // })
+        // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        //   // 发送一个copy消息出去
+        //   chrome.tabs.sendMessage(tabs[0].id, {type: "change", content: changeNode}, function (response) {
+        //     // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
+        //     // 将值存在background.js的data属性里面。
+        //     // var win = chrome.extension.getBackgroundPage();
+        //     // win.data=response;
+        //     console.log(response)
+        //     Storage.set("choose_node", changeNode);
+        //   });
+        // });
       });
     // chrome.tabs.query可以通过回调函数获得当前页面的信息tabs
         
@@ -182,6 +185,7 @@ export default {
           password: ""
         });
       })
+      console.log('begin change node...')
       let Node = network
       
       let _configParams={ 
@@ -203,6 +207,11 @@ export default {
       _this.apiConfigChangeNode(_configParams, true).then( apiConfigres => {
         console.log('apiConfigres')
         console.log(apiConfigres)
+        
+        _this.$kalert({
+          message: _this.$i18n.t("alert.modifySuccess")
+        });
+        Storage.set("choose_node", network);
         _this.nodeSyncFn(network)
       })
     },

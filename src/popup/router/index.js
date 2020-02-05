@@ -9,6 +9,10 @@ import Network from '../pages/settings/network'
 import About from '../pages/settings/about'
 import WhiteList from '../pages/settings/whiteList'
 
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
 Vue.use(Router)
 
 const routes = [{

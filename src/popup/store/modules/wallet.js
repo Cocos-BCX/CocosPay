@@ -324,6 +324,10 @@ export default {
             })
           }
         }, 8000)
+        // console.log('NewBCX')
+        // console.log(NewBCX)
+        // console.log(rootState.privateKeys)
+        // console.log(rootState.cocosAccount.passwords)
         await NewBCX.importPrivateKey({
           privateKey: rootState.privateKeys,
           password: rootState.cocosAccount.passwords
