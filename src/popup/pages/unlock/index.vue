@@ -10,7 +10,7 @@
           class="no-border"
           v-model="unlock"
           type="password"
-          :placeholder="$t('placeholder.password')"
+          :placeholder="currentAccountType == 'wallet'?$t('placeholder.temporary') :$t('placeholder.password')"
         ></el-input>
         <!-- 解决隐式提交的问题 -->
         <input type="text" value style="display: none;">
@@ -34,7 +34,8 @@ export default {
     //   }
     // };
     return {
-      unlock: ""
+      unlock: "",
+      currentAccountType: ""
       // formData: {
       //   password: ""
       // },
@@ -50,6 +51,7 @@ export default {
       this.getAccounts().then(res => {
         console.log("getAccounts")
         console.log(res)
+        this.currentAccountType = res.current_account.mode
         this.setAccountType(res.current_account.mode);
       });
     });

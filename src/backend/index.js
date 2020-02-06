@@ -54,7 +54,13 @@ chrome.runtime.onMessage.addListener(
       });
     }
   });
-
+// let timer = null
+// let second = 0
+// let 
+// timer = setInterval(() => {
+//   second++
+//   console.log(second)
+// }, 1000);
 export default class Background {
   constructor() {
     this.Params()
