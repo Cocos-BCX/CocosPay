@@ -47,7 +47,16 @@ export default {
     redeemSure: '确认解冻',
     importSure: '确认导入',
     confirm: '确认',
-    reject: '拒绝'
+    reject: '拒绝',
+
+    // active_key
+    assetPrivateKey: '资产私钥',
+    
+    // owner_key
+    accountPrivateKey: '账户私钥',
+    collection: '收款',
+
+    receiveImmediately: '立即领取'
   },
   // message
   message: {
@@ -62,13 +71,20 @@ export default {
     joinWhiteList: '添加白名单，此网站不再提示',
     warningPrivateKey: '安全警告：请勿向任何人泄露您的私钥',
     rechargeOnly: '此地址支持转入COCOS及其token',
+    rechargeOnly1: '此地址支持COCOS链币种',
     verifyPassword: '需要先验证您的当前密码',
     lockSetting: '自动锁定设置',
     ownerError: '账户名不能是自己',
     lockTip: '当您停止操作时，可以通过设置离开时间来自动锁定COCOSPay',
     changeLanguage: '选择语言',
     resourceTip: 'COCOS网络中的转账、交易、执行合约等操作会消耗资源（带宽和CPU），资源可通过冻结COCOS来获得',
-    pledgeTip: '通过冻结COCOS（波场投票权）和资源，冻结的COCOS将被冻结3天，不能被交易。冻结期结束后，已冻结的COCOS可被解冻并可用于交易。'
+    pledgeTip: '通过冻结COCOS（波场投票权）和资源，冻结的COCOS将被冻结3天，不能被交易。冻结期结束后，已冻结的COCOS可被解冻并可用于交易。',
+    newUsersPlease: '新用户请',
+    forExistingCOCOSAccount: '已有COCOS账户请',
+    switchingTheNetworkWillExitTheAccount: '切换网络将会退出账户',
+
+    changeUnit: '选择货币'
+
   },
   // verify
   verify: {
@@ -90,7 +106,7 @@ export default {
     walletPassword: '请输入最初的临时密码',
     noZero: '数量应该大于 0'
   },
-  // title  
+  // title
   title: {
     agreement: '用户协议',
     createAccount: '创建账号',
@@ -118,7 +134,9 @@ export default {
     creatWorldView: '创建世界观',
     creatNHAsset: 'NH资产创建',
     deleteNHAsset: 'NH资产删除',
-    publishVotes: '投票/撤票'
+    publishVotes: '投票/撤票',
+    collection: '收款',
+    switchingTheNetwork: '切换网络'
   },
   // alert
   alert: {
@@ -141,7 +159,9 @@ export default {
     existAccount: '此账号已存在',
     illegalPrivateKey: '私钥不合法',
     transferFail: '扣除手续费后可用余额不足',
-    setSuccess: '设置成功'
+    setSuccess: '设置成功',
+    
+    SuccessfulReceiving: '领取成功',
   },
   // confirm
   confirm: {
@@ -200,7 +220,10 @@ export default {
     itemlds: 'itemlds:',
     tpType: '类型:',
     tpId: '账号ID:',
-    tpNum: '票数:'
+    tpNum: '票数:',
+
+    balance: '余额',
+    routerBrowser: '到浏览器中查看详细信息'
   },
   // settings
   settings: {
@@ -210,7 +233,10 @@ export default {
     modifyPassword: '修改密码',
     lockSetting: '锁定设置',
     about: '关于COCOSPay',
-    lock: '立即锁定'
+    lock: '立即锁定',
+
+    vote: '投票',
+    monetaryUnit: '货币单位'
   },
   // unit
   unit: {
@@ -299,6 +325,14 @@ export default {
     169: 'API方法不存在',
     300: '链同步错误，请检查您的系统时钟',
     301: '连接RPC失败，请检查你的网络',
+
+
+    302: '不能以数字开头',
+    303: '请先注册开发者',
+    304: '世界观已存在',
+    305: '资源不足以支撑本次操作，请抵押GAS或预留COCOS',
+    306: '账户不存在',
+    307: '暂时没有可领取GAS'
   },
   
   chainInterfaceError: {

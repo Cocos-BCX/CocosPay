@@ -61,6 +61,8 @@ export default new Vuex.Store({
     callback: '',
     accountType: '',
     loginNoAlert: false,
+    COCOSUsd: '',
+    currencyList: []
   },
   mutations: {
     loading(state, loading) {
@@ -74,6 +76,12 @@ export default new Vuex.Store({
     },
     setCurLng(state, lang) {
       state.curLng = lang
+    },
+    setCOCOSUsd(state, COCOSUsd) {
+      state.COCOSUsd = COCOSUsd
+    },
+    setCurrencyList(state, currencyList) {
+      state.currencyList = currencyList
     },
     setCurrentNetwork(state, network) {
       state.currentNetwork = network
@@ -188,7 +196,6 @@ export default new Vuex.Store({
             //     isHave = true
             //   }
             // }) 
-            console.log("NewBCX")
             // await NewBCX.init().then(res_url => {
             //   console.log('res_url ', res_url)
             // })
@@ -270,8 +277,6 @@ export default new Vuex.Store({
         commit('loading', true, {
           root: true
         })
-        console.log("switchAPINode")
-        console.log(url)
         await NewBCX.switchAPINode(url).then(res => {
           commit('loading', false, {
             root: true
@@ -281,9 +286,42 @@ export default new Vuex.Store({
           commit('loading', false, {
             root: true
           })
-          console.log("=======switchAPINode==========err=======")
-          console.log(err)
         })
+        return resData
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async apiConfigChangeNode({
+      commit
+    }, params) {
+      let resData
+      try {
+        await NewBCX.apiConfig({ 
+          default_ws_node: params.default_ws_node,
+          ws_node_list:[
+            {
+              url:params.ws_node_list[0].url,
+              name:params.ws_node_list[0].name
+            }, 
+          ],
+          networks:[
+            {
+              core_asset:"COCOS",
+              chain_id:params.networks[0].name 
+            }
+          ],
+          faucet_url: params.faucet_url,
+          auto_reconnect:true,
+          real_sub:true,
+          check_cached_nodes_data:false
+        }, true).then(res=>{
+          console.log("apiConfig", res)
+          resData = res
+        });
+        let getApiConfigResult = await NewBCX.getApiConfig()
+        console.log('getApiConfigResult', getApiConfigResult)
+        // 2019-12-19 修改结束
         return resData
       } catch (e) {
         console.log(e);
@@ -343,7 +381,7 @@ export default new Vuex.Store({
           real_sub:true,
           subscribeToRpcConnectionStatusCallback:res=>{
             console.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-              console.info("subscribeToRpcConnectionStatusCallback res",res);
+            console.info("subscribeToRpcConnectionStatusCallback res",res);
           }
         }).then((res) => {
           commit('loading', false, {
@@ -354,6 +392,33 @@ export default new Vuex.Store({
         return resData
       } catch (e) {
         return e
+      }
+    },
+    // claimVestingBalance
+    async claimVestingBalance({
+      commit
+    }, params) {
+      try {
+        let resData
+        commit('loading', true, {
+          root: true
+        })
+        await NewBCX.claimVestingBalance({
+          id: params.id,
+          amount: params.amount
+        }).then(res => {
+          commit('loading', false, {
+            root: true
+          })
+          resData = res
+        }).catch( err => {
+          commit('loading', false, {
+            root: true
+          })
+        })
+        return resData
+      } catch (e) {
+        console.log(e);
       }
     },
     async subscribeTo({}) {

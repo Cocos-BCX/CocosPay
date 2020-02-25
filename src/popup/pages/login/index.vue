@@ -74,9 +74,11 @@ export default {
       }
     };
   },
+  created(){
+  },
   computed: {
     ...mapState("wallet", ["accounts", "pwdhash", "password"]),
-    ...mapState(["cocosAccount"])
+    ...mapState(["cocosAccount", "isLogin", "isAccount"])
   },
   methods: {
     ...mapActions("wallet", ["setSeed"]),
@@ -96,15 +98,11 @@ export default {
     unLock(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // this.logoutBCXAccount();
-          
           this.setAccount({
             account: this.cocosAccount.accounts || this.formData.account,
             password: this.formData.password
           });
           this.loginBCXAccount().then(res => {
-            console.log(res);
-            
             if (res.code === 1) {
               this.setAccount({
                 account: this.cocosAccount.accounts,

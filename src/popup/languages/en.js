@@ -47,7 +47,13 @@ export default {
     redeemSure: 'Confirm',
     importSure: 'Confirm',
     confirm: 'Confirm',
-    reject: 'Reject'
+    reject: 'Reject',
+
+    assetPrivateKey: 'Asset private key',
+    accountPrivateKey: 'Account private key',
+    collection: 'Deposit',
+
+    receiveImmediately: 'Receive immediately'
   },
   // message
   message: {
@@ -62,13 +68,19 @@ export default {
     joinWhiteList: 'Add to white list, this site no longer prompts',
     warningPrivateKey: 'Security warning: do not disclose your private key to anyone',
     rechargeOnly: 'This address only supports COCOS and its token',
+    rechargeOnly1: 'This address supports the currencies on COCOS chain',
     verifyPassword: 'You need to verify your current password',
     lockSetting: 'Automatic lock setting',
     ownerError: 'The account name is not you',
     lockTip: 'When you stop, you can automatically lock CocosPay by setting the departure time',
     changeLanguage: 'Select the language',
     resourceTip: 'Transfers, transactions, execution of contracts and other operations consume resources, which can be obtained by mortgaging COCOS',
-    pledgeTip: 'Through mortgage COCOS (wave field voting rights) and resources, mortgage COCOS will be frozen for three days and cannot be traded.At the end of the freeze period, the mortgaged COCOS can be UnFreeze and traded.'
+    pledgeTip: 'Through mortgage COCOS (wave field voting rights) and resources, mortgage COCOS will be frozen for three days and cannot be traded.At the end of the freeze period, the mortgaged COCOS can be UnFreeze and traded.',
+    newUsersPlease: 'New users please',
+    forExistingCOCOSAccount: 'For existing COCOS account, please',
+    switchingTheNetworkWillExitTheAccount: 'Switching the network will exit the account',
+
+    changeUnit: 'Choose currency'
   },
   // verify
   verify: {
@@ -118,7 +130,9 @@ export default {
     creatWorldView: 'Create a Multiverse',
     creatNHAsset: 'NH Asset Creation',
     deleteNHAsset: 'NH Asset Deletion',
-    publishVotes: 'voting / withdrawal '
+    publishVotes: 'voting / withdrawal ',
+    collection: 'Deposit',
+    switchingTheNetwork: 'Switching the network'
   },
   // alert
   alert: {
@@ -142,6 +156,8 @@ export default {
     illegalPrivateKey: 'Illegal PrivateKey',
     transferFail: 'The available balance is insufficient after deducting the service charge',
     setSuccess: 'Set Up Success',
+    
+    SuccessfulReceiving: 'Successful receiving',
   },
   // confirm
   confirm: {
@@ -200,7 +216,10 @@ export default {
     itemlds: 'itemlds:',
     tpType: 'TYPE:',
     tpId: 'ID:',
-    tpNum: 'poll:'
+    tpNum: 'poll:',
+
+    balance: 'Balance',
+    routerBrowser: 'View details in browser'
   },
   // settings
   settings: {
@@ -210,7 +229,10 @@ export default {
     modifyPassword: 'Password',
     lockSetting: 'Lock Setting',
     about: 'About',
-    lock: 'Lock'
+    lock: 'Lock',
+    
+    vote: 'Vote',
+    monetaryUnit: 'Currency unit'
   },
   // unit
   unit: {
@@ -297,7 +319,15 @@ export default {
     168: 'This subscription does not exist',
     169: 'Method does not exist',
     300: 'Chain sync error, please check your system clock',
-    301: 'RPC connection failed. Please check your network'
+    301: 'RPC connection failed. Please check your network',
+
+
+    302: 'Cannot start with a number',
+    303: 'Please register a developer account first',
+    304: 'The Multiverse already exists',
+    305: 'Resources are not enough to support this operation, please mortgage gas or reserve COCOS',
+    306: 'Account does not exist',
+    307: 'There is no GAS available'
   },
   
   chainInterfaceError: {

@@ -10,7 +10,7 @@
         <h2
           class="eos-style cocos mt20"
           v-if="currentNodeName== 'Test'"
-        >{{cocosAccount.accounts === orderDeatil.parse_operations.from ? '-' : '+'}}{{orderDeatil.parse_operations.amount}}({{$t('title.test')}8})</h2>
+        >{{cocosAccount.accounts === orderDeatil.parse_operations.from ? '-' : '+'}}{{orderDeatil.parse_operations.amount}}({{$t('title.test')}})</h2>
         
         <div class="des">{{$t('alert.tranferSuccess')}}</div>
         <div class="translate-log-title mt40">
@@ -168,6 +168,9 @@
           <div class="name memo">{{orderDeatil.memo}}</div>
         </div>
       </section>
+      <p class="routerBrowser">
+        <a target="_blank" :href="'https://www.cocosabc.com/blocks/block/' + orderDeatil.block_num">{{$t('label.routerBrowser')}}></a>
+      </p>
     </div>
   </section>
 </template>
@@ -196,8 +199,6 @@ export default {
   },
   async created() {
     this.orderDeatil = this.$route.params;
-    console.log('this.orderDeatil');
-    console.log(this.orderDeatil);
 
     if (this.orderDeatil.memo) {
       this.orderDeatil.memo = await NewBCX.decodeMemo(this.orderDeatil.memo);
@@ -210,7 +211,6 @@ export default {
       //   this.memo = true;
       // }
     }
-    console.log(this.orderDeatil);
   },
   mounted() {
     this.transactionsScroller = new PerfectScrollbar("#perfect-scroll-detail", {
@@ -304,5 +304,14 @@ export default {
       outline: none;
     }
   }
+}
+.routerBrowser{
+  margin-top: 14px;
+  text-align: center;
+}
+.routerBrowser a{
+  font-size: 14px;
+  color: #4679fe;
+  text-decoration: none;
 }
 </style>

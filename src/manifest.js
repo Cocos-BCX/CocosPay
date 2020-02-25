@@ -1,6 +1,6 @@
 module.exports = {
   name: 'CocosPay',
-  version: '1.1.7',
+  version: '1.1.11',
   description: 'CocosPay Chrome Extension',
   author: 'chain@cocosbcx.io',
   manifest_version: 2,
@@ -9,7 +9,7 @@ module.exports = {
     '48': 'icons/48px.png',
     '128': 'icons/128px.png'
   },
-  permissions: ['activeTab', 'tabs', 'unlimitedStorage', 'storage'],
+  // permissions: ['activeTab', 'tabs', 'unlimitedStorage', 'storage'],
   browser_action: {
     default_title: 'CocosPay',
     default_popup: 'pages/popup.html'

@@ -2,12 +2,17 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Language from '../pages/settings/language'
+import MonetaryUnit from '../pages/settings/monetaryUnit'
 import LockSetting from '../pages/settings/lockSetting'
 import ModifyPassword from '../pages/settings/modifyPassword'
 import Network from '../pages/settings/network'
 import About from '../pages/settings/about'
 import WhiteList from '../pages/settings/whiteList'
 
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
 Vue.use(Router)
 
 const routes = [{
@@ -19,6 +24,13 @@ const routes = [{
     name: 'unlock',
     component: (r) => {
       require(['../pages/unlock'], r)
+    },
+  },
+  {
+    path: '/unlockActive',
+    name: 'unlockActive',
+    component: (r) => {
+      require(['../pages/unlockActive'], r)
     },
   },
   {
@@ -116,6 +128,11 @@ const routes = [{
     path: '/language',
     name: 'language',
     component: Language,
+  },
+  {
+    path: '/monetaryUnit',
+    name: 'monetaryUnit',
+    component: MonetaryUnit,
   },
   {
     path: '/lockSetting',

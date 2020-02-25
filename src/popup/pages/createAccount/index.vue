@@ -182,8 +182,6 @@ export default {
             // setTimeout(() => {
             //   this.loading(false);
             this.loadBCXAccount().then(res => {
-              console.log('loadBCXAccount')
-              console.log(res)
               if (res.code === 1) {
                 this.setIsAccount(true);
                 // this.loginBCXAccount().then(res => {

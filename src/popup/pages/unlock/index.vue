@@ -1,5 +1,5 @@
 <template>
-  <section class="app-container" @keyup.enter="unLock('form')">
+  <section class="app-container" @keyup.enter="unlockWallet()">
     <section class="logo mt40">
       <img class="block-center" src="/icons/logo-big.png" alt>
     </section>
@@ -10,7 +10,7 @@
           class="no-border"
           v-model="unlock"
           type="password"
-          :placeholder="$t('placeholder.password')"
+          :placeholder="currentAccountType == 'wallet'?$t('placeholder.temporary') :$t('placeholder.password')"
         ></el-input>
         <!-- 解决隐式提交的问题 -->
         <input type="text" value style="display: none;">
@@ -34,7 +34,8 @@ export default {
     //   }
     // };
     return {
-      unlock: ""
+      unlock: "",
+      currentAccountType: ""
       // formData: {
       //   password: ""
       // },
@@ -45,7 +46,12 @@ export default {
   },
   mounted() {
     this.init().then(res => {
+      console.log("init")
+      console.log(res)
       this.getAccounts().then(res => {
+        console.log("getAccounts")
+        console.log(res)
+        this.currentAccountType = res.current_account.mode
         this.setAccountType(res.current_account.mode);
       });
     });
@@ -84,8 +90,6 @@ export default {
       });
       if (this.accountType === "wallet") {
         this.unlockAccount().then(res => {
-          console.log("unlockAccount")
-          console.log(res)
           if (res.code === 1) {
             this.setLoginNoAlert(true);
             this.setAccount({
@@ -117,14 +121,23 @@ export default {
           account: this.cocosAccount.accounts,
           password: ""
         });
+        
         if (res.code === 1) {
           this.setIsAccount(true);
           this.setLogin(true);
           this.$router.push({ name: "home" });
         } else {
+          
+            if (res.message.indexOf("wrong password") > -1 || res.message.indexOf("password error") > -1 ) {
+              this.$kalert({
+                message:  this.$i18n.t("error[105]")
+              });
+            } else {
               this.$kalert({
                 message:  _this.$i18n.t("chainInterfaceError[500]")
               });
+            }
+              
           }
       });
     }

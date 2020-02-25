@@ -45,7 +45,6 @@ export default {
       
       this.setCurLng(this.lang);
       this.$i18n.locale = this.lang;
-      console.log(this.$i18n.locale);
       window.localStorage.setItem("lang_type", this.lang);
       this.$kalert({
         message: this.$i18n.t("alert.modifySuccess")

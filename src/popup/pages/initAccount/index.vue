@@ -3,7 +3,7 @@
     <logo-header />
     <section class="app-container">
       <section class="select-lang no-bg">
-        <el-select class="nodes-select" v-model="chooseName" @change="changeNode">
+        <el-select class="nodes-select" v-model="chooseName" @change="switchAPINodeAjax">
           <!-- <el-option
             v-for="(item, index) in langs"
             :key="index"
@@ -30,21 +30,23 @@
       <div class="text-center">
         <img @click="logout()" src="/images/new-account.png" />
       </div>
+      <!-- <section class="small-tip text-center mt30">{{$t('message.recommendNew')}}</section> -->
+      <section class="small-tip text-center mt30">{{$t('message.newUsersPlease')}}:</section>
       <el-button
-        class="full-btn mt30"
+        class="full-btn mt10"
         type="primary"
         @click="createAccount"
       >{{$t('button.createAccount')}}</el-button>
-      <section class="small-tip text-center mt10">{{$t('message.recommendNew')}}</section>
       <div class="text-center mt15">
         <img src="/images/import-account.png" @click="deleteWallet" />
       </div>
+      <!-- <section class="small-tip text-center mt30">{{$t('message.recommendOld')}}</section> -->
+      <section class="small-tip text-center mt30">{{$t('message.forExistingCOCOSAccount')}}:</section>
       <el-button
-        class="full-btn mt30"
+        class="full-btn mt10"
         type="primary"
         @click="importAccount"
       >{{$t('button.importAccount')}}</el-button>
-      <section class="small-tip text-center mt10">{{$t('message.recommendOld')}}</section>
     </section>
     <!-- create account -->
     <el-dialog
@@ -83,12 +85,12 @@
           type="primary"
           @click="accountRegister"
         >{{$t('title.accountType')}}</el-button>
-        <el-button
+        <!-- <el-button
           class="full-btn mt20"
           style="margin-left: 0 !important;"
           type="primary"
           @click="walletRegister"
-        >{{$t('title.walletType')}}</el-button>
+        >{{$t('title.walletType')}}</el-button> -->
       </span>
     </el-dialog>
   </section>
@@ -171,20 +173,15 @@ export default {
       // 2019-12-09  新增修改
       connectNode[0].connect = true;
       
-      _this.loadingBCXAccount().then(res => {
-        console.log("loadingBCXAccount")
-        console.log(res)
-      })
-      _this.apiConfig(connectNode[0]).then((apiConfigRes) => {
-        _this.lookupWSNodeList({
-          refresh:true,
-        }).then( lookupWSNodeListRes =>{
-          console.log('++++++lookupWSNodeListRes')
-          console.log(lookupWSNodeListRes)
-          // this.init();
-        })
-        
-      });
+      // _this.loadingBCXAccount().then(res => {
+      // })
+      // _this.apiConfig(connectNode[0]).then((apiConfigRes) => {
+      //   _this.lookupWSNodeList({
+      //     refresh:true,
+      //   }).then( lookupWSNodeListRes =>{
+      //     // this.init();
+      //   })
+      // });
       // 2019-12-09  新增修改 完成
     });
     this.lang =
@@ -196,8 +193,6 @@ export default {
     this.$i18n.locale = this.curLng;
   },
   created (){
-    console.log("this.$router.query")
-    console.log(this.$route.query)
       // this.nodes = Storage.get("node").concat(
       //   Storage.get("add_node") ? Storage.get("add_node") : []
       // );
@@ -205,7 +200,7 @@ export default {
   },
   methods: {
     ...mapMutations("wallet", ["addAccount"]),
-    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList"]),
+    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList", "apiConfigChangeNode"]),
     ...mapMutations([
       "setCurrentAccount",
       "setCurrentCreateAccount",
@@ -215,15 +210,11 @@ export default {
     ...mapActions("wallet", ["deleteWallet"]),
     ...mapActions("account", ["logoutBCXAccount", "loadingBCXAccount"]),
     nodeSyncFn(changeNode){
-        console.log("nodeSyncFn")
     // chrome.tabs.query可以通过回调函数获得当前页面的信息tabs
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            console.log("tabs")
-            console.log(tabs)
         // 发送一个copy消息出去
-            chrome.tabs.sendMessage(tabs[0].id, changeNode, function (response) {
-                console.log("response")
-                console.log(response);
+        Storage.set("choose_node", changeNode);
+            chrome.tabs.sendMessage(tabs[0].id, {type: "change", content: changeNode}, function (response) {
       // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
       // 将值存在background.js的data属性里面。
                 // var win = chrome.extension.getBackgroundPage();
@@ -250,32 +241,62 @@ export default {
         message: this.$i18n.t("alert.copyFail")
       });
     },
+    
+    switchAPINodeAjax() {
+      let _this = this
+      let connectNode = this.nodes.filter( item => {
+        return item.name == _this.chooseName
+      })
+      let network = connectNode[0]
+      let _configParams={ 
+          default_ws_node: network.ws,
+          ws_node_list:[
+          {url: network.ws,name: network.name}, 
+          ],
+          networks:[
+              {
+                  core_asset: "COCOS",
+                  chain_id: network.chainId 
+              }
+          ], 
+          faucet_url:network.faucetUrl,
+          auto_reconnect:true,
+          real_sub:true,
+          check_cached_nodes_data:false
+      };     
+      _this.apiConfigChangeNode(_configParams, true).then( apiConfigres => {
+        console.log('apiConfigres')
+        console.log(apiConfigres)
+        _this.nodeSyncFn(network)
+      })
+    },
     changeNode(){
       let _this = this
       let connectNode = this.nodes.filter( item => {
         return item.name == _this.chooseName
       })
       let network = connectNode[0]
-      console.log("network")
-      console.log(network)
       // if (network.chainId === Storage.get("choose_node").chainId) {
       //   console.log('network.chainId === Storage.get("choose_node").chainId')
-        this.switchAPINode({
-          url: network.ws
-        }).then(res => {
-          console.log('***********switchAPINode***************')
-          console.log("switchAPINode", res)
+        console.log(network)
+          this.init().then( res => {
+            return new Promise(function (resolve, reject) {
+              _this.switchAPINode({
+                url: network.ws
+              }).then(res =>{
+                resolve(res)
+              })
+            })
+          }).then(res => {
+          console.log(res)
           if (res.code === 1) {
             if (res.data.selectedNodeUrl) {
               // _this.apiConfig({
               //   faucet_url:"http://47.93.62.96:8042"   
               // })
                 _this.apiConfig(network).then( apiConfigres => {
-                  console.log("apiConfigres")
-                  console.log(apiConfigres)
                 _this.choose = network;
                 _this.lookupWSNodeList().then( lookupWSNodeListRes => {
-                  console.log("lookupWSNodeListRes", lookupWSNodeListRes)
                   if (lookupWSNodeListRes.data.selectedNodeUrl) {
                           Storage.set("choose_node", network);
                           _this.nodeSyncFn(network)

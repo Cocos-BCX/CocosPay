@@ -51,8 +51,27 @@
         </a>
       </div>
     </div>
+    
+    <!-- change node -->
+
+    <k-dialog
+      :visible="changeNodeRemovePasswordShow"
+      :title="$t('title.switchingTheNetwork') "
+      @close="changeNodeRemovePasswordShow = false"
+    >
+      <div class="warning-tit">{{$t('message.switchingTheNetworkWillExitTheAccount')}}</div>
+      <div class="warning-tip">{{$t('confirm.removeAccount')}}</div>
+      <div slot="footer" class="text-center">
+        <el-button
+          class="full-btn"
+          type="primary"
+          @click="sureBtn('removeForm')"
+        >{{$t('button.sure')}}</el-button>
+      </div>
+    </k-dialog>
     <div class="setting-icon">
       <img src="/icons/shuaxin.png" alt @click="refreshData">
+      <img src="/icons/mima.png" alt @click="lockAccountAjax">
       <img src="/icons/shezhi2.png" alt @click="goSettings">
     </div>
   </header>
@@ -62,19 +81,27 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import vClickOutside from "v-click-outside";
 import Storage from "../../lib/storage";
 import BCX from "bcx-api";
+import KDialog from "../components/dialog/DialogComponent";
+import extension from "../../lib/extension"
 // import BCX from '../../lib/bcx-api'
 
 // import '../../lib/bcx.min.js'
 export default {
+  components: {
+    KDialog
+  },
   data() {
     return {
       showNetworkDropdown: false,
       nodes: [],
-      choose: ""
+      choose: "",
+
+      changeNodeRemovePasswordShow: false,
+      networkNode: {},
     };
   },
   computed: {
-    ...mapState(["route", "currentNetwork"])
+    ...mapState(["route", "currentNetwork", "cocosAccount"])
   },
   directives: {
     clickOutside: vClickOutside.directive
@@ -98,41 +125,37 @@ export default {
   },
   methods: {
     ...mapActions("account", [
-      "logoutBCXAccount"
+      "logoutBCXAccount",
+      "lockAccount"
     ]),
     ...mapActions("wallet", [
       "getAccounts",
       "deleteWallet"
     ]),
-    ...mapMutations(["setAccountType", "setLogin", "setIsAccount", "setAccount"]),
-    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList"]),
+    ...mapMutations(["setAccountType", "setLogin", "setIsAccount", "setAccount", "setLoginNoAlert", ]),
+    ...mapActions(["nodeLists", "apiConfig", "init", "switchAPINode", "lookupWSNodeList", "apiConfigChangeNode"]),
     
     nodeSyncFn(changeNode){
-      console.log("nodeSyncFn")
       let _this = this
-      console.log("changeNode")
-      console.log(changeNode)
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        console.log("tabs")
-        console.log(tabs)
-        // 发送一个copy消息出去
-        chrome.tabs.sendMessage(tabs[0].id, changeNode, function (response) {
-          console.log("response")
-          console.log(response);
-          // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
-          // 将值存在background.js的data属性里面。
-          // var win = chrome.extension.getBackgroundPage();
-          // console.log("win")
-          // console.log(win)
-          // win.data=response;
-          
-        });
-        
-        _this.$kalert({
-          message: _this.$i18n.t("alert.modifySuccess")
-        });
-        Storage.set("choose_node", changeNode);
-        _this.$router.replace({ name: "initAccount", query: {isReload: false}});
+      
+      console.log(">>>>>>>>>>>>>")
+      
+      _this.$router.push('initAccount', function () {
+        console.log("extension.tabsSendMessage  /initAccount")
+        // extension.tabsSendMessage().then( res => {
+        //   console.log("extension.tabsSendMessage")
+        // })
+        // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        //   // 发送一个copy消息出去
+        //   chrome.tabs.sendMessage(tabs[0].id, {type: "change", content: changeNode}, function (response) {
+        //     // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
+        //     // 将值存在background.js的data属性里面。
+        //     // var win = chrome.extension.getBackgroundPage();
+        //     // win.data=response;
+        //     console.log(response)
+        //     Storage.set("choose_node", changeNode);
+        //   });
+        // });
       });
     // chrome.tabs.query可以通过回调函数获得当前页面的信息tabs
         
@@ -141,41 +164,98 @@ export default {
       this.showNetworkDropdown = false;
     },
     changeNetwork(network) {
+      this.networkNode = {}
+      this.changeNodeRemovePasswordShow = true
+      this.networkNode = network
+    },
+    sureBtn(){
       let _this = this
-      console.log("network")
-      console.log(network)
+      this.switchAPINodeAjax(_this.networkNode)
+    },
+    switchAPINodeAjax(network) {
+      let _this = this
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
-        console.log("deleteWallet")
+        console.log("this.deleteWallet(), this.logoutBCXAccount()")
         console.log(res)
-      window.localStorage.setItem("delAccount", "sure");
+        window.localStorage.setItem("delAccount", "sure");
         this.setLogin(false);
         this.setIsAccount(false);
         this.setAccount({
           account: "",
           password: ""
         });
+      })
+      console.log('begin change node...')
+      let Node = network
+      
+      let _configParams={ 
+          default_ws_node: network.ws,
+          ws_node_list:[
+          {url: network.ws,name: network.name}, 
+          ],
+          networks:[
+              {
+                  core_asset: "COCOS",
+                  chain_id: network.chainId 
+              }
+          ], 
+          faucet_url:network.faucetUrl,
+          auto_reconnect:true,
+          real_sub:true,
+          check_cached_nodes_data:false
+      };    
+      _this.apiConfigChangeNode(_configParams, true).then( apiConfigres => {
+        console.log('apiConfigres')
+        console.log(apiConfigres)
         
-        this.switchAPINode({
-          url: network.ws
-        }).then(res => {
-          if (res.code === 1) {
+        _this.$kalert({
+          message: _this.$i18n.t("alert.modifySuccess")
+        });
+        Storage.set("choose_node", network);
+        _this.nodeSyncFn(network)
+      })
+    },
+    switchAPINodeAjaxtest(network) {
+      let _this = this
+      Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
+        console.log("this.deleteWallet(), this.logoutBCXAccount()")
+        console.log(res)
+        window.localStorage.setItem("delAccount", "sure");
+        this.setLogin(false);
+        this.setIsAccount(false);
+        this.setAccount({
+          account: "",
+          password: ""
+        });
+        // this.init().then( initRes => {
+        //   return new Promise(function (resolve, reject) {
+        //     _this.switchAPINode({
+        //       url: network.ws
+        //     }).then(res => {
+        //       if (res.code === 1) {
+        //           resolve(res)
+        //       } else {
+        //           _this.$kalert({
+        //             message:  _this.$i18n.t("alert.modifyFailed")
+        //           });
+        //       }
+        //     })
+        //   })
+        // })
+          this.init().then( res => {
             return new Promise(function (resolve, reject) {
-              resolve(res)
+              _this.switchAPINode({
+                url: network.ws
+              }).then(res =>{
+                resolve(res)
+              })
             })
-          } else {
-              _this.$kalert({
-                message:  _this.$i18n.t("alert.modifyFailed")
-              });
-          }
-        }).then(res =>{
-          
+          }).then(res =>{
             return new Promise(function (resolve, reject) {
               
               if (res.data.selectedNodeUrl) {
                 
                 _this.apiConfig(network).then( apiConfigres => {
-                  console.log("apiConfigres")
-                  console.log(apiConfigres)
                   resolve(apiConfigres)
                 })
                 // _this.apiConfig({
@@ -200,107 +280,132 @@ export default {
               }
           })
         })
-
       });
     },
-
-    // changeNetwork  2019-12-26 备份
-    changeNetwork123(network) {
+    lockAccountAjax(){
       let _this = this
-      console.log("network")
-      console.log(network)
-      // if (network.chainId === Storage.get("choose_node").chainId) {
-      //   console.log('network.chainId === Storage.get("choose_node").chainId')
-        this.switchAPINode({
-          url: network.ws
-        }).then(res => {
-          if (res.code === 1) {
-            return new Promise(function (resolve, reject) {
-              resolve(res)
-            })
-          } else {
-              _this.$kalert({
-                message:  _this.$i18n.t("alert.modifyFailed")
+      this.lockAccount().then( res => {
+        if (res.code == 1) {
+          
+          // _this.setLoginNoAlert(false);
+          // _this.setAccount({
+          //   account: _this.cocosAccount.accounts,
+          //   password: ""
+          // });
+          // _this.setIsAccount(false);
+          // _this.setLogin(false);
+          _this.$router.push({ name: "unlockActive" })
+        } else {
+            if (res.message.indexOf("wrong password") > -1 || res.message.indexOf("password error") > -1 ) {
+              this.$kalert({
+                message:  this.$i18n.t("error[105]")
               });
-          }
-        }).then(res =>{
-          
-            return new Promise(function (resolve, reject) {
-              
-              if (res.data.selectedNodeUrl) {
-                
-                // _this.apiConfig({
-                //   faucet_url:"http://47.93.62.96:8042"   
-                // })
-                _this.choose = network;
-                _this.lookupWSNodeList().then( lookupWSNodeListRes => {
-                    
-                    if (lookupWSNodeListRes.data.selectedNodeUrl) {
-                      
-                      resolve(lookupWSNodeListRes)
-                      
-                    } else {
-                      _this.$kalert({
-                        message: _this.$i18n.t("alert.modifyFailed")
-                      });
-                    }
-                  
-                  
-                })
-              } else {
-                _this.$kalert({
-                  message:  _this.$i18n.t("alert.modifyFailed")
-                });
-              }
-            })
-        }).then( res => {
-          
-          _this.apiConfig(network).then( apiConfigres => {
-            console.log("apiConfigres")
-            console.log(apiConfigres)
-            Storage.set("choose_node", network);
-            _this.removeCurrentAccount()
-            // _this.init().then( initRes => {
-            //   _this.$kalert({
-            //     message: _this.$i18n.t("alert.modifySuccess")
-            //   });
-            //   _this.removeCurrentAccount()
-            // })
-          })
-        });
-      // } else {
-      //   console.log('else   network.chainId === Storage.get("choose_node").chainId')
-      //   let Node = network;
-
-
-        // 2019-12-09 注释修改 结束
-        // this.NewBCX(Node);
-          
-        // _this.init().then(res => {
-        //   console.log('-------change--------this.init()---------')
-        //   console.log(res)
-        //   if (res.code !== 1) {
-        //     _this.$kalert({
-        //       message: _this.$i18n.t(`error[${res.code}]`)
-        //     });
-        //     // this.init(this.nodes[0]);
-        //     // this.init().then(change => {
-        //     //   this.switchAPINode({
-        //     //     url: this.nodes[0].ws
-        //     //   }).then(change => {
-        //     //     this.apiConfig(this.nodes[0]);
-        //     //   });
-        //     // });
-        //   } else {
-        //     _this.$kalert({
-        //       message: _this.$i18n.t("alert.modifySuccess")
-        //     });
-        //     _this.choose = network;
-        //   }
-        // });
-        // 2019-12-09 注释修改  结束
-      // }
+            } else {
+              this.$kalert({
+                message:  _this.$i18n.t("chainInterfaceError[500]")
+              });
+            }
+        }
+        
+      })
     },
+    // changeNetwork  2019-12-26 备份
+    // changeNetwork123(network) {
+    //   let _this = this
+    //   console.log("network")
+    //   console.log(network)
+    //   // if (network.chainId === Storage.get("choose_node").chainId) {
+    //   //   console.log('network.chainId === Storage.get("choose_node").chainId')
+    //     this.switchAPINode({
+    //       url: network.ws
+    //     }).then(res => {
+    //       if (res.code === 1) {
+    //         return new Promise(function (resolve, reject) {
+    //           resolve(res)
+    //         })
+    //       } else {
+    //           _this.$kalert({
+    //             message:  _this.$i18n.t("alert.modifyFailed")
+    //           });
+    //       }
+    //     }).then(res =>{
+          
+    //         return new Promise(function (resolve, reject) {
+              
+    //           if (res.data.selectedNodeUrl) {
+                
+    //             // _this.apiConfig({
+    //             //   faucet_url:"http://47.93.62.96:8042"   
+    //             // })
+    //             _this.choose = network;
+    //             _this.lookupWSNodeList().then( lookupWSNodeListRes => {
+                    
+    //                 if (lookupWSNodeListRes.data.selectedNodeUrl) {
+                      
+    //                   resolve(lookupWSNodeListRes)
+                      
+    //                 } else {
+    //                   _this.$kalert({
+    //                     message: _this.$i18n.t("alert.modifyFailed")
+    //                   });
+    //                 }
+                  
+                  
+    //             })
+    //           } else {
+    //             _this.$kalert({
+    //               message:  _this.$i18n.t("alert.modifyFailed")
+    //             });
+    //           }
+    //         })
+    //     }).then( res => {
+          
+    //       _this.apiConfig(network).then( apiConfigres => {
+    //         console.log("apiConfigres")
+    //         console.log(apiConfigres)
+    //         Storage.set("choose_node", network);
+    //         _this.removeCurrentAccount()
+    //         // _this.init().then( initRes => {
+    //         //   _this.$kalert({
+    //         //     message: _this.$i18n.t("alert.modifySuccess")
+    //         //   });
+    //         //   _this.removeCurrentAccount()
+    //         // })
+    //       })
+    //     });
+    //   // } else {
+    //   //   console.log('else   network.chainId === Storage.get("choose_node").chainId')
+    //   //   let Node = network;
+
+
+    //     // 2019-12-09 注释修改 结束
+    //     // this.NewBCX(Node);
+          
+    //     // _this.init().then(res => {
+    //     //   console.log('-------change--------this.init()---------')
+    //     //   console.log(res)
+    //     //   if (res.code !== 1) {
+    //     //     _this.$kalert({
+    //     //       message: _this.$i18n.t(`error[${res.code}]`)
+    //     //     });
+    //     //     // this.init(this.nodes[0]);
+    //     //     // this.init().then(change => {
+    //     //     //   this.switchAPINode({
+    //     //     //     url: this.nodes[0].ws
+    //     //     //   }).then(change => {
+    //     //     //     this.apiConfig(this.nodes[0]);
+    //     //     //   });
+    //     //     // });
+    //     //   } else {
+    //     //     _this.$kalert({
+    //     //       message: _this.$i18n.t("alert.modifySuccess")
+    //     //     });
+    //     //     _this.choose = network;
+    //     //   }
+    //     // });
+    //     // 2019-12-09 注释修改  结束
+    //   // }
+    // },
 
 
     NewBCX(Node) {
@@ -407,6 +512,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "../theme/v1/variable";
+@import "../styles/home.scss";
+.warning-tit{
+  font-size: 12px;
+  color: #333;
+}
 .header {
   width: 100%;
   height: 60px;
@@ -418,7 +528,7 @@ export default {
   background-color: $bg-shallow;
 }
 .setting-icon {
-  width: 62px;
+  width: 93px;
   display: flex;
   justify-content: space-between;
   img {

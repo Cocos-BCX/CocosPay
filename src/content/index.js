@@ -333,5 +333,6 @@ export default class Content {
     }
   }
 }
+
 // eslint-disable-next-line
 new Content()

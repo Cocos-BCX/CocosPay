@@ -43,8 +43,6 @@ export default {
           commit('loading', false, {
             root: true
           })
-          console.log("-------createAccountWithPassword------------------------------")
-          console.log(res)
           if (res.code !== 1) {
             // Alert({
             //   message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -162,8 +160,6 @@ export default {
       state,
       rootState
     }, params) {
-      console.log("***vuex   setPrivateKeys ****")
-      console.log(params)
       commit('loading', true, {
         root: true
       })
@@ -182,10 +178,7 @@ export default {
         //     })
         //   }
         // }, 3500)
-        console.log("=====================================")
-        // console.log(rootState.privateKeys)
-        // console.log(rootState.temporaryKeys)
-        console.log(params)
+        console.log(NewBCX)
         console.log(params.privateKey)
         console.log(params.password)
         await NewBCX.importPrivateKey({
@@ -197,8 +190,7 @@ export default {
           commit('loading', false, {
             root: true
           })
-          console.log("NewBCX.importPrivateKey")
-          console.log(res)
+          console.log("store...  loading false")
           if (res.code !== 1) {
             if (params && params.has_import && res.code !== 160) {
               // Alert({
@@ -233,8 +225,6 @@ export default {
           }
           resData = res;
         }).catch( err => {
-          console.log('importPrivateKey err')
-          console.log(err)
           commit('loading', false, {
             root: true
           })
@@ -242,10 +232,10 @@ export default {
             message: CommonJs.getI18nMessages(I18n).error[150]
           })
         })
-        console.log("****")
-        console.log(resData)
         return resData
       } catch (e) {
+        console.log('setPrivateKeys e')
+        console.log(e)
         return e
       }
     },
@@ -273,6 +263,35 @@ export default {
           commit('setLoginNoAlert', false, {
             root: true
           })
+          resData = res
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+    async lockAccount({
+      commit,
+      state,
+      rootState
+    }) {
+      commit('loading', true, {
+        root: true
+      })
+      try {
+        let resData
+        await NewBCX.lockAccount().then((res) => {
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code !== 1 && !rootState.loginNoAlert) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          // commit('setLoginNoAlert', false, {
+          //   root: true
+          // })
           resData = res
         })
         return resData
@@ -377,6 +396,32 @@ export default {
       try {
         await NewBCX.queryAccountBalances({
           unit: '',
+          account: rootState.cocosAccount.accounts,
+        }).then(res => {
+          commit('loading', false, {
+            root: true
+          })
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+    // queryVestingBalance
+    async queryVestingBalance({
+      commit,
+      state,
+      rootState
+    }) {
+      let resData;
+      try {
+        await NewBCX.queryVestingBalance({
           account: rootState.cocosAccount.accounts,
         }).then(res => {
           commit('loading', false, {

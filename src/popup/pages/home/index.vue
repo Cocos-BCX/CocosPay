@@ -27,6 +27,20 @@
               <span class="asset-value">{{item[1]}}</span>
             </li>
           </ul>
+          <div class="receiveGAS">
+            <div class="contentGAS">
+              <ul class="amountContainer">
+                <p class="title">GAS</p>
+                <p class="percentage">{{totalGASPercentage}}</p>
+              </ul>
+              <ul class="progressBar">
+                <li class="already" :style="{width: totalGASPercentage}"></li>
+              </ul>
+            </div>
+            <!-- <a href="javascript:;" class="receiveBtn" @click="claimVestingBalanceAjax()">立即领取</a>
+            <input class="receiveBtn" @click="claimVestingBalanceAjax()" value="立即领取"> -->
+            <p class="receiveBtn" @click="claimVestingBalanceAjax()">{{$t('button.receiveImmediately')}}</p>
+          </div>
         </div>
       </div>
       <div slot="content">
@@ -110,12 +124,13 @@
           </div>
           <div class="eos-main">
             <img class="eos-logo" src="/icons/logo-middle.png" />
-            <h2 class="eos-style mt15">
+            <h2 class="eos-style mt10 eos-style-color">
               {{cocosCount || 0}} COCOS
               <span class="test-coin" v-if="currentNodeName== 'Test'">({{$t('title.test')}})</span>
             </h2>
+            <p class="currency">≈{{COCOSCurrency || 0}}{{currentUnit}}</p>
             <div class="btn-group" style="justify-content: space-around;">
-              <el-button class="gradual-button charge" @click="goRecharge">{{$t('button.recharge')}}</el-button>
+              <el-button class="gradual-button charge" @click="goRecharge">{{$t('button.collection')}}</el-button>
               <el-button class="gradual-button charge" @click="goTransfer">{{$t('button.transfer')}}</el-button>
               <!-- <el-button
                 class="gradual-button three-btn"
@@ -243,7 +258,7 @@
           v-clipboard:success="copySuccess"
           v-clipboard:error="copyError"
           v-if="active_private_key"
-        >{{$t('button.copy')}} active_key</el-button>
+        >{{$t('button.copy')}}{{$t('button.assetPrivateKey')}}</el-button>
         <section v-if="owner_private_key" class="privateKey-area">{{owner_private_key}}</section>
         <el-button
           class="full-btn"
@@ -252,7 +267,7 @@
           v-clipboard:success="copySuccess"
           v-clipboard:error="copyError"
           v-if="owner_private_key"
-        >{{$t('button.copy')}} owner_key</el-button>
+        >{{$t('button.copy')}}{{$t('button.accountPrivateKey')}}</el-button>
       </section>
     </el-dialog>
     <el-dialog top="15vh" center :title="$t('title.editorAccount')" :visible.sync="nameVisible">
@@ -317,8 +332,6 @@ import Storage from "../../../lib/storage";
 export default {
   name: "home",
   components: {
-    currentNodeName: Storage.get("choose_node").name,
-
     KDialog,
     AppHeader,
     ActionItem,
@@ -335,13 +348,13 @@ export default {
     let accountDetail = "";
     let accountDetailTail = "";
     if ("developmentNewTest" === process.env.NODE_ENV) {
-     accountDetail = "https://www.cocosabc.com/account"
+     accountDetail = "https://www.cocosabc.com/accounts/account"
       // accountDetail = "https://explorer.cocosbcx.io/address";
       // accountDetail = "http://easywallet.pro/terminal/#/account";
       // accountDetailTail = "lastOperation";
     } else {
       // accountDetail = "https://explorer.cocosbcx.io/address";
-      accountDetail = "https://www.cocosabc.com/account"
+      accountDetail = "https://www.cocosabc.com/accounts/account"
     }
 
     return {
@@ -395,7 +408,20 @@ export default {
       timer: null,
       password: "",
       privateKey: false,
-      accountList: []
+      accountList: [],
+
+      currentExchange: {},
+      currentUnit: '',
+      COCOSCurrency: '',
+
+      myAvailableGAS: '',
+      totalGAS: '',
+      totalGASPercentage: '',
+
+      asset_id_cocos: '',
+      receiveCOCOS: '',
+      asset_id: '',
+      receiveGAS: ''
     };
   },
   computed: {
@@ -403,8 +429,7 @@ export default {
     ...mapState("account", ["balance", "assets"]),
     ...mapState("wallet", ["pwdhash"]),
     ...mapState("trans", ["tranferList"]),
-    ...mapState(["cocosAccount", "cocosCount"]),
-
+    ...mapState(["cocosAccount", "cocosCount", "COCOSUsd", "currencyList"]),
     currentCreateVisible: {
       get() {
         return this.$store.state.currentCreateVisible;
@@ -420,7 +445,12 @@ export default {
     //   return network && network.AccountDetailUrl;
     // }
   },
-  async created() {},
+  created() {
+    this.currentExchange = this.currencyList.filter( item => {
+      return item.currencyT == Storage.get("currentCurrency")
+    })
+    this.currentUnit = this.currentExchange[0].currencyT
+  },
   mounted() {
     this.$i18n.locale = window.localStorage.getItem("lang_type") || "EN";
     this.transactionsScroller = new PerfectScrollbar(
@@ -478,58 +508,87 @@ export default {
       "OutPutKey",
       "logoutBCXAccount",
       "loginBCXAccount",
-      "unlockAccount"
+      "unlockAccount",
+      "queryVestingBalance"
     ]),
     ...mapActions("wallet", [
       "deleteWallet",
       "getAccounts",
       "setCurrentAccounts"
     ]),
-    ...mapActions(["nodeLists", "init", "subscribeTo"]),
+    ...mapActions(["nodeLists", "init", "subscribeTo", "claimVestingBalance"]),
     ...mapActions("trans", ["queryTranferList", "transferNHAsset"]),
     scrollTopList() {
       this.$el.querySelector("#perfect-scroll-wrapper").scrollTop = 0;
       this.transactionsScroller.update();
     },
+    cocosCountFormate: function(val){
+      if(this.currentNodeName == "Test") {
+        this.COCOSCurrency = 0
+        return false
+      }
+      this.COCOSCurrency = Number(val) * Number(this.COCOSUsd) * Number(this.currentExchange[0].exchange)
+      let pointIndex = String(this.COCOSCurrency).indexOf(".")
+      if(5 - pointIndex > 0) {
+        this.COCOSCurrency = this.COCOSCurrency.toFixed(5 - pointIndex)
+      } else {
+        this.COCOSCurrency.toFixed(4)
+      }
+    },
     loadData() {
       let _this = this
       this.scrollTopList();
       this.loadingBCXAccount().then(res => {
-        console.log("loadingBCXAccount")
-        console.log(res)
         if (res && res.locked) {
           this.$router.replace({ name: "unlock" });
         } else {
           this.transferList();
           this.transferNHAsset();
           this.UserAccount().then(res => {
-            console.log("UserAccount")
-            console.log(res)
             if (res.code === 1) {
+              if (res.data.GAS) {
+                _this.myAvailableGAS = res.data.GAS.toFixed(5) || 0
+              }
               this.accountList = Object.entries(res.data);
-              console.log(this.accountList)
               this.accountList = this.accountList.filter( item => {
                 return item[0] != "GAS"
               })
-              this.setCocosCount(res.data.COCOS);
+                let cocosLock = 0
+                if (res.asset_locked.locked_total['1.3.0']) {
+                  cocosLock = res.asset_locked.locked_total['1.3.0'] || 0
+                }
+                let myCOCOS = Number(res.data.COCOS - cocosLock).toFixed(5)
+                this.cocosCountFormate(myCOCOS || 0)
+                this.setCocosCount(myCOCOS || 0);
+                this.queryVestingBalanceAjax()
             } else {
-                
-                  _this.$kalert({
-                    message:  _this.$i18n.t("chainInterfaceError[500]")
-                  });
-              }
+              _this.$kalert({
+                message:  _this.$i18n.t("chainInterfaceError[500]")
+              });
+            }
           });
           clearInterval(this.timer);
           this.timer = setInterval(() => {
             this.transferList();
             this.UserAccount().then(res => {
+              console.log('UserAccount')
+              console.log(res)
               if (res.code === 1) {
+                if (res.data.GAS) {
+                  _this.myAvailableGAS = res.data.GAS.toFixed(5) || 0
+                }
                 this.accountList = Object.entries(res.data);
-                console.log(this.accountList)
                 this.accountList = this.accountList.filter( item => {
                   return item[0] != "GAS"
                 })
-                this.setCocosCount(res.data.COCOS);
+                let cocosLock = 0
+                if (res.asset_locked.locked_total['1.3.0']) {
+                  cocosLock = res.asset_locked.locked_total['1.3.0'] || 0
+                }
+                let myCOCOS = Number(res.data.COCOS - cocosLock).toFixed(5)
+                this.cocosCountFormate(myCOCOS || 0)
+                this.setCocosCount(myCOCOS || 0);
+                this.queryVestingBalanceAjax()
               } else {
                   _this.$kalert({
                     message:  _this.$i18n.t("chainInterfaceError[500]")
@@ -549,15 +608,65 @@ export default {
         // });
       });
     },
+    async claimVestingBalanceAjax(){
+      let _this = this
+      this.closeDrawer()
+      let claimVestingBalanceAsset = await this.claimVestingBalance({
+        id: _this.asset_id,
+        amount: _this.receiveGAS
+      })
+      if (claimVestingBalanceAsset.code == 1) {
+        _this.$kalert({
+          message: _this.$i18n.t("alert.SuccessfulReceiving")
+        });
+        _this.queryVestingBalanceAjax()
+      } else {
+        
+        this.$kalert({
+          message: _this.codeErr(claimVestingBalanceAsset)
+        });
+        
+      }
+      
+    },
+    queryVestingBalanceAjax(){
+      let _this = this
+      // this.UserMessage().then( res => {
+      //   console.log("UserMessage")
+      //   console.log(res)
+      // })
+      this.queryVestingBalance().then( res => {
+        if (res.code == 1) {
+          
+          _this.totalGAS = Number(_this.myAvailableGAS)
+          for (let i = 0; i < res.data.length; i++) {
+            if (res.data[i].type == "cashback_gas") {
+              _this.totalGAS = (Number(_this.totalGAS) + Number(res.data[i].return_cash)).toFixed(5)
+              _this.receiveGAS = res.data[i].available_balance.amount
+              _this.asset_id = res.data[i].id
+              break;
+            }
+          }
+          for (let i = 0; i < res.data.length; i++) {
+            if (res.data[i].type == "cashback_vb") {
+              _this.receiveCOCOS = res.data[i].available_balance.amount
+              _this.asset_id_cocos = res.data[i].id
+              break;
+            }
+          }
+          _this.totalGASPercentage = (_this.myAvailableGAS/_this.totalGAS * 100.00).toFixed(0) + '%'
+        }
+      })
+    },
     listShow() {
       let _this = this
       this.UserAccount().then(res => {
         if (res.code === 1) {
           this.accountList = Object.entries(res.data);
-          console.log(this.accountList)
           this.accountList = this.accountList.filter( item => {
             return item[0] != "GAS"
           })
+          this.queryVestingBalanceAjax()
         } else {
             _this.$kalert({
               message:  _this.$i18n.t("chainInterfaceError[500]")
@@ -615,9 +724,15 @@ export default {
           if (res.code === 1) {
             this.showPrivateKey();
           } else {
-              _this.$kalert({
+            if (res.message.indexOf("wrong password") > -1 || res.message.indexOf("password error") > -1 ) {
+              this.$kalert({
+                message:  this.$i18n.t("error[105]")
+              });
+            } else {
+              this.$kalert({
                 message:  _this.$i18n.t("chainInterfaceError[500]")
               });
+            }
           }
         });
       } else {
@@ -629,9 +744,15 @@ export default {
           if (res.code === 1) {
             this.showPrivateKey();
           } else {
-              _this.$kalert({
+            if (res.message.indexOf("wrong password") > -1 || res.message.indexOf("password error") > -1 ) {
+              this.$kalert({
+                message:  this.$i18n.t("error[105]")
+              });
+            } else {
+              this.$kalert({
                 message:  _this.$i18n.t("chainInterfaceError[500]")
               });
+            }
           }
         });
       }
@@ -684,7 +805,9 @@ export default {
     },
     removeCurrentAccount(formName) {
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
-      window.localStorage.setItem("delAccount", "sure");
+        console.log("removeCurrentAccount")
+        console.log(res)
+        window.localStorage.setItem("delAccount", "sure");
         this.setLogin(false);
         this.setIsAccount(false);
         this.setAccount({
@@ -863,6 +986,48 @@ export default {
       this.$nextTick(() => {
         this.$refs.infiniteLoading.$emit("$InfiniteLoading:reset");
       });
+    },
+    // 错误提示
+    codeErr(res){
+      let _this = this;
+      let message = ""
+      if (res.code == 112) {
+        message = _this.$i18n.t('error[112]')
+      } else if (res.code == 105) {
+        message = _this.$i18n.t('error[112]')
+      } else if (res.code == 402) {
+        return false
+      } else {
+        if (res.message.indexOf('Parameter is missing') > -1) {
+          message = _this.$i18n.t('error[307]')
+        } else if (res.message.indexOf("world view name can't start whith a digit")>-1) {
+          message = _this.$i18n.t('error[302]')
+        } else if (res.message.indexOf("Please login first")>-1) {
+          message = _this.$i18n.t('error[302]')
+        } else if (res.message.indexOf('Insufficient Balance') > -1) {
+          message = _this.$i18n.t('alert.transferFail')
+        } else if (res.message.indexOf('You\'re not a nh asset creator')>-1) {
+          message = _this.$i18n.t('error[303]')
+        } else if (res.message.indexOf("world view name can't start whith a digit")>-1) {
+          message = _this.$i18n.t('error[302]')
+        } else if (res.message.indexOf("Most likely a uniqueness constraint is violated")>-1) {
+          message = _this.$i18n.t('error[304]')
+        } else if (res.message.indexOf("missing required owner authority")>-1) {
+          message = _this.$i18n.t('error[304]')
+        } else if (res.message.indexOf("locked->value >= 0")>-1) {
+          message = _this.$i18n.t('error[305]')
+        } else if (res.message.indexOf("Wrong password")>-1) {
+          message = _this.$i18n.t('error[105]')
+        } else if (res.message.indexOf("Account does not exist")>-1) {
+          message = _this.$i18n.t('error[306]')
+        } else if (res.message.indexOf("No reward available")>-1) {
+          message = _this.$i18n.t('error[307]')
+        } else {
+          message = _this.$i18n.t('interFaceMessage.common[0]')
+        }
+      }
+      
+      return message
     }
   },
   destroyed() {
@@ -889,5 +1054,100 @@ export default {
   border-radius: 8px;
   padding: 10px;
   margin: 10px 0;
+}
+.currency{
+  width: 100%;
+  height: 16px;
+  line-height: 16px;
+  text-align: center;
+  font-size:16px;
+  font-weight:400;
+  color: #7147FE;
+  margin-bottom: 8px;
+}
+
+
+.receiveGAS{
+  padding: 0 15px;
+  margin-top: 20px;
+  height:76px;
+  background:rgba(245,247,250,1);
+  border-radius:4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.contentGAS{
+  width: 130px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  align-content: space-between;
+  flex-wrap: wrap;
+  margin-left: 20px;
+}
+.contentGAS .amountContainer{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  margin-top: 0;
+}
+.contentGAS .amountContainer .title{
+  height: 20px;
+  line-height: 20px;
+  font-size:14px;
+  font-weight:400;
+  color:rgba(51,51,51,1);
+}
+.contentGAS .amountContainer .title{
+  height: 20px;
+  line-height: 20px;
+  font-size:14px;
+  font-weight:400;
+  font-weight:400;
+  color:rgba(113,71,254,1);
+}
+.contentGAS .amountContainer .percentage{
+  height: 20px;
+  line-height: 20px;
+  font-size:14px;
+  font-weight:400;
+  color:rgba(51,51,51,1);
+}
+.contentGAS .progressBar{
+  width: 100%;
+  height: 10px;
+  background:rgba(189,203,237,1);
+  border-radius:5px;
+  position: relative;
+  margin-top: 10px;
+  padding: 0;
+}
+.contentGAS .progressBar .already{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 10px;
+  background:rgba(72,105,220,1);
+  border-radius:5px;
+  padding: 0;
+}
+.receiveBtn{
+  width:80px;
+  height:32px;
+  line-height: 32px;
+  background:rgba(72,105,220,1);
+  border-radius:17px;
+  font-size:12px;
+  font-weight:400;
+  color:rgba(255,255,255,1);
+  text-align: center;
+  margin-right: 10px;
+  cursor: pointer;
+  border: none;
+  outline:none;
 }
 </style>
