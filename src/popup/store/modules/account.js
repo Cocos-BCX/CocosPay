@@ -178,9 +178,6 @@ export default {
         //     })
         //   }
         // }, 3500)
-        console.log(NewBCX)
-        console.log(params.privateKey)
-        console.log(params.password)
         await NewBCX.importPrivateKey({
           // privateKey: rootState.privateKeys,
           // password: rootState.temporaryKeys,

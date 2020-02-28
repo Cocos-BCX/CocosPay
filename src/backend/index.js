@@ -11,22 +11,22 @@ import Storage from '../lib/storage'
 import TabsMessage from '../messages/TabsMessage'
 import * as TabsMessageTypes from '../messages/TabsMessageTypes'
 import newBcx from '../popup/utils/newBcx'
+import Alert from '../popup/components/kalert/function'
+import CommonJs from "../popup/config/common";
 
 let Repeat = new Set()
 let prompt = null
 
 
+
 chrome.runtime.onMessage.addListener(
+  
   function (request, sender, sendResponse) {
-    console.log("backend")
-    console.log(request)
     if (request.type == "init") {
       chrome.tabs.query({
         active: true,
         currentWindow: true
       }, function (tabs) {
-        console.log("tabs")
-        console.log(tabs)
         // 发送一个copy消息出去
         let sendNode = null
         if (Storage.get("choose_node")) {
@@ -46,10 +46,9 @@ chrome.runtime.onMessage.addListener(
           type: 'init',
           content: sendNode
         }, function (response) {
-          console.log("chrome.tabs.sendMessage(tabs[0].id")
           // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
           // 将值存在background.js的data属性里面。
-          console.log(response);
+          // console.log(response);
         });
       });
     }
@@ -356,13 +355,17 @@ export default class Background {
     })
   }
   static publishVotes(sendResponse, payload) {
+    console.log('sendResponse:', sendResponse)
+    console.log('payload:', payload)
     this.lockGuard(sendResponse, async () => {
       try {
         const store = this._getLocalData()
+        console.log('-----store:', store)
+        console.log(store.wallet.whiteList)
         let whiteList = store.wallet.whiteList.some(ele => {
           return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
         })
-
+        console.log('whiteList:', whiteList)
         if (whiteList) {
 
           await this.getBCX().publishVotes({
@@ -370,6 +373,8 @@ export default class Background {
             vote_ids: payload.payload.vote_ids,
             votes: payload.payload.votes
           }).then((res) => {
+            
+        console.log('======publishVotes: ', res)
             if (res.code !== 1) {
               Alert({
                 message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -379,6 +384,7 @@ export default class Background {
             return
           })
         } else {
+          console.log('==else')
           this.openDialog(sendResponse, payload)
         }
       } catch (e) {

@@ -571,8 +571,6 @@ export default {
           this.timer = setInterval(() => {
             this.transferList();
             this.UserAccount().then(res => {
-              console.log('UserAccount')
-              console.log(res)
               if (res.code === 1) {
                 if (res.data.GAS) {
                   _this.myAvailableGAS = res.data.GAS.toFixed(5) || 0
@@ -805,8 +803,6 @@ export default {
     },
     removeCurrentAccount(formName) {
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
-        console.log("removeCurrentAccount")
-        console.log(res)
         window.localStorage.setItem("delAccount", "sure");
         this.setLogin(false);
         this.setIsAccount(false);

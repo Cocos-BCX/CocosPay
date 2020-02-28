@@ -169,7 +169,6 @@ export default new Vuex.Store({
           .then(async response => {
             nodes = response.data.data;
             let addNode = Storage.get("add_node")
-            console.log('==========init===============')
             // nodes = response.data.data.filter(( item )=>{
             //   return item.name == 'Test'
             // })
@@ -183,7 +182,6 @@ export default new Vuex.Store({
             //   choose: true,
             // }, ]
             
-            console.log(nodes);
             if (addNode) {
               nodes = nodes.concat([addNode])
             }
@@ -316,11 +314,9 @@ export default new Vuex.Store({
           real_sub:true,
           check_cached_nodes_data:false
         }, true).then(res=>{
-          console.log("apiConfig", res)
           resData = res
         });
         let getApiConfigResult = await NewBCX.getApiConfig()
-        console.log('getApiConfigResult', getApiConfigResult)
         // 2019-12-19 修改结束
         return resData
       } catch (e) {
@@ -331,8 +327,6 @@ export default new Vuex.Store({
       commit
     }, Node) {
       let resData
-      // console.log(">>>>>>>>>>apiConfig>>>>>>>>>>")
-      // console.log(Node)
       try {
         // 2019-12-19 注释开始
         // await NewBCX.apiConfig({

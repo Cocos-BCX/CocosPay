@@ -14,7 +14,6 @@ import * as TabMessageTypes from '../messages/TabsMessageTypes'
 import Storage from '../lib/storage'
 let stream = new WeakMap()
 let isReady = false
-console.log("injecj....")
 class Inject {
   constructor() {
     this._setEncryptedStream()
@@ -266,15 +265,11 @@ class Inject {
 
 
 chrome.runtime.sendMessage({type: "init"}, function(response) {
-  console.log("chrome.runtime.sendMessage")
-  console.log(response);
 });
 
 chrome.extension.onMessage.addListener(
   function (request, sender, sendResponse) {
       let changeNode = request.content
-      console.log("request>>>>>>>>>>>>>>>>>>>>>>>>>")
-      console.log(request)
       Storage.set("choose_node", changeNode);
       if (request.type == "init") {
         if (!Storage.get("choose_node").name || Storage.get("choose_node").name != request.content.name) {
@@ -298,9 +293,6 @@ chrome.extension.onMessage.addListener(
         }
         return "";
       }
-      console.log('request')
-      console.log(request)
-      console.log(getCookie("network"))
       // testnet  mainnet
       if (request.name == "Main") {
         if (getCookie("network") == 'mainnet') return false
