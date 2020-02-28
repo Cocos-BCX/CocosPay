@@ -232,7 +232,7 @@ class Inject {
       })
   }
   publishVotes(message) {
-    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.DELETE_NH_ASSET, message, message.resolver)
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.PUBLISH_VOTES, message, message.resolver)
       .send().then(res => {
         this.respond(message, res)
       })

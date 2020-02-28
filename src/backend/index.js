@@ -13,6 +13,7 @@ import * as TabsMessageTypes from '../messages/TabsMessageTypes'
 import newBcx from '../popup/utils/newBcx'
 import Alert from '../popup/components/kalert/function'
 import CommonJs from "../popup/config/common";
+import I18n from '../popup/languages'
 
 let Repeat = new Set()
 let prompt = null
@@ -136,7 +137,7 @@ export default class Background {
         Background.deleteNHAsset(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break
-      case InternalMessageTypes.DELETE_NH_ASSET:
+      case InternalMessageTypes.PUBLISH_VOTES:
         Background.publishVotes(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break
@@ -355,26 +356,18 @@ export default class Background {
     })
   }
   static publishVotes(sendResponse, payload) {
-    console.log('sendResponse:', sendResponse)
-    console.log('payload:', payload)
     this.lockGuard(sendResponse, async () => {
       try {
         const store = this._getLocalData()
-        console.log('-----store:', store)
-        console.log(store.wallet.whiteList)
         let whiteList = store.wallet.whiteList.some(ele => {
           return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
         })
-        console.log('whiteList:', whiteList)
         if (whiteList) {
-
           await this.getBCX().publishVotes({
             type: payload.payload.type,
             vote_ids: payload.payload.vote_ids,
             votes: payload.payload.votes
           }).then((res) => {
-            
-        console.log('======publishVotes: ', res)
             if (res.code !== 1) {
               Alert({
                 message: CommonJs.getI18nMessages(I18n).error[res.code]
@@ -384,7 +377,6 @@ export default class Background {
             return
           })
         } else {
-          console.log('==else')
           this.openDialog(sendResponse, payload)
         }
       } catch (e) {
