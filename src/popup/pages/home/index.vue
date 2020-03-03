@@ -607,6 +607,7 @@ export default {
       });
     },
     async claimVestingBalanceAjax(){
+      console.log("======")
       let _this = this
       this.closeDrawer()
       let claimVestingBalanceAsset = await this.claimVestingBalance({
@@ -1018,8 +1019,12 @@ export default {
           message = _this.$i18n.t('error[306]')
         } else if (res.message.indexOf("No reward available")>-1) {
           message = _this.$i18n.t('error[307]')
+        } else if (res.message.indexOf("Please try again")>-1) {
+          // 请在5秒钟后再试
+          // Please try again in 5 seconds
+          message = _this.$i18n.t('error[181]')
         } else {
-          message = _this.$i18n.t('interFaceMessage.common[0]')
+          message = _this.$i18n.t('chainInterfaceError[500]')
         }
       }
       

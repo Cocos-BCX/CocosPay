@@ -126,7 +126,10 @@ export default {
   },
   mounted() {
     let _this = this
-    this.nodeLists().then(res => {
+    this.nodeLists().then(response => {
+      let res = response.filter( item => {
+        return item.name == "Main"
+      })
       if (!Array.isArray(res)) return;
       // 2019-12-09  新增修改
       let isArrayNodeIndex = ''

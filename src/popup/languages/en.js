@@ -318,6 +318,7 @@ export default {
     167: 'The current contract version ID was not found',
     168: 'This subscription does not exist',
     169: 'Method does not exist',
+    181: 'Please try again later',
     300: 'Chain sync error, please check your system clock',
     301: 'RPC connection failed. Please check your network',
 

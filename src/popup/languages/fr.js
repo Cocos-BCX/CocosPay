@@ -318,6 +318,7 @@ export default {
     167: 'La version actuelle du contrat n\'a pas été trouvée',
     168: 'Cet abonnement n\'existe pas',
     169: 'La méthode n\'existe pas',
+    181: 'Essayez plus tard',
     300: 'Erreur de synchronisation de la chaîne, veuillez vérifier l\'horloge de votre système',
     301: 'La connexion RPC a échoué. S\'il vous plaît vérifier votre réseau ',
 
