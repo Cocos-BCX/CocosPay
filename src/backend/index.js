@@ -11,22 +11,23 @@ import Storage from '../lib/storage'
 import TabsMessage from '../messages/TabsMessage'
 import * as TabsMessageTypes from '../messages/TabsMessageTypes'
 import newBcx from '../popup/utils/newBcx'
+import Alert from '../popup/components/kalert/function'
+import CommonJs from "../popup/config/common";
+import I18n from '../popup/languages'
 
 let Repeat = new Set()
 let prompt = null
 
 
+
 chrome.runtime.onMessage.addListener(
+  
   function (request, sender, sendResponse) {
-    console.log("backend")
-    console.log(request)
     if (request.type == "init") {
       chrome.tabs.query({
         active: true,
         currentWindow: true
       }, function (tabs) {
-        console.log("tabs")
-        console.log(tabs)
         // 发送一个copy消息出去
         let sendNode = null
         if (Storage.get("choose_node")) {
@@ -46,10 +47,9 @@ chrome.runtime.onMessage.addListener(
           type: 'init',
           content: sendNode
         }, function (response) {
-          console.log("chrome.tabs.sendMessage(tabs[0].id")
           // 这里的回调函数接收到了要抓取的值，获取值得操作在下方content-script.js
           // 将值存在background.js的data属性里面。
-          console.log(response);
+          // console.log(response);
         });
       });
     }
@@ -137,7 +137,7 @@ export default class Background {
         Background.deleteNHAsset(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break
-      case InternalMessageTypes.DELETE_NH_ASSET:
+      case InternalMessageTypes.PUBLISH_VOTES:
         Background.publishVotes(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break
@@ -362,9 +362,7 @@ export default class Background {
         let whiteList = store.wallet.whiteList.some(ele => {
           return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
         })
-
         if (whiteList) {
-
           await this.getBCX().publishVotes({
             type: payload.payload.type,
             vote_ids: payload.payload.vote_ids,

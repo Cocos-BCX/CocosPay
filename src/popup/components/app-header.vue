@@ -137,9 +137,6 @@ export default {
     
     nodeSyncFn(changeNode){
       let _this = this
-      
-      console.log(">>>>>>>>>>>>>")
-      
       _this.$router.push('initAccount', function () {
         console.log("extension.tabsSendMessage  /initAccount")
         // extension.tabsSendMessage().then( res => {
@@ -175,8 +172,6 @@ export default {
     switchAPINodeAjax(network) {
       let _this = this
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
-        console.log("this.deleteWallet(), this.logoutBCXAccount()")
-        console.log(res)
         window.localStorage.setItem("delAccount", "sure");
         this.setLogin(false);
         this.setIsAccount(false);
@@ -205,9 +200,6 @@ export default {
           check_cached_nodes_data:false
       };    
       _this.apiConfigChangeNode(_configParams, true).then( apiConfigres => {
-        console.log('apiConfigres')
-        console.log(apiConfigres)
-        
         _this.$kalert({
           message: _this.$i18n.t("alert.modifySuccess")
         });
@@ -218,8 +210,6 @@ export default {
     switchAPINodeAjaxtest(network) {
       let _this = this
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
-        console.log("this.deleteWallet(), this.logoutBCXAccount()")
-        console.log(res)
         window.localStorage.setItem("delAccount", "sure");
         this.setLogin(false);
         this.setIsAccount(false);

@@ -46,11 +46,7 @@ export default {
   },
   mounted() {
     this.init().then(res => {
-      console.log("init")
-      console.log(res)
       this.getAccounts().then(res => {
-        console.log("getAccounts")
-        console.log(res)
         this.currentAccountType = res.current_account.mode
         this.setAccountType(res.current_account.mode);
       });

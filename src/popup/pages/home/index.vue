@@ -571,8 +571,6 @@ export default {
           this.timer = setInterval(() => {
             this.transferList();
             this.UserAccount().then(res => {
-              console.log('UserAccount')
-              console.log(res)
               if (res.code === 1) {
                 if (res.data.GAS) {
                   _this.myAvailableGAS = res.data.GAS.toFixed(5) || 0
@@ -609,6 +607,7 @@ export default {
       });
     },
     async claimVestingBalanceAjax(){
+      console.log("======")
       let _this = this
       this.closeDrawer()
       let claimVestingBalanceAsset = await this.claimVestingBalance({
@@ -805,8 +804,6 @@ export default {
     },
     removeCurrentAccount(formName) {
       Promise.all([this.deleteWallet(), this.logoutBCXAccount()]).then(res => {
-        console.log("removeCurrentAccount")
-        console.log(res)
         window.localStorage.setItem("delAccount", "sure");
         this.setLogin(false);
         this.setIsAccount(false);
@@ -1022,8 +1019,12 @@ export default {
           message = _this.$i18n.t('error[306]')
         } else if (res.message.indexOf("No reward available")>-1) {
           message = _this.$i18n.t('error[307]')
+        } else if (res.message.indexOf("Please try again")>-1) {
+          // 请在5秒钟后再试
+          // Please try again in 5 seconds
+          message = _this.$i18n.t('error[181]')
         } else {
-          message = _this.$i18n.t('interFaceMessage.common[0]')
+          message = _this.$i18n.t('chainInterfaceError[500]')
         }
       }
       

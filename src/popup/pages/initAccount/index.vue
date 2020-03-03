@@ -126,7 +126,10 @@ export default {
   },
   mounted() {
     let _this = this
-    this.nodeLists().then(res => {
+    this.nodeLists().then(response => {
+      let res = response.filter( item => {
+        return item.name == "Main"
+      })
       if (!Array.isArray(res)) return;
       // 2019-12-09  新增修改
       let isArrayNodeIndex = ''
@@ -265,8 +268,6 @@ export default {
           check_cached_nodes_data:false
       };     
       _this.apiConfigChangeNode(_configParams, true).then( apiConfigres => {
-        console.log('apiConfigres')
-        console.log(apiConfigres)
         _this.nodeSyncFn(network)
       })
     },
@@ -278,7 +279,6 @@ export default {
       let network = connectNode[0]
       // if (network.chainId === Storage.get("choose_node").chainId) {
       //   console.log('network.chainId === Storage.get("choose_node").chainId')
-        console.log(network)
           this.init().then( res => {
             return new Promise(function (resolve, reject) {
               _this.switchAPINode({
@@ -288,7 +288,6 @@ export default {
               })
             })
           }).then(res => {
-          console.log(res)
           if (res.code === 1) {
             if (res.data.selectedNodeUrl) {
               // _this.apiConfig({

@@ -10,11 +10,8 @@ npm-debug.log
 yarn.lock
 
 # Backpack build
-build.zip
 CocosPay
 CocosPay.zip
-build.crx
-build
 release
 
 # pack
