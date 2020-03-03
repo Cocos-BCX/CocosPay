@@ -40,3 +40,5 @@ Here is a dapp sample. [cocos-dice](https://github.com/Cocos-BCX/cocos-dice-samp
 build-360 为360浏览器的cocospay包
 build-chorme  为谷歌浏览器的cocospay包
 build-firefox.zip  为火狐浏览器的cocospay包
+
+
