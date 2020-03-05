@@ -29,3 +29,11 @@ Select file `build` that built before.
 
 Here is a dapp sample. [cocos-dice](https://github.com/Cocos-BCX/cocos-dice-sample) 
 
+
+## Install cocospay immediately
+
+You can directly install the latest version of cocospay by downloading build
+
+ Please jump to the installation tutorial (Chinese): https://github.com/Cocos-BCX/CocosPay/blob/master/README_CococsPay_cn.md
+
+ Please jump to the installation tutorial (English): https://github.com/Cocos-BCX/CocosPay/blob/master/README_CococsPay_en.md

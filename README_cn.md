@@ -35,4 +35,10 @@ npm run build
 
 Here is a dapp sample. [cocos-dice](https://github.com/Cocos-BCX/cocos-dice-sample) 
 
+## 立即安装cocospay
 
+通过下载build可直接快速安装cocospay的最新版本
+
+安装教程请跳转：https://github.com/Cocos-BCX/CocosPay/blob/master/README_CococsPay_cn.md
+
+安装教程请跳转：https://github.com/Cocos-BCX/CocosPay/blob/master/README_CococsPay_en.md
