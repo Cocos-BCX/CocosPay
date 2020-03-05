@@ -327,6 +327,7 @@ import InternalMessage from "../../../messages/InternalMessage";
 import * as InternalMessageTypes from "../../../messages/InternalMessageTypes";
 import { apis } from "../../../lib/BrowserApis";
 import Prompt from "../../../models/prompt/Prompt";
+import { COCOSconversion, ExchangeRate } from "../../../lib/BusinessInterface"
 
 import Storage from "../../../lib/storage";
 export default {
@@ -446,10 +447,7 @@ export default {
     // }
   },
   created() {
-    this.currentExchange = this.currencyList.filter( item => {
-      return item.currencyT == Storage.get("currentCurrency")
-    })
-    this.currentUnit = this.currentExchange[0].currencyT
+    this.COCOSconversionAjax()
   },
   mounted() {
     this.$i18n.locale = window.localStorage.getItem("lang_type") || "EN";
@@ -468,8 +466,8 @@ export default {
     // }
     this.subscribeTo();
     // this.loadAccount();
-    this.nodeLists();
-    this.loadData();
+    // this.nodeLists();
+    // this.loadData();
     // this.tokenScroller = new PerfectScrollbar("#tokenScroller", {
     //   minScrollbarLength: 40,
     //   maxScrollbarLength: 40
@@ -496,7 +494,9 @@ export default {
       "setIsAccount",
       "setAccount",
       "setCocosCount",
-      "setAccountType"
+      "setCOCOSUsd",
+      "setAccountType",
+      "setCurrencyList"
     ]),
     ...mapMutations("trans", ["setTranferList"]),
     ...mapMutations("wallet", ["addAccount", "removeAccount", "updateAccount"]),
@@ -527,12 +527,17 @@ export default {
         this.COCOSCurrency = 0
         return false
       }
+      
+      console.log(this.currentExchange)
+      console.log(val,this.COCOSUsd, this.currentExchange[0].exchange)
       this.COCOSCurrency = Number(val) * Number(this.COCOSUsd) * Number(this.currentExchange[0].exchange)
+      console.log('this.COCOSCurrency',this.COCOSCurrency)
       let pointIndex = String(this.COCOSCurrency).indexOf(".")
+      console.log('this.pointIndex',pointIndex)
       if(5 - pointIndex > 0) {
         this.COCOSCurrency = this.COCOSCurrency.toFixed(5 - pointIndex)
       } else {
-        this.COCOSCurrency.toFixed(4)
+        this.COCOSCurrency = parseFloat(this.COCOSCurrency.toFixed(4))
       }
     },
     loadData() {
@@ -983,6 +988,53 @@ export default {
       this.$nextTick(() => {
         this.$refs.infiniteLoading.$emit("$InfiniteLoading:reset");
       });
+    },
+    
+    COCOSconversionAjax(){
+      let _this = this
+      COCOSconversion().then( res => {
+        console.log("COCOSconversion: ", res)
+        _this.setCOCOSUsd(res.data.data[0].price_usd)
+        
+        _this.ExchangeRateAjax()
+      })
+    },
+    ExchangeRateAjax(){
+      ExchangeRate().then( res => {
+        console.log("ExchangeRate")
+        if (res.status == '200') {
+          let currencyList = res.data.data.result
+          let currencyListStore = []
+          for (let i = 0; i < currencyList.length; i++) {
+            let currencyListStoreEle = {}
+            if (currencyList[i].currencyT == 'USD') {
+              currencyListStoreEle.currencyT = currencyList[i].currencyT
+              currencyListStoreEle.currencyT_Name = currencyList[i].currencyT_Name
+              currencyListStoreEle.exchange = "1"
+            } else {
+              currencyListStoreEle.currencyT = currencyList[i].currencyT
+              currencyListStoreEle.currencyT_Name = currencyList[i].currencyT_Name
+              currencyListStoreEle.exchange = currencyList[i].exchange
+            }
+            currencyListStore.push(currencyListStoreEle)
+          }
+          if (!Storage.get("currentCurrency")) {
+            Storage.set("currentCurrency", "CNY")
+          }
+          
+          console.log("currencyListStore", currencyListStore)
+          this.setCurrencyList(currencyListStore)
+          // console.log(res.data[0].price_usd)
+          
+          this.currentExchange = this.currencyList.filter( item => {
+            return item.currencyT == Storage.get("currentCurrency")
+          })
+          this.currentUnit = this.currentExchange[0].currencyT
+          
+          this.nodeLists();
+          this.loadData();
+        }
+      })
     },
     // 错误提示
     codeErr(res){

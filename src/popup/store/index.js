@@ -167,10 +167,14 @@ export default new Vuex.Store({
         await axios
           .get("https://api-cocosbcx.cocosbcx.net/backend/getParams")
           .then(async response => {
-            nodes = response.data.data.filter( item => {
-              return item.name == "Main"
-            });
-            // nodes = response.data.data
+            
+            nodes = response.data.data
+            if (utils.browser().versions.gecko) {
+              nodes = response.data.data.filter( item => {
+                return item.name == "Main"
+              });
+            }
+            
             let addNode = Storage.get("add_node")
             // nodes = response.data.data.filter(( item )=>{
             //   return item.name == 'Test'

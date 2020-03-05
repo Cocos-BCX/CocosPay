@@ -20,15 +20,6 @@ import bcx from './utils/bcx'
 export default {
   name: "root",
   created(){
-    // let NewBCX = bcx.getBCXWithState();
-    this.COCOSconversionAjax()
-    this.ExchangeRateAjax()
-    // NewBCX.lookupWSNodeList({
-    //   refresh:true
-    // }).then(res=>{
-    //   console.log("====lookupWSNodeList=================")
-    //   console.log(res)
-    // })
     let isVersionUpdate = localStorage.getItem('isVersionUpdate')
     if (isVersionUpdate) {
     } else {
@@ -53,7 +44,10 @@ export default {
     COCOSconversionAjax(){
       let _this = this
       COCOSconversion().then( res => {
+        console.log("COCOSconversion: ", res)
         _this.setCOCOSUsd(res.data[0].price_usd)
+        
+        _this.ExchangeRateAjax()
       })
     },
     ExchangeRateAjax(){
@@ -76,6 +70,7 @@ export default {
             currencyListStore.push(currencyListStoreEle)
           }
           Storage.set("currentCurrency", "CNY")
+          console.log("currencyListStore", currencyListStore)
           this.setCurrencyList(currencyListStore)
           // console.log(res.data[0].price_usd)
         }
@@ -93,47 +88,6 @@ export default {
         this.$router.replace({ name: "initAccount" });
         localStorage.setItem('isVersionUpdate', true)
       });
-      // if (this.accountType === "account") {
-      //   this.logoutBCXAccount().then(res => {
-      //     if (res.code === 1) {
-      //       this.setLogin(false);
-      //       this.setIsAccount(false);
-      //       this.setAccount({
-      //         account: "",
-      //         password: ""
-      //       });
-      //       this.$router.replace({ name: "initAccount" });
-      //     }
-      //   });
-      // } else {
-      //   this.deleteWallet().then(res => {
-      //     if (res.code === 1) {
-
-      //       this.$router.replace({ name: "initAccount" });
-      //     }
-      //   });
-      // }
-
-      // this.$refs[formName].validate(valid => {
-      //   if (valid) {
-      //     if (utils.hashPassword(this.formData.password) === this.pwdhash) {
-      //       this.removeAccount(this.currentAccount);
-      //       this.formData.password = "";
-      //       this.removePasswordShow = false;
-      //       if (this.accounts.length > 0) {
-      //         this.setCurrentAccount(this.accounts[0]);
-      //         this.selectAccount(this.accounts[0]);
-      //       } else {
-      //         this.setCurrentAccount({});
-      //         this.$router.replace({ name: "initAccount" });
-      //       }
-      //     } else {
-      //       this.$kalert({
-      //         message: this.$i18n.t("alert.passwordError")
-      //       });
-      //     }
-      //   }
-      // });
     },
     
   },
