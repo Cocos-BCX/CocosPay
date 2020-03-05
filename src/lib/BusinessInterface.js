@@ -19,10 +19,13 @@ export let COCOSconversion = function (currency) {
   return new Promise(function (resolve, reject) {
     axios({
       methods: 'get',
-      url: 'http://fxhapi.feixiaohao.com/public/v1/ticker',
-      params: {
-        code: currency || 'cocosbcx'
-      }
+      url: 'https://api-cocosbcx.cocosbcx.net/backend/fxhTicker?code=cocosbcx',
+      // params: {
+      //   code: currency || 'cocosbcx'
+      // }
+      // params: {
+      //   code: 'cocosbcx'
+      // }
     })
     .then(function (response) {
       resolve(response)

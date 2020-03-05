@@ -264,44 +264,47 @@ class Inject {
 }
 
 
-// chrome.runtime.sendMessage({type: "init"}, function(response) {
-// });
+if (!utils.browser().versions.gecko) {
+  chrome.runtime.sendMessage({type: "init"}, function(response) {
+  });
+  
+  chrome.extension.onMessage.addListener(
+    function (request, sender, sendResponse) {
+        let changeNode = request.content
+        Storage.set("choose_node", changeNode);
+        if (request.type == "init") {
+          if (!Storage.get("choose_node").name || Storage.get("choose_node").name != request.content.name) {
+            location.reload()
+          }
+        }
+        function setCookie(name, value) {
+            var str = name + "=" + escape(value) + ";domain=www.cocosabc.com;path=/";
+            var date = new Date();
+            date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000); //设置date为当前时间加一年
+  
+            str += ";expires=Session";
+            document.cookie = str;
+        }
+        function getCookie(cname){
+          var name = cname + "=";
+          var ca = document.cookie.split(';');
+          for(var i=0; i<ca.length; i++) {
+            var c = ca[i].trim();
+            if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
+          }
+          return "";
+        }
+        // testnet  mainnet
+        if (request.name == "Main") {
+          if (getCookie("network") == 'mainnet') return false
+          setCookie("network", "mainnet")
+        } else {
+          if (getCookie("network") == 'testnet') return false
+          setCookie("network", "testnet")
+        }
+    }
+  );
+}
 
-// chrome.extension.onMessage.addListener(
-//   function (request, sender, sendResponse) {
-//       let changeNode = request.content
-//       Storage.set("choose_node", changeNode);
-//       if (request.type == "init") {
-//         if (!Storage.get("choose_node").name || Storage.get("choose_node").name != request.content.name) {
-//           location.reload()
-//         }
-//       }
-//       function setCookie(name, value) {
-//           var str = name + "=" + escape(value) + ";domain=www.cocosabc.com;path=/";
-//           var date = new Date();
-//           date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000); //设置date为当前时间加一年
-
-//           str += ";expires=Session";
-//           document.cookie = str;
-//       }
-//       function getCookie(cname){
-//         var name = cname + "=";
-//         var ca = document.cookie.split(';');
-//         for(var i=0; i<ca.length; i++) {
-//           var c = ca[i].trim();
-//           if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
-//         }
-//         return "";
-//       }
-//       // testnet  mainnet
-//       if (request.name == "Main") {
-//         if (getCookie("network") == 'mainnet') return false
-//         setCookie("network", "mainnet")
-//       } else {
-//         if (getCookie("network") == 'testnet') return false
-//         setCookie("network", "testnet")
-//       }
-//   }
-// );
 // eslint-disable-next-line
 new Inject()
