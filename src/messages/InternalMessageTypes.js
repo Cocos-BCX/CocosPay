@@ -24,3 +24,4 @@ export const CREATE_WORLDVIEW = 'creatWorldView'//cc
 export const CREATE_NH_ASSET = 'creatNHAsset'//cc
 export const DELETE_NH_ASSET = 'deleteNHAsset'//cc
 export const PUBLISH_VOTES = 'publishVotes'//cc
+export const SIGN_STRING = 'signString'//cc

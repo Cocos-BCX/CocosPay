@@ -81,6 +81,7 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import vClickOutside from "v-click-outside";
 import Storage from "../../lib/storage";
 import BCX from "bcx-api";
+// import BCX from "bcxjs-test-xl-api";
 import KDialog from "../components/dialog/DialogComponent";
 import extension from "../../lib/extension"
 // import BCX from '../../lib/bcx-api'

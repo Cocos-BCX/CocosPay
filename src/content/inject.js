@@ -127,6 +127,9 @@ class Inject {
       case MessageTypes.TRANSFER_NH_ASSET:
         this.transferNHAsset(nonSyncMessage)
         break
+      case MessageTypes.SIGN_STRING:
+        this.signString(nonSyncMessage)
+        break
       case MessageTypes.REGISTER_CREATOR:
         this.registerCreator(nonSyncMessage)
         break
@@ -194,6 +197,13 @@ class Inject {
 
   registerCreator(message) {
     InternalMessage.widthPayloadAndResolver(InternalMessageTypes.REGISTER_CREATOR, message, message.resolver)
+      .send().then(res => {
+        this.respond(message, res)
+      })
+  }
+
+  signString(message) {
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.SIGN_STRING, message, message.resolver)
       .send().then(res => {
         this.respond(message, res)
       })
