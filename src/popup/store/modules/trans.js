@@ -246,6 +246,29 @@ export default {
       }
     },
 
+
+    
+    //signString
+    async signString({
+      commit,
+      state
+    }, params) {
+      try {
+        let resData;
+        await NewBCX.signString(params).then(res => {
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res;
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
+
     //creatWorldView
     async creatWorldView({
       commit,

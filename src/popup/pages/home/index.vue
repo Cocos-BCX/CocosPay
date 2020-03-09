@@ -458,24 +458,23 @@ export default {
         maxScrollbarLength: 40
       }
     );
-    // console.log(this.$i18n.locale);
-    // let isDelete = window.localStorage.getItem("delAccount");
-    // if (!isDelete) {
-    //   this.removeCurrentAccount();
-    //   window.localStorage.setItem("delAccount", "sure");
-    // }
-    this.subscribeTo();
-    // this.loadAccount();
+    let isDelete = window.localStorage.getItem("delAccount");
+    if (!isDelete) {
+      this.removeCurrentAccount();
+      window.localStorage.setItem("delAccount", "sure");
+    }
+    // this.subscribeTo();
+    this.loadAccount();
     // this.nodeLists();
     // this.loadData();
-    // this.tokenScroller = new PerfectScrollbar("#tokenScroller", {
-    //   minScrollbarLength: 40,
-    //   maxScrollbarLength: 40
-    // });
+    this.tokenScroller = new PerfectScrollbar("#tokenScroller", {
+      minScrollbarLength: 40,
+      maxScrollbarLength: 40
+    });
 
-    // this.accountScroller = new PerfectScrollbar("#accountScroller", {
-    //   minScrollbarLength: 40
-    // });
+    this.accountScroller = new PerfectScrollbar("#accountScroller", {
+      minScrollbarLength: 40
+    });
     // fix drawer issue
     const drawerWrap = document.getElementsByClassName("drawer-wrap")[0];
     this.$nextTick(() => {
@@ -528,12 +527,8 @@ export default {
         return false
       }
       
-      console.log(this.currentExchange)
-      console.log(val,this.COCOSUsd, this.currentExchange[0].exchange)
       this.COCOSCurrency = Number(val) * Number(this.COCOSUsd) * Number(this.currentExchange[0].exchange)
-      console.log('this.COCOSCurrency',this.COCOSCurrency)
       let pointIndex = String(this.COCOSCurrency).indexOf(".")
-      console.log('this.pointIndex',pointIndex)
       if(5 - pointIndex > 0) {
         this.COCOSCurrency = this.COCOSCurrency.toFixed(5 - pointIndex)
       } else {
@@ -992,16 +987,15 @@ export default {
     
     COCOSconversionAjax(){
       let _this = this
+      this.$store.commit("loading", true);
       COCOSconversion().then( res => {
-        console.log("COCOSconversion: ", res)
+      this.$store.commit("loading", false);
         _this.setCOCOSUsd(res.data.data[0].price_usd)
-        
         _this.ExchangeRateAjax()
       })
     },
     ExchangeRateAjax(){
       ExchangeRate().then( res => {
-        console.log("ExchangeRate")
         if (res.status == '200') {
           let currencyList = res.data.data.result
           let currencyListStore = []
@@ -1021,10 +1015,7 @@ export default {
           if (!Storage.get("currentCurrency")) {
             Storage.set("currentCurrency", "CNY")
           }
-          
-          console.log("currencyListStore", currencyListStore)
           this.setCurrencyList(currencyListStore)
-          // console.log(res.data[0].price_usd)
           
           this.currentExchange = this.currencyList.filter( item => {
             return item.currencyT == Storage.get("currentCurrency")

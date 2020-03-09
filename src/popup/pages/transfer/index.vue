@@ -313,8 +313,8 @@ export default {
             });
           }
         }
-      }).catch( res => {
-        console.log(res)
+      }).catch( e => {
+        console.log("catch", e)
       });
     }
   }

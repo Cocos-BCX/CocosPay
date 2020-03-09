@@ -20,6 +20,10 @@
         <div class="title" v-if="prompt.data.type === 'signature'">
           <span>{{languages.title.signature}}</span>
         </div>
+        
+        <div class="title" v-else-if="prompt.data.type === 'signString'">
+          <span>签名字符串</span>
+        </div>
         <div class="title" v-else-if="prompt.data.type === 'registerCreator'">
           <span>{{languages.title.registerCreator}}</span>
         </div>
@@ -277,6 +281,13 @@ white-space: nowrap;}"
         <el-button
           class="confirm-btn text-center"
           type="primary"
+          v-if="prompt.data.type === 'signString'"
+          @click.once="signStringStore"
+        >{{languages.button.confirm}}</el-button>
+
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
           @click.once="createWorldView"
           v-if="prompt.data.type === 'creatWorldView'"
         >{{languages.button.confirm}}</el-button>
@@ -336,6 +347,7 @@ white-space: nowrap;}"
           v-if="prompt.data.type === 'transferNHAsset'"
           @click.once="transferNH"
         >{{languages.button.confirm}}</el-button>
+        
       </section>
     </div>
   </section>
@@ -418,6 +430,7 @@ export default {
       "callContractFunction",
       "creatNHAssetOrder",
       "registerCreator",
+      "signString",
       "creatWorldView",
       "creatNHAsset",
       "deleteNHAsset",
@@ -432,6 +445,18 @@ export default {
     denied() {
       this.prompt.responder(null);
       NotificationService.close();
+    },
+    signStringStore(){
+      this.addWhite();
+      this.signString(this.prompt.data.payload)
+        .then(res => {
+          this.prompt.responder({ accepted: true, res: res });
+          NotificationService.close();
+        })
+        .catch(err => {
+          this.prompt.responder({ accepted: true, res: err });
+          NotificationService.close();
+        });
     },
 
     registCreator() {

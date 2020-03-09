@@ -63,6 +63,9 @@ class BcxWeb {
   static setRegisterCreator(registerCreator) {
     this.BCX.registerCreator = registerCreator
   }
+  static setSignString(signString) {
+    this.BCX.signString = signString
+  }
 
   static setCreatWorldView(creatWorldView) {
     this.BCX.creatWorldView = creatWorldView
@@ -126,6 +129,7 @@ class BcxWeb {
     message.payload.domain = utils.strippedHost()
     _send(MessageTypes.TRANSFER_NH_ASSET, message)
   }
+
 }
 
 const _subscribe = () => {
@@ -201,6 +205,13 @@ function transferNHAsset(message) {
 function registerCreator(message) {
   return new Promise((resolve, reject) => {
     resolve(_send(MessageTypes.REGISTER_CREATOR, message))
+  })
+}
+
+
+function signString(message) {
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.SIGN_STRING, message))
   })
 }
 
@@ -294,6 +305,7 @@ export default class Content {
     BcxWeb.setCancelNHAssetOrder(cancelNHAssetOrder)
     BcxWeb.setTransferNHAsset(transferNHAsset)
     BcxWeb.setRegisterCreator(registerCreator)
+    BcxWeb.setSignString(signString)
     BcxWeb.setCreatWorldView(creatWorldView)
     BcxWeb.setCreatNHAsset(creatNHAsset)
     BcxWeb.setDeleteNHAsset(deleteNHAsset)
