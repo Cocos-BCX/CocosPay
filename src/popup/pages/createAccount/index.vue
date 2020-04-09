@@ -16,7 +16,7 @@
     </section>
     <h2 class="text-center index-title">CocosPay</h2>
     <el-form ref="form" :model="formData" :rules="formRules" class="mt20" v-if="!accountKey">
-      <el-form-item prop="account">
+      <el-form-item class="marb35" prop="account">
         <el-input
           class="no-border"
           v-model="formData.account"
@@ -24,21 +24,29 @@
           :placeholder="$t('placeholder.account')"
         ></el-input>
       </el-form-item>
-      <el-form-item prop="password">
+      <el-form-item class="marb35" prop="password">
         <el-input
           class="no-border"
           v-model="formData.password"
-          type="password"
+          :type="passw"
           :placeholder="$t('placeholder.password')"
-        ></el-input>
+        >
+        <img
+        :src="passw=='password'?'/icons/eye-close.png':'/icons/eye-open.png'"
+        slot="suffix"
+        alt=""
+        class="open-pass"
+        @click="showPass">
+        </el-input>
       </el-form-item>
-      <el-form-item prop="repassword">
+      <el-form-item class="marb35" prop="repassword">
         <el-input
           class="no-border"
           v-model="formData.repassword"
-          type="password"
+          :type="passw"
           :placeholder="$t('placeholder.repassword')"
-        ></el-input>
+        >
+        </el-input>
       </el-form-item>
       <el-form-item class="mt20">
         <el-button
@@ -81,6 +89,7 @@
 import { mapState, mapMutations, mapActions } from "vuex";
 import Navigation from "../../components/navigation";
 import { setTimeout } from "timers";
+import { NewPassword } from "../../../lib/regular"
 import axios from "axios";
 export default {
   components: {
@@ -88,13 +97,20 @@ export default {
   },
   data() {
     const validatePass = (rule, value, callback) => {
-      let reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{8,12}$/;
+      // let reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{8,12}$/;
+      let reg = NewPassword
       if (value === "") {
         callback(new Error(this.$i18n.t("verify.passwordNull")));
       } else if (!reg.test(value)) {
-        callback(new Error(this.$i18n.t("verify.passwordType")));
+        // callback(new Error(this.$i18n.t("verify.passwordType")));
+        callback(new Error(this.$i18n.t("error[311]")));
       } else {
-        callback();
+        if (String(value).indexOf(" ") > -1) {
+          callback(new Error(this.$i18n.t("error[311]")));
+        } else {
+          callback();
+        }
+        
       }
     };
     const accountPass = (rule, value, callback) => {
@@ -131,7 +147,11 @@ export default {
       },
       owner_private_key: "",
       active_private_key: "",
-      accountKey: false
+      accountKey: false,
+      //用于更换Input中的图标
+      icon:"el-input__icon el-icon-view",
+      //用于改变Input类型
+      passw:"password",
     };
   },
   computed: {
@@ -160,6 +180,17 @@ export default {
       this.$kalert({
         message: this.$i18n.t("alert.copySuccess")
       });
+    },
+
+　　//密码的隐藏和显示
+    showPass(){
+　　　　　//点击图标是密码隐藏或显示
+        if( this.passw=="text"){
+            this.passw="password";
+            //更换图标
+        }else {
+            this.passw="text";
+        };
     },
     copyError() {
       this.$kalert({
@@ -191,7 +222,18 @@ export default {
                   password: ""
                 });
                 this.setLogin(true);
-                this.$router.push({ name: "home" });
+                
+                this.OutPutKey().then(key => {
+                  if (key.code === 1) {
+                    this.setIsAccount(true);
+                    this.setLogin(true);
+                    this.active_private_key = key.data.active_private_keys[0];
+                    this.owner_private_key = key.data.owner_private_keys[0];
+                    this.accountKey = true;
+                    // this.$router.push({ name: "home" });
+                  }
+                });
+                // this.$router.push({ name: "home" });
                 //   }
                 // });
               } else {
@@ -243,8 +285,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.marb35{
+  margin-bottom: 35px;
+}
 .logo {
-  margin-top: 40px;
+  margin-top: 20px;
 }
 .select-lang {
   display: flex;
@@ -254,6 +299,9 @@ export default {
 }
 .index-title {
   font-size: 30px;
-  margin: 25px auto 40px;
+  margin: 15px auto 20px;
 }
+// .el-form-item{
+//   margin-bottom: 35px!important;
+// }
 </style>

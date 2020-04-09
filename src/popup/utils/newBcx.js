@@ -1,6 +1,5 @@
 import BCX from 'bcx-api'
 // import BCX from "bcxjs-test-xl-api";
-// import BCX from '../../lib/bcx-api'
 
 // import '../../lib/bcx.min'
 

@@ -4,17 +4,14 @@ const merge = require('webpack-merge')
 const baseWebpack = require('./webpack.base')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const { styleLoaders, htmlPage } = require('./tools')
-const ChromeReloadPlugin = require('wcer')
 module.exports = merge(baseWebpack, {
-  // cheap-module-eval-source-map быстрее для разработки
   watch: true,
   module: {
     rules: styleLoaders({
       sourceMap: false
     })
   },
-  devtool: '#eval-source-map',
-  // devtool: '#cheap-module-eval-source-map',
+  devtool: 'none',
   // devtool: '#hidden-source-map',
   plugins: [
     htmlPage('home', 'app', ['tab']),

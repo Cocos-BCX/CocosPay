@@ -1,6 +1,6 @@
 module.exports = {
   name: 'CocosPay',
-  version: '1.1.16',
+  version: '1.2.7',
   description: 'CocosPay Chrome Extension',
   author: 'chain@cocosbcx.io',
   manifest_version: 2,
@@ -24,7 +24,7 @@ module.exports = {
     matches: ['<all_urls>'],
     all_frames: true
   }],
-  content_security_policy: "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  content_security_policy: "script-src 'self'; object-src 'self'",
   web_accessible_resources: ['js/cocospay.js', 'js/content.js']
   //"externally_connectable": {
   //  "matches": ["*://127.0.0.1:9000/*"]

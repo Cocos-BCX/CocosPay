@@ -85,12 +85,12 @@
           type="primary"
           @click="accountRegister"
         >{{$t('title.accountType')}}</el-button>
-        <!-- <el-button
+        <el-button
           class="full-btn mt20"
           style="margin-left: 0 !important;"
           type="primary"
           @click="walletRegister"
-        >{{$t('title.walletType')}}</el-button> -->
+        >{{$t('title.walletType')}}</el-button>
       </span>
     </el-dialog>
   </section>
