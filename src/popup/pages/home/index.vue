@@ -181,9 +181,16 @@
               <el-form-item prop="password">
                 <el-input
                   v-model="formData.password"
-                  type="password"
+                  :type="passw"
                   :placeholder="$t('placeholder.password')"
-                ></el-input>
+                >
+                <img
+                :src="passw=='password'?'/icons/eye-close.png':'/icons/eye-open.png'"
+                slot="suffix"
+                alt=""
+                class="open-pass"
+                @click="showPass()">
+                </el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="text-center">
@@ -244,8 +251,16 @@
           class="mt30"
           :placeholder="accountType === 'account' ? $t('placeholder.password') : $t('placeholder.temporary')"
           v-model="password"
-          type="password"
-        ></el-input>
+          :type="passw"
+        >
+        
+          <img
+          :src="passw=='password'?'/icons/eye-close.png':'/icons/eye-open.png'"
+          slot="suffix"
+          alt=""
+          class="open-pass mart15"
+          @click="showPass()">
+        </el-input>
         <el-button class="mt30 full-btn" type="primary" @click="getLogin()">{{$t('button.confirm')}}</el-button>
       </section>
       <section v-if="privateKey">
@@ -422,7 +437,9 @@ export default {
       asset_id_cocos: '',
       receiveCOCOS: '',
       asset_id: '',
-      receiveGAS: ''
+      receiveGAS: '',
+      //用于改变Input类型
+      passw:"password",
     };
   },
   computed: {
@@ -520,6 +537,16 @@ export default {
     scrollTopList() {
       this.$el.querySelector("#perfect-scroll-wrapper").scrollTop = 0;
       this.transactionsScroller.update();
+    },
+　　//密码的隐藏和显示
+    showPass(){
+　　　　　//点击图标是密码隐藏或显示
+        if( this.passw=="text"){
+            this.passw="password";
+            //更换图标
+        }else {
+            this.passw="text";
+        };
     },
     cocosCountFormate: function(val){
       if(this.currentNodeName == "Test") {
@@ -1193,5 +1220,8 @@ export default {
   cursor: pointer;
   border: none;
   outline:none;
+}
+.mart15{
+  margin-top: 15px;
 }
 </style>

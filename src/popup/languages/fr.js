@@ -328,7 +328,9 @@ export default {
     304: 'La vision du monde existe',
     305: 'Les ressources ne sont pas suffisantes pour soutenir cette opération, il est demandé d’hypothèquer les GAS ou de réserver les COCOS',
     306: 'Comptes non existants',
-    307: 'Pour le moment, il n’y a pas de COCOS&GAS disponible'
+    307: 'Pour le moment, il n’y a pas de COCOS&GAS disponible',
+    311: 'Au moins 12 chiffres doivent contenir des chiffres, des lettres majuscules et minuscules et des symboles spéciaux!@#$%^&*.'
+  
   },
   
   chainInterfaceError: {

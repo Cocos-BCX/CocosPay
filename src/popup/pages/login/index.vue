@@ -20,9 +20,16 @@
         <el-input
           class="no-border"
           v-model="formData.password"
-          type="password"
+          :type="passw"
           :placeholder="$t('placeholder.password')"
-        ></el-input>
+        >
+          <img
+          :src="passw=='password'?'/icons/eye-close.png':'/icons/eye-open.png'"
+          slot="suffix"
+          alt=""
+          class="open-pass"
+          @click="showPass">
+        </el-input>
         <!-- 解决隐式提交的问题 -->
         <input type="text" value style="display: none;">
       </el-form-item>
@@ -71,7 +78,9 @@ export default {
       formRules: {
         account: [{ validator: accountPass, trigger: "blur" }],
         password: [{ validator: validatePass, trigger: "blur" }]
-      }
+      },
+      //用于改变Input类型
+      passw:"password",
     };
   },
   created(){
@@ -94,6 +103,17 @@ export default {
       "loginBCXAccount",
       "logoutBCXAccount"
     ]),
+
+　　//密码的隐藏和显示
+    showPass(){
+　　　　　//点击图标是密码隐藏或显示
+        if( this.passw=="text"){
+            this.passw="password";
+            //更换图标
+        }else {
+            this.passw="text";
+        };
+    },
     //解锁账户
     unLock(formName) {
       this.$refs[formName].validate(valid => {

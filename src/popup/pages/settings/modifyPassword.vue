@@ -14,27 +14,42 @@
         <el-form-item prop="oldPassword">
           <el-input
             v-model="formData.oldPassword"
-            type="password"
+            :type="passw"
             :placeholder="$t('placeholder.oldPassword')"
-          ></el-input>
+          >
+          
+          <img
+          :src="passw=='password'?'/icons/eye-close.png':'/icons/eye-open.png'"
+          slot="suffix"
+          alt=""
+          class="open-pass"
+          @click="showPass('passw')">
+          </el-input>
         </el-form-item>
-        <el-form-item prop="password">
+        <el-form-item class="marb35" prop="password">
           <el-input
             v-model="formData.password"
-            type="password"
+            :type="repassw"
             :placeholder="$t('placeholder.password')"
-          ></el-input>
+          >
+          <img
+          :src="repassw=='password'?'/icons/eye-close.png':'/icons/eye-open.png'"
+          slot="suffix"
+          alt=""
+          class="open-pass"
+          @click="showPass('repassw')">
+          </el-input>
         </el-form-item>
-        <el-form-item prop="repassword">
+        <el-form-item class="marb35" prop="repassword">
           <el-input
             v-model="formData.repassword"
-            type="password"
+            :type="repassw"
             :placeholder="$t('placeholder.repassword')"
           ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button
-            class="full-btn mt60"
+            class="full-btn mart25"
             type="primary"
             @click="onSubmit('form')"
           >{{$t('button.sure')}}</el-button>
@@ -48,21 +63,28 @@ import SettingNavigation from "../../components/setting-navigation";
 import { mapState, mapMutations, mapActions } from "vuex";
 import utils from "../../../lib/utils";
 import { setTimeout } from "timers";
+import { NewPassword } from "../../../lib/regular"
 export default {
   components: {
     SettingNavigation
   },
   data() {
     const validatePass = (rule, value, callback) => {
+      let reg = NewPassword
       if (value === "") {
         callback(new Error(this.$i18n.t("verify.passwordNull")));
-      } else if (value.length < 8) {
-        callback(new Error(this.$i18n.t("verify.passwordLength")));
+      } else if (!reg.test(value)) {
+        // callback(new Error(this.$i18n.t("verify.passwordLength")));
+        callback(new Error(this.$i18n.t("error[311]")));
       } else {
         if (this.formData.repassword !== "") {
           this.$refs.form.validateField("repassword");
         }
-        callback();
+        if (String(value).indexOf(" ") > -1) {
+          callback(new Error(this.$i18n.t("error[311]")));
+        } else {
+          callback();
+        }
       }
     };
     const validatePass2 = (rule, value, callback) => {
@@ -85,7 +107,10 @@ export default {
         repassword: [{ validator: validatePass2, trigger: "blur" }]
       },
       oldPassword: "",
-      show: true
+      show: true,
+      //用于改变Input类型
+      passw:"password",
+      repassw:"password",
     };
   },
   computed: {
@@ -107,6 +132,17 @@ export default {
     //     });
     //   }
     // },
+
+　　//密码的隐藏和显示
+    showPass(passtype){
+　　　　　//点击图标是密码隐藏或显示
+        if( this[passtype]=="text"){
+            this[passtype]="password";
+            //更换图标
+        }else {
+            this[passtype]="text";
+        };
+    },
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -149,5 +185,13 @@ export default {
   height: 50px;
   line-height: 50px;
   border-bottom: 1px dashed #e6e6e6;
+}
+
+.marb35{
+  margin-bottom: 35px;
+}
+
+.mart25{
+  margin-top: 25px;
 }
 </style>

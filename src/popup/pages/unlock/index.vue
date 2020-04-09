@@ -9,9 +9,17 @@
         <el-input
           class="no-border"
           v-model="unlock"
-          type="password"
+          :type="passw"
           :placeholder="currentAccountType == 'wallet'?$t('placeholder.temporary') :$t('placeholder.password')"
-        ></el-input>
+        >
+        
+          <img
+          :src="passw=='password'?'/icons/eye-close.png':'/icons/eye-open.png'"
+          slot="suffix"
+          alt=""
+          class="open-pass"
+          @click="showPass">
+        </el-input>
         <!-- 解决隐式提交的问题 -->
         <input type="text" value style="display: none;">
       </el-form-item>
@@ -35,7 +43,9 @@ export default {
     // };
     return {
       unlock: "",
-      currentAccountType: ""
+      currentAccountType: "",
+      //用于改变Input类型
+      passw:"password",
       // formData: {
       //   password: ""
       // },
@@ -73,6 +83,17 @@ export default {
       "setIsAccount",
       "setAccountType"
     ]),
+
+　　//密码的隐藏和显示
+    showPass(){
+　　　　　//点击图标是密码隐藏或显示
+        if( this.passw=="text"){
+            this.passw="password";
+            //更换图标
+        }else {
+            this.passw="text";
+        };
+    },
     unlockWallet() {
       if (!this.unlock) {
         this.$kalert({
