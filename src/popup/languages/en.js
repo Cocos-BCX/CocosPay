@@ -329,7 +329,7 @@ export default {
     305: 'Resources are not enough to support this operation, please mortgage gas or reserve COCOS',
     306: 'Account does not exist',
     307: 'There is no GAS available',
-    311: 'At least 12 digits must contain numbers, uppercase and lowercase letters, and special symbols!@#$%^&*.'
+    311: 'At least 12 digits must contain numbers, uppercase and lowercase letters, and special symbols!@#$%^&*.-'
   },
   
   chainInterfaceError: {
