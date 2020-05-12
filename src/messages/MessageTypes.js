@@ -17,3 +17,4 @@ export const CREATE_NH_ASSET = 'creatNHAsset'
 export const DELETE_NH_ASSET = 'deleteNHAsset'
 export const PUBLISH_VOTES = 'publishVotes'//cc
 export const SIGN_STRING = 'signString'//cc
+export const DECODE_ONE_MEMO = 'decodeOneMemo'//cc

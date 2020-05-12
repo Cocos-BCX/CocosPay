@@ -237,43 +237,6 @@ export default {
         if (valid) {
           this.popup = true;
         }
-        // if (valid) {
-        //   this.setAccount({
-        //     toAccount: this.formData.to,
-        //     coin: this.formData.token,
-        //     amount: this.formData.amount,
-        //     memo: this.formData.memo
-        //   });
-        //   this.tranferBCXFree().then(res => {
-        //     console.log(res);
-
-        //     this.fee = res.data[0].fees[0].amount.toFixed(this.precision);
-        //     if (this.owner) {
-        //       this.$kalert({
-        //         message: this.$i18n.t("verify.ownerKey")
-        //       });
-        //       return;
-        //     } else if (
-        //       (this.formData.token === "COCOS" &&
-        //         res.data[0].fees[0].amount + Number(this.formData.amount) <
-        //           this.cocosCount) ||
-        //       res.data[0].fees[0].amount + Number(this.formData.amount) ===
-        //         this.cocosCount
-        //     ) {
-        //       this.popup = true;
-        //     } else if (
-        //       this.formData.token !== "COCOS" &&
-        //       res.data[0].fees[0].amount < this.cocosCount
-        //     ) {
-        //       this.popup = true;
-        //     } else {
-        //       // this.$kalert({
-        //       //   message: this.$i18n.t("alert.transferFail")
-        //       // });
-        //       this.popup = true;
-        //     }
-        //   });
-        // }
       });
     },
     surePay() {

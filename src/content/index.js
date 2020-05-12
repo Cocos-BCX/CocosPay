@@ -66,6 +66,9 @@ class BcxWeb {
   static setSignString(signString) {
     this.BCX.signString = signString
   }
+  static setdecodeOneMemo(decodeOneMemo) {
+    this.BCX.decodeOneMemo = decodeOneMemo
+  }
 
   static setCreatWorldView(creatWorldView) {
     this.BCX.creatWorldView = creatWorldView
@@ -215,6 +218,12 @@ function signString(message) {
   })
 }
 
+function decodeOneMemo(message) {
+  return new Promise((resolve, reject) => {
+    resolve(_send(MessageTypes.DECODE_ONE_MEMO, message))
+  })
+}
+
 function creatWorldView(message) {
   return new Promise((resolve, reject) => {
     resolve(_send(MessageTypes.CREATE_WORLDVIEW, message))
@@ -306,6 +315,7 @@ export default class Content {
     BcxWeb.setTransferNHAsset(transferNHAsset)
     BcxWeb.setRegisterCreator(registerCreator)
     BcxWeb.setSignString(signString)
+    BcxWeb.setdecodeOneMemo(decodeOneMemo)
     BcxWeb.setCreatWorldView(creatWorldView)
     BcxWeb.setCreatNHAsset(creatNHAsset)
     BcxWeb.setDeleteNHAsset(deleteNHAsset)

@@ -133,13 +133,6 @@ export default {
         return e
       }
     },
-    //decodeMemo
-    async decodeMemo({
-      commit,
-      state
-    }, params) {
-      return await NewBCX.decodeMemo(params)
-    },
     //callContractFunction
     async callContractFunction({
       commit,
@@ -246,7 +239,27 @@ export default {
       }
     },
 
-
+    
+    //decodeOneMemo
+    async decodeOneMemo({
+      commit,
+      state
+    }, params) {
+      try {
+        let resData;
+        await NewBCX.decodeOneMemo(params).then(res => {
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res;
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
     
     //signString
     async signString({

@@ -44,7 +44,6 @@ export default {
     COCOSconversionAjax(){
       let _this = this
       COCOSconversion().then( res => {
-        console.log("COCOSconversion: ", res)
         _this.setCOCOSUsd(res.data[0].price_usd)
         
         _this.ExchangeRateAjax()
@@ -70,7 +69,6 @@ export default {
             currencyListStore.push(currencyListStoreEle)
           }
           Storage.set("currentCurrency", "CNY")
-          console.log("currencyListStore", currencyListStore)
           this.setCurrencyList(currencyListStore)
           // console.log(res.data[0].price_usd)
         }

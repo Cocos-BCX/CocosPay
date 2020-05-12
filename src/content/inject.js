@@ -130,6 +130,10 @@ class Inject {
       case MessageTypes.SIGN_STRING:
         this.signString(nonSyncMessage)
         break
+        
+      case MessageTypes.DECODE_ONE_MEMO:
+        this.decodeOneMemo(nonSyncMessage)
+        break
       case MessageTypes.REGISTER_CREATOR:
         this.registerCreator(nonSyncMessage)
         break
@@ -204,6 +208,13 @@ class Inject {
 
   signString(message) {
     InternalMessage.widthPayloadAndResolver(InternalMessageTypes.SIGN_STRING, message, message.resolver)
+      .send().then(res => {
+        this.respond(message, res)
+      })
+  }
+
+  decodeOneMemo(message) {
+    InternalMessage.widthPayloadAndResolver(InternalMessageTypes.DECODE_ONE_MEMO, message, message.resolver)
       .send().then(res => {
         this.respond(message, res)
       })

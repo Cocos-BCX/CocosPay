@@ -209,12 +209,6 @@ export default new Vuex.Store({
             console.log(error);
           });
           return nodes
-        // await NewBCX.lookupWSNodeList({
-        //   refresh:true,
-        // }).then(res => {
-        //   console.log('res')
-        //   console.log(res)
-        // })
       } catch (e) {
         console.log(e);
       }
