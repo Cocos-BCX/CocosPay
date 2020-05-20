@@ -300,6 +300,13 @@ white-space: nowrap;}"
         <el-button
           class="confirm-btn text-center"
           type="primary"
+          v-if="prompt.data.type === 'encryptionOneMome'"
+          @click.once="encryptionOneMomeStore"
+        >{{languages.button.confirm}}</el-button>
+
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
           @click.once="createWorldView"
           v-if="prompt.data.type === 'creatWorldView'"
         >{{languages.button.confirm}}</el-button>
@@ -444,6 +451,7 @@ export default {
       "registerCreator",
       "signString",
       "decodeOneMemo",
+      "encryptionOneMome",
       "creatWorldView",
       "creatNHAsset",
       "deleteNHAsset",
@@ -461,6 +469,18 @@ export default {
     async decodeOneMemoStore(){
       this.addWhite();
       let memo = await this.decodeOneMemo(this.prompt.data.payload)
+      .then(res => {
+          this.prompt.responder({ accepted: true, res: res });
+          NotificationService.close();
+        })
+        .catch(err => {
+          this.prompt.responder({ accepted: true, res: err });
+          NotificationService.close();
+        });
+    },
+    async encryptionOneMomeStore(){
+      this.addWhite();
+      let memo = await this.encryptionOneMome(this.prompt.data.payload)
       .then(res => {
           this.prompt.responder({ accepted: true, res: res });
           NotificationService.close();

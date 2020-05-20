@@ -165,7 +165,7 @@ export default new Vuex.Store({
       try {
         let nodes = [];
         await axios
-          .get("https://api-cocosbcx.cocosbcx.net/backend/getParams")
+          .get("https://api.cocosbcx.net/backend/getParams")
           .then(async response => {
             
             nodes = response.data.data

@@ -18,3 +18,4 @@ export const DELETE_NH_ASSET = 'deleteNHAsset'
 export const PUBLISH_VOTES = 'publishVotes'//cc
 export const SIGN_STRING = 'signString'//cc
 export const DECODE_ONE_MEMO = 'decodeOneMemo'//cc
+export const ENCRYPTION_ONE_MEMO = 'encryptionOneMome'//cc

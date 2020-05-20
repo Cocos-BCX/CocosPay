@@ -239,7 +239,26 @@ export default {
       }
     },
 
-    
+    //encryptionOneMome
+    async encryptionOneMome({
+      commit,
+      state
+    }, params) {
+      try {
+        let resData;
+        await NewBCX.encryptionOneMome(params).then(res => {
+          if (res.code !== 1) {
+            Alert({
+              message: CommonJs.getI18nMessages(I18n).error[res.code]
+            })
+          }
+          resData = res;
+        })
+        return resData
+      } catch (e) {
+        return e
+      }
+    },
     //decodeOneMemo
     async decodeOneMemo({
       commit,
