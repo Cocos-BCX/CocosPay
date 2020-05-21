@@ -1,6 +1,6 @@
 {
   "name": "CocosPay",
-  "version": "1.2.9",
+  "version": "1.2.12",
   "description": "CocosPay",
   "author": "chain@cocosbcx.io",
   "license": "MIT",
@@ -60,7 +60,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.26.0",
-    "bcx-api": "^2.2.5",
+    "bcx-api": "^2.2.7",
     "bcxjs-test-xl-api": "^2.2.6",
     "buble": "^0.16.0",
     "buble-loader": "^0.4.1",

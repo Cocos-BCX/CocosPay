@@ -3,7 +3,7 @@ import axios from 'axios'
 // 汇率接口
 export let ExchangeRate = function () {
   return new Promise(function (resolve, reject) {
-    axios.get('https://api-cocosbcx.cocosbcx.net/backend/currencyRate')
+    axios.get('https://api.cocosbcx.net/backend/currencyRate')
     .then(function (response) {
       resolve(response)
     })
@@ -14,12 +14,13 @@ export let ExchangeRate = function () {
   })
 }
 
+
 // cocos换算美元接口
 export let COCOSconversion = function (currency) {
   return new Promise(function (resolve, reject) {
     axios({
       methods: 'get',
-      url: 'https://api-cocosbcx.cocosbcx.net/backend/fxhTicker?code=cocosbcx',
+      url: 'https://api.cocosbcx.net/backend/fxhTicker?code=cocosbcx',
       // params: {
       //   code: currency || 'cocosbcx'
       // }

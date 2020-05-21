@@ -24,6 +24,10 @@
         <div class="title" v-else-if="prompt.data.type === 'signString'">
           <span>签名字符串</span>
         </div>
+        
+        <div class="title" v-else-if="prompt.data.type === 'decodeOneMemo'">
+          <span>备注解码</span>
+        </div>
         <div class="title" v-else-if="prompt.data.type === 'registerCreator'">
           <span>{{languages.title.registerCreator}}</span>
         </div>
@@ -285,6 +289,21 @@ white-space: nowrap;}"
           @click.once="signStringStore"
         >{{languages.button.confirm}}</el-button>
 
+
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
+          v-if="prompt.data.type === 'decodeOneMemo'"
+          @click.once="decodeOneMemoStore"
+        >{{languages.button.confirm}}</el-button>
+
+        <el-button
+          class="confirm-btn text-center"
+          type="primary"
+          v-if="prompt.data.type === 'encryptionOneMome'"
+          @click.once="encryptionOneMomeStore"
+        >{{languages.button.confirm}}</el-button>
+
         <el-button
           class="confirm-btn text-center"
           type="primary"
@@ -431,6 +450,8 @@ export default {
       "creatNHAssetOrder",
       "registerCreator",
       "signString",
+      "decodeOneMemo",
+      "encryptionOneMome",
       "creatWorldView",
       "creatNHAsset",
       "deleteNHAsset",
@@ -440,11 +461,34 @@ export default {
       "cancelNHAssetOrder",
       "transferNHAsset"
     ]),
-    ...mapActions(["decodeMemo"]),
     ...mapActions("account", ["loadingBCXAccount"]),
     denied() {
       this.prompt.responder(null);
       NotificationService.close();
+    },
+    async decodeOneMemoStore(){
+      this.addWhite();
+      let memo = await this.decodeOneMemo(this.prompt.data.payload)
+      .then(res => {
+          this.prompt.responder({ accepted: true, res: res });
+          NotificationService.close();
+        })
+        .catch(err => {
+          this.prompt.responder({ accepted: true, res: err });
+          NotificationService.close();
+        });
+    },
+    async encryptionOneMomeStore(){
+      this.addWhite();
+      let memo = await this.encryptionOneMome(this.prompt.data.payload)
+      .then(res => {
+          this.prompt.responder({ accepted: true, res: res });
+          NotificationService.close();
+        })
+        .catch(err => {
+          this.prompt.responder({ accepted: true, res: err });
+          NotificationService.close();
+        });
     },
     signStringStore(){
       this.addWhite();

@@ -118,11 +118,20 @@ export default class Background {
         Repeat.add(message.resolver)
         
       case InternalMessageTypes.SIGN_STRING:
-        console.log(message.payload)
-        console.log(Background)
         Background.signString(sendResponse, message.payload)
         Repeat.add(message.resolver)
         break
+      
+
+      case InternalMessageTypes.DECODE_ONE_MEMO:
+          Background.decodeOneMemo(sendResponse, message.payload)
+          Repeat.add(message.resolver)
+          break
+
+      case InternalMessageTypes.ENCRYPTION_ONE_MEMO:
+          Background.encryptionOneMome(sendResponse, message.payload)
+          Repeat.add(message.resolver)
+          break
       case InternalMessageTypes.CREATE_WORLDVIEW:
         Background.creatWorldView(sendResponse, message.payload)
         Repeat.add(message.resolver)
@@ -267,6 +276,63 @@ export default class Background {
       }
     })
   }
+
+  static encryptionOneMome(sendResponse, payload) {
+    
+    this.lockGuard(sendResponse, async () => {
+      try {
+        const store = this._getLocalData()
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
+        })
+        if (whiteList) {
+          await this.getBCX().encryptionOneMome(payload.payload).then((res) => {
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+            sendResponse(res);
+            return
+          })
+        } else {
+          this.openDialog(sendResponse, payload)
+        }
+      } catch (e) {
+        console.log(e)
+        sendResponse(Error.maliciousEvent())
+      }
+    })
+  }
+
+  static decodeOneMemo(sendResponse, payload) {
+    
+    this.lockGuard(sendResponse, async () => {
+      try {
+        const store = this._getLocalData()
+        let whiteList = store.wallet.whiteList.some(ele => {
+          return ele.domain === payload.domain && ele.address === store.cocosAccount.accounts
+        })
+        if (whiteList) {
+          await this.getBCX().decodeOneMemo(payload.payload).then((res) => {
+            if (res.code !== 1) {
+              Alert({
+                message: CommonJs.getI18nMessages(I18n).error[res.code]
+              })
+            }
+            sendResponse(res);
+            return
+          })
+        } else {
+          this.openDialog(sendResponse, payload)
+        }
+      } catch (e) {
+        console.log(e)
+        sendResponse(Error.maliciousEvent())
+      }
+    })
+  }
+
   static signString(sendResponse, payload) {
     
     this.lockGuard(sendResponse, async () => {
@@ -279,7 +345,6 @@ export default class Background {
           await this.getBCX().signString({
             signContent: payload.payload.signContent
           }).then((res) => {
-            console.log('res',res)
             if (res.code !== 1) {
               Alert({
                 message: CommonJs.getI18nMessages(I18n).error[res.code]

@@ -165,7 +165,7 @@ export default new Vuex.Store({
       try {
         let nodes = [];
         await axios
-          .get("https://api-cocosbcx.cocosbcx.net/backend/getParams")
+          .get("https://api.cocosbcx.net/backend/getParams")
           .then(async response => {
             
             nodes = response.data.data
@@ -209,12 +209,6 @@ export default new Vuex.Store({
             console.log(error);
           });
           return nodes
-        // await NewBCX.lookupWSNodeList({
-        //   refresh:true,
-        // }).then(res => {
-        //   console.log('res')
-        //   console.log(res)
-        // })
       } catch (e) {
         console.log(e);
       }
