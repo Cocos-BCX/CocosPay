@@ -14,6 +14,7 @@ export let ExchangeRate = function () {
   })
 }
 
+
 // cocos换算美元接口
 export let COCOSconversion = function (currency) {
   return new Promise(function (resolve, reject) {
